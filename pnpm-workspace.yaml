@@ -2,8 +2,10 @@ packages:
   - "apps/*"
   - "packages/*"
 
-# Native build steps allowed to run on install (file watcher and module resolver used by the tooling).
+# Build steps allowed to run on install (file watcher, module resolver, Prisma engines).
 allowBuilds:
+  "@prisma/engines": true
+  prisma: true
   "@parcel/watcher": true
   unrs-resolver: true
 
