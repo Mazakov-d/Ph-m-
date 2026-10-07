@@ -47,7 +47,7 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 - [x] `shared/src/schemas/` : schémas d'entrée et publics pour `auth`, `user`, `editor`, `post`, `comment`, `vote`, `report`, `review`, `sanction`, `ticket`, `message`, plus `paginated()` et `cursorQuerySchema`.
 - [x] `shared/src/errors.ts` : codes d'erreur API.
 - [x] `schema.prisma` : modèles `User`, `EditorProfile`, `EditorIdentity` (table séparée, accès restreint), `Post`, `PostImage`, `PostSource`, `PostView`, `PostCorrection`, `Comment`, `Vote`, `PostReport`, `CommentReport`, `Review`, `EditorReply`, `Appeal`, `Sanction`, `Block`, `Ticket`, `Message`, `AuditLog`. Index sur `Post.createdAt`, clés uniques (un vote par compte et opinion, un signalement par compte et cible).
-- [ ] Test `enums.consistency.spec.ts` : chaque enum Prisma = enum Zod correspondant.
+- [x] Test `enums.consistency.spec.ts` : chaque enum Prisma = enum Zod correspondant.
 - [ ] Seed : 1 `ADMIN`, 2 `MODERATOR`, 3 éditeurs (`PENDING`, `INDEPENDENT`, `CERTIFIED`), 5 lecteurs, 20 posts répartis sur 3 jours, des commentaires et votes.
 
 **Critères de validation**
