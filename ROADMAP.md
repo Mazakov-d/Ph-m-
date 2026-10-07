@@ -41,7 +41,7 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
   - [x] `computePostReviewThreshold(viewCount)` et `shouldOpenPostReview(score, viewCount)` (§5.3) ;
   - [x] `computeReviewPriority(score, viewCount)` (§5.4) ;
   - [x] `shouldHideComment(totalWeight)` (§6.2) ;
-  - [ ] `nextSanction(removedCountLast6Months, isDiscrimination)` (§6.3) ;
+  - [x] `nextSanction(removedCountLast6Months, isDiscrimination)` (§6.3) ;
   - [ ] `canSeeVoteResults(hasVoted, revealedResults)` (§7) ;
   - [ ] `reliabilityLabel(post)` → texte de la barre (§5.6).
 - [ ] `shared/src/schemas/` : schémas d'entrée et publics pour `auth`, `user`, `editor`, `post`, `comment`, `vote`, `report`, `review`, `sanction`, `ticket`, `message`, plus `paginated()` et `cursorQuerySchema`.
