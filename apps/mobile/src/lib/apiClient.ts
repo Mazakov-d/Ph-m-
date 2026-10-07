@@ -42,7 +42,9 @@ function notifySession(session: AuthSession | null): void {
 
 async function send(method: string, path: string, body: unknown): Promise<Response> {
   const headers: Record<string, string> = { [CLIENT_KIND_HEADER]: IS_WEB ? "web" : "native" };
-  if (body !== undefined) {
+  const isForm = body instanceof FormData;
+  // A multipart form sets its own Content-Type (with the boundary); JSON needs it explicitly.
+  if (body !== undefined && !isForm) {
     headers["Content-Type"] = "application/json";
   }
   if (accessToken) {
@@ -52,7 +54,7 @@ async function send(method: string, path: string, body: unknown): Promise<Respon
     return await fetch(`${API_URL}${path}`, {
       method,
       headers,
-      body: body === undefined ? undefined : JSON.stringify(body),
+      body: body === undefined || isForm ? body : JSON.stringify(body),
       // Web: lets the browser send the httpOnly refresh cookie.
       credentials: IS_WEB ? "include" : "omit",
     });
@@ -135,6 +137,9 @@ export const apiClient = {
   patch: <T>(path: string, body: unknown, schema: ZodType<T>) =>
     request("PATCH", path, body, schema),
   delete: <T>(path: string, schema: ZodType<T>) => request("DELETE", path, undefined, schema),
+  /** Multipart upload (files). */
+  postForm: <T>(path: string, form: FormData, schema: ZodType<T>) =>
+    request("POST", path, form, schema),
 
   /** Stores a session obtained by signing in or up. */
   startSession,

@@ -9,6 +9,8 @@ const texts = {
   signIn: "Se connecter",
   register: "Créer un compte",
   signOut: "Se déconnecter",
+  becomeEditor: "Devenir éditeur",
+  editorSpace: "Mon espace éditeur",
 };
 
 export default function HomeScreen() {
@@ -34,6 +36,12 @@ export default function HomeScreen() {
         {status === "authenticated" && user ? (
           <>
             <Text style={styles.signedIn}>{texts.signedInAs(user.pseudo)}</Text>
+            {user.role === "READER" || user.role === "EDITOR" ? (
+              <Button
+                label={user.role === "EDITOR" ? texts.editorSpace : texts.becomeEditor}
+                onPress={() => router.push("/editor")}
+              />
+            ) : null}
             <Button label={texts.signOut} variant="secondary" onPress={signOut} />
           </>
         ) : null}
