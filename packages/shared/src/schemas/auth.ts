@@ -8,13 +8,14 @@ import {
 } from "../rules.js";
 import { idSchema, isoDateTimeSchema } from "./common.js";
 
-// docs/DECISIONS.md: letters (accents included), digits, `_`, `-` and `.`.
+// docs/DECISIONS.md: words of letters (accents included), digits, `_`, `-` and `.`,
+// separated by single spaces (« Le Monde »).
 export const pseudoSchema = z
   .string()
   .trim()
   .min(PSEUDO_MIN_LENGTH)
   .max(PSEUDO_MAX_LENGTH)
-  .regex(/^[\p{L}\p{N}_.-]+$/u);
+  .regex(/^[\p{L}\p{N}_.-]+( [\p{L}\p{N}_.-]+)*$/u);
 
 export const passwordSchema = z.string().min(PASSWORD_MIN_LENGTH).max(PASSWORD_MAX_LENGTH);
 

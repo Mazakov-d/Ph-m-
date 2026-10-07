@@ -95,3 +95,11 @@ qui la remplace.
     relire l'historique des sanctions ;
   - documents d'identité : clés de stockage privé dans `EditorIdentity.documentKeys`.
 - **Pourquoi** : choix techniques simples, sans effet sur les règles métier.
+
+## 2026-10-07 — Espaces dans les pseudos
+
+- **Question** : la règle des pseudos (entrée « Limites provisoires des schémas ») interdisait les espaces,
+  alors que la ROADMAP (phase 10) attend un éditeur « Le Monde » dans le seed.
+- **Décision** : les pseudos acceptent des espaces simples entre les mots (jamais au début, à la fin, ni
+  doublés). Remplace la partie « caractères autorisés » de l'entrée précédente.
+- **Pourquoi** : les noms de médias contiennent souvent des espaces ; choix du porteur du projet.

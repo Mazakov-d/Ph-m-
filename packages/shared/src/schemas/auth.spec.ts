@@ -21,15 +21,24 @@ describe("registerInputSchema (SPEC §2.1)", () => {
     ).toBe(false);
   });
 
-  it.each(["ab", "a".repeat(31), "léa dupont", "léa@home", "<script>"])(
+  it.each(["ab", "a".repeat(31), "léa  dupont", "léa\tdupont", "léa@home", "<script>"])(
     "rejects the pseudo %s",
     (pseudo) => {
       expect(registerInputSchema.safeParse({ ...validInput, pseudo }).success).toBe(false);
     },
   );
 
-  it.each(["abc", "a".repeat(30), "Éloïse.M", "jean-paul_2"])("accepts the pseudo %s", (pseudo) => {
-    expect(registerInputSchema.safeParse({ ...validInput, pseudo }).success).toBe(true);
+  it.each(["abc", "a".repeat(30), "Éloïse.M", "jean-paul_2", "Le Monde", "Ouest France Rennes"])(
+    "accepts the pseudo %s",
+    (pseudo) => {
+      expect(registerInputSchema.safeParse({ ...validInput, pseudo }).success).toBe(true);
+    },
+  );
+
+  it("trims surrounding spaces of the pseudo", () => {
+    expect(registerInputSchema.parse({ ...validInput, pseudo: "  Le Monde " }).pseudo).toBe(
+      "Le Monde",
+    );
   });
 
   it("rejects an invalid e-mail", () => {
