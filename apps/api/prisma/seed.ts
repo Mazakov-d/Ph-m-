@@ -58,7 +58,8 @@ async function createUsers(passwordHash: string) {
     { pseudo: "Modo Bruno", email: "bruno@fama.test", role: "MODERATOR", createdAt: daysAgo(200) },
     { pseudo: "Le Monde", email: "lemonde@fama.test", role: "EDITOR", createdAt: daysAgo(365) },
     { pseudo: "Clara Enquêtes", email: "clara@fama.test", role: "EDITOR", createdAt: daysAgo(120) },
-    { pseudo: "Nouveau Média", email: "nouveau@fama.test", role: "EDITOR", createdAt: daysAgo(3) },
+    // docs/DECISIONS.md: an applicant stays READER until the application is validated.
+    { pseudo: "Nouveau Média", email: "nouveau@fama.test", role: "READER", createdAt: daysAgo(3) },
     // Readers with varied ages and report histories, to exercise computeReportWeight.
     {
       pseudo: "lecteur.ancien",
@@ -404,11 +405,21 @@ async function main(): Promise<void> {
   const passwordHash = await hash(DEMO_PASSWORD);
   const users = await createUsers(passwordHash);
 
-  const editors = users.filter((user) => user.role === "EDITOR");
+  const editorEmails = ["lemonde@fama.test", "clara@fama.test", "nouveau@fama.test"];
+  const editors = editorEmails.map((email) => {
+    const editor = users.find((user) => user.email === email);
+    if (!editor) {
+      throw new Error(`Missing seed account ${email}`);
+    }
+    return editor;
+  });
   await createEditors(editors);
   // Only validated editors publish (SPEC §2.2): Le Monde and Clara Enquêtes.
   const publishingEditorIds = editors.slice(0, 2).map((editor) => editor.id);
-  const readerIds = users.filter((user) => user.role === "READER").map((user) => user.id);
+  // The 5 readers who comment and vote (the pending applicant is left out).
+  const readerIds = users
+    .filter((user) => user.role === "READER" && !editorEmails.includes(user.email))
+    .map((user) => user.id);
 
   const posts = await createPosts(publishingEditorIds, readerIds);
   await createComments(
