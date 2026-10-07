@@ -363,12 +363,15 @@ const form = useForm<CreateCommentInput>({
 ## 8. Commandes
 
 ```bash
-pnpm install
-docker compose up -d                 # PostgreSQL local
+nvm use                              # Node 22 (.nvmrc)
+cp apps/api/.env.example apps/api/.env
+pnpm install                         # installe, compile shared et génère le client Prisma
+docker compose up -d                 # PostgreSQL local (port 5434), requis par les tests de l'API
 pnpm --filter api prisma migrate dev # migrations
 pnpm --filter api prisma db seed     # données de démo
-pnpm dev                             # api + mobile
-pnpm check                           # lint + typecheck + tests (tout le monorepo)
+pnpm dev                             # shared (watch) + api (:3000) + mobile (Expo, :8081)
+pnpm check                           # generate + lint + typecheck + tests (tout le monorepo)
+pnpm format                          # formate tout le dépôt avec Prettier
 ```
 
 Mettre à jour cette section si les commandes changent.
