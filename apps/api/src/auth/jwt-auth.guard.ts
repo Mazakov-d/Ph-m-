@@ -2,13 +2,17 @@ import { type CanActivate, type ExecutionContext, HttpStatus, Injectable } from 
 import { Reflector } from "@nestjs/core";
 import { JwtService } from "@nestjs/jwt";
 import type { AuthenticatedRequest } from "../common/authenticated-request.js";
+import { OPTIONAL_AUTH_KEY } from "../common/decorators/optional-auth.decorator.js";
 import { IS_PUBLIC_KEY } from "../common/decorators/public.decorator.js";
 import { ApiException } from "../common/errors/api.exception.js";
 import { type AccessTokenPayload, AuthService } from "./auth.service.js";
 
 const BEARER_PREFIX = "Bearer ";
 
-/** Global guard: every route needs a valid access token unless marked @Public(). */
+/**
+ * Global guard: every route needs a valid access token unless marked @Public() (token ignored)
+ * or @OptionalAuth() (token optional, but checked when present).
+ */
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
   constructor(
@@ -18,16 +22,21 @@ export class JwtAuthGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const isPublic = this.reflector.getAllAndOverride<boolean | undefined>(IS_PUBLIC_KEY, [
-      context.getHandler(),
-      context.getClass(),
-    ]);
-    if (isPublic) {
+    const targets = [context.getHandler(), context.getClass()];
+    if (this.reflector.getAllAndOverride<boolean | undefined>(IS_PUBLIC_KEY, targets)) {
       return true;
     }
 
     const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
     const header = request.headers.authorization;
+    const isOptional = this.reflector.getAllAndOverride<boolean | undefined>(
+      OPTIONAL_AUTH_KEY,
+      targets,
+    );
+    if (!header && isOptional) {
+      // Anonymous visitor on a route open to everyone.
+      return true;
+    }
     if (!header?.startsWith(BEARER_PREFIX)) {
       throw unauthenticated("Missing access token");
     }

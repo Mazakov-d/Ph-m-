@@ -1,10 +1,12 @@
 import {
   Body,
   Controller,
+  Get,
   HttpStatus,
   Param,
   Patch,
   Post,
+  Query,
   UploadedFiles,
   UseInterceptors,
 } from "@nestjs/common";
@@ -16,12 +18,17 @@ import {
   POST_IMAGE_MAX_BYTES,
   POST_IMAGE_TYPES,
   POST_IMAGES_MAX_COUNT,
+  type Paginated,
   type PostPublic,
+  type PostQuery,
+  postQuerySchema,
+  type PostSummaryPublic,
   idSchema,
   type UpdatePostCommentsInput,
   updatePostCommentsInputSchema,
 } from "@fama/shared";
-import { CurrentUser } from "../common/decorators/current-user.decorator.js";
+import { CurrentUser, OptionalUser } from "../common/decorators/current-user.decorator.js";
+import { OptionalAuth } from "../common/decorators/optional-auth.decorator.js";
 import { RequirePermission } from "../common/decorators/require-permission.decorator.js";
 import { ApiException } from "../common/errors/api.exception.js";
 import { detectFileType } from "../common/files/file-type.js";
@@ -32,6 +39,16 @@ import { PostsService, type UploadedImage } from "./posts.service.js";
 @Controller("posts")
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
+
+  // SPEC §2: the feed is readable without an account.
+  @Get()
+  @OptionalAuth()
+  feed(
+    @Query(new ZodValidationPipe(postQuerySchema)) query: PostQuery,
+    @OptionalUser() viewer: AuthUser | null,
+  ): Promise<Paginated<PostSummaryPublic>> {
+    return this.postsService.feed(viewer, query);
+  }
 
   /** Multipart: field `post` (JSON) + 0 to 4 files `images` (SPEC §3, docs/DECISIONS.md). */
   @Post()

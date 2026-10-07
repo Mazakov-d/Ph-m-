@@ -100,7 +100,7 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 - [x] API : création d'un post (§3) avec validation Zod de tous les champs obligatoires et des sources.
 - [x] API : envoi d'images (taille et format limités), rattachées au post.
 - [x] API : `commentsEnabled` modifiable par l'éditeur sur ses articles ; forcé à `true` pour les opinions.
-- [ ] API : fil public (§4.1) — 48 h, tri chronologique, pagination par curseur, filtres `today` / `zone` / `theme` combinables (§4.3), exclusion des comptes bloqués.
+- [x] API : fil public (§4.1) — 48 h, tri chronologique, pagination par curseur, filtres `today` / `zone` / `theme` combinables (§4.3), exclusion des comptes bloqués.
 - [ ] API : détail d'un post + comptage des vues uniques (`PostView`).
 - [ ] App : écran Fil (scroll infini via `useInfiniteQuery`), barre de filtres en haut (Aujourd'hui, zones, thèmes).
 - [ ] App : carte de post (éditeur + badge, date, titre, image, barre de fiabilité ou étiquette « Opinion », compteur de commentaires).

@@ -1,13 +1,23 @@
 import { randomUUID } from "node:crypto";
 import { HttpStatus, Injectable } from "@nestjs/common";
-import type { AuthUser, CreatePostInput, PostPublic, UpdatePostCommentsInput } from "@fama/shared";
+import {
+  type AuthUser,
+  type CreatePostInput,
+  feedWindowStart,
+  type Paginated,
+  type PostPublic,
+  type PostQuery,
+  type PostSummaryPublic,
+  type UpdatePostCommentsInput,
+} from "@fama/shared";
 import { ApiException } from "../common/errors/api.exception.js";
 import { FILE_EXTENSIONS } from "../common/files/file-type.js";
+import { decodeCursor, toPage } from "../common/pagination/cursor.js";
 import { PrismaService } from "../prisma/prisma.service.js";
 import { StorageService } from "../storage/storage.service.js";
 import { type PostImageType, sanitizeImage } from "./post-images.js";
 import { POST_INCLUDE } from "./post-record.js";
-import { toPostPublic } from "./posts.mapper.js";
+import { toPostPublic, toPostSummaryPublic } from "./posts.mapper.js";
 
 export type UploadedImage = { bytes: Uint8Array; type: PostImageType };
 
@@ -51,6 +61,49 @@ export class PostsService {
       await this.storage.delete(imageKeys);
       throw error;
     }
+  }
+
+  /**
+   * SPEC §4.1 and §4.3: posts of the last 48 hours (or 24 with `today`), newest first, with the
+   * zone and theme filters, without the authors the reader blocked (SPEC §10).
+   * Votes never play a part in the order (SPEC §7).
+   */
+  async feed(
+    viewer: AuthUser | null,
+    query: PostQuery,
+    now: Date = new Date(),
+  ): Promise<Paginated<PostSummaryPublic>> {
+    const blockedIds = viewer ? await this.blockedAuthorIds(viewer.id) : [];
+    const after = query.cursor ? decodeCursor(query.cursor) : null;
+    const rows = await this.prisma.post.findMany({
+      where: {
+        createdAt: { gte: feedWindowStart(now, query.today) },
+        zone: query.zone,
+        theme: query.theme,
+        authorId: { notIn: blockedIds },
+        ...(after && {
+          OR: [
+            { createdAt: { lt: after.createdAt } },
+            { createdAt: after.createdAt, id: { lt: after.id } },
+          ],
+        }),
+      },
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      take: query.limit + 1,
+      include: POST_INCLUDE,
+      // The feed shows cards: the body is only sent with the full post.
+      omit: { body: true },
+    });
+    const page = toPage(rows, query.limit, (row) => row);
+    return { items: page.rows.map(toPostSummaryPublic), nextCursor: page.nextCursor };
+  }
+
+  private async blockedAuthorIds(viewerId: string): Promise<string[]> {
+    const blocks = await this.prisma.block.findMany({
+      where: { blockerId: viewerId },
+      select: { blockedId: true },
+    });
+    return blocks.map((block) => block.blockedId);
   }
 
   /** SPEC §3: the editor turns comments on or off on their own articles, never off on an opinion. */

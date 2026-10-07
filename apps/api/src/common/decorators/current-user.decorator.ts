@@ -11,3 +11,10 @@ export const CurrentUser = createParamDecorator((_data: unknown, context: Execut
   const user: AuthUser = request.user;
   return user;
 });
+
+/** The signed-in account on an @OptionalAuth() route, or null for an anonymous visitor. */
+export const OptionalUser = createParamDecorator((_data: unknown, context: ExecutionContext) => {
+  const user: AuthUser | null =
+    context.switchToHttp().getRequest<AuthenticatedRequest>().user ?? null;
+  return user;
+});
