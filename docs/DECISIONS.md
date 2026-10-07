@@ -103,3 +103,16 @@ qui la remplace.
 - **Décision** : les pseudos acceptent des espaces simples entre les mots (jamais au début, à la fin, ni
   doublés). Remplace la partie « caractères autorisés » de l'entrée précédente.
 - **Pourquoi** : les noms de médias contiennent souvent des espaces ; choix du porteur du projet.
+
+## 2026-10-07 — Stockage des jetons et durées de session
+
+- **Question** : `CLAUDE.md` §6.4 demande de décider en phase 2 où vivent les jetons sur le web ; la SPEC
+  ne fixe pas la durée des sessions.
+- **Décision** :
+  - jeton d'accès (JWT) valable **15 minutes**, gardé en mémoire dans l'app ;
+  - jeton de rafraîchissement valable **30 jours**, renouvelé à chaque usage (rotation), stocké haché en
+    base et révoqué à la déconnexion ;
+  - iOS / Android : jeton de rafraîchissement dans `expo-secure-store` ;
+  - web : jeton de rafraîchissement dans un cookie `httpOnly`, `Secure`, `SameSite=Strict`, jamais
+    lisible par JavaScript.
+- **Pourquoi** : choix du porteur du projet ; le cookie `httpOnly` empêche une faille XSS de voler la session.
