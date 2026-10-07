@@ -1,20 +1,6 @@
 import { tokenStorage } from "../tokenStorage";
 import { tokenStorage as webTokenStorage } from "../tokenStorage.web";
 
-// In-memory stand-in for the native keychain.
-jest.mock("expo-secure-store", () => {
-  const store = new Map<string, string>();
-  return {
-    getItemAsync: async (key: string) => store.get(key) ?? null,
-    setItemAsync: async (key: string, value: string) => {
-      store.set(key, value);
-    },
-    deleteItemAsync: async (key: string) => {
-      store.delete(key);
-    },
-  };
-});
-
 describe("tokenStorage (native)", () => {
   beforeEach(async () => {
     await tokenStorage.clear();

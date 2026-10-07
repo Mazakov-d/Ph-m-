@@ -66,7 +66,7 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 - [x] Refus des actions d'écriture pour un compte suspendu ou banni.
 - [x] App : `tokenStorage` (SecureStore sur mobile ; stratégie web décidée et consignée dans `DECISIONS.md`).
 - [x] App : `apiClient` typé (valide chaque réponse avec un schéma Zod, rafraîchit le jeton si expiré).
-- [ ] App : `AuthProvider` + `useAuth()` (modèle de `CLAUDE.md` §6.3), `QueryProvider`.
+- [x] App : `AuthProvider` + `useAuth()` (modèle de `CLAUDE.md` §6.3), `QueryProvider`.
 - [ ] App : écrans Inscription et Connexion (react-hook-form + schémas partagés), messages d'erreur en français.
 - [ ] Tests e2e : inscription, connexion, accès refusé sans jeton, accès refusé sans permission.
 

@@ -3,19 +3,6 @@ import { z } from "zod";
 import { apiClient, ApiRequestError } from "../apiClient";
 import { tokenStorage } from "../tokenStorage";
 
-jest.mock("expo-secure-store", () => {
-  const store = new Map<string, string>();
-  return {
-    getItemAsync: async (key: string) => store.get(key) ?? null,
-    setItemAsync: async (key: string, value: string) => {
-      store.set(key, value);
-    },
-    deleteItemAsync: async (key: string) => {
-      store.delete(key);
-    },
-  };
-});
-
 const user = {
   id: "0b1e4a3c-6f1d-4d6b-9a52-3c2f0e7d8a11",
   email: "lea@test.fr",
