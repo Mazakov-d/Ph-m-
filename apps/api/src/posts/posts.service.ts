@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
-import { Injectable } from "@nestjs/common";
-import type { AuthUser, CreatePostInput, PostPublic } from "@fama/shared";
+import { HttpStatus, Injectable } from "@nestjs/common";
+import type { AuthUser, CreatePostInput, PostPublic, UpdatePostCommentsInput } from "@fama/shared";
+import { ApiException } from "../common/errors/api.exception.js";
 import { FILE_EXTENSIONS } from "../common/files/file-type.js";
 import { PrismaService } from "../prisma/prisma.service.js";
 import { StorageService } from "../storage/storage.service.js";
@@ -50,6 +51,42 @@ export class PostsService {
       await this.storage.delete(imageKeys);
       throw error;
     }
+  }
+
+  /** SPEC §3: the editor turns comments on or off on their own articles, never off on an opinion. */
+  async updateComments(
+    editor: AuthUser,
+    postId: string,
+    input: UpdatePostCommentsInput,
+  ): Promise<PostPublic> {
+    // Conditional update (CLAUDE.md §5.3): own post and article, checked in the same query.
+    const updated = await this.prisma.post.updateMany({
+      where: { id: postId, authorId: editor.id, kind: "ARTICLE" },
+      data: { commentsEnabled: input.commentsEnabled },
+    });
+    const post = await this.prisma.post.findUnique({
+      where: { id: postId },
+      include: POST_INCLUDE,
+    });
+    if (updated.count === 1 && post) {
+      return toPostPublic(post);
+    }
+    // Nothing was updated: explain why.
+    if (!post) {
+      throw new ApiException(HttpStatus.NOT_FOUND, "NOT_FOUND", "No such post");
+    }
+    if (post.authorId !== editor.id) {
+      throw new ApiException(HttpStatus.FORBIDDEN, "FORBIDDEN", "Not your post");
+    }
+    if (!input.commentsEnabled) {
+      throw new ApiException(
+        HttpStatus.CONFLICT,
+        "COMMENTS_REQUIRED_FOR_OPINION",
+        "Comments cannot be turned off on an opinion",
+      );
+    }
+    // Turning comments on for an opinion: they already are.
+    return toPostPublic(post);
   }
 
   private async storeImages(postId: string, images: UploadedImage[]): Promise<string[]> {

@@ -1,4 +1,13 @@
-import { Body, Controller, HttpStatus, Post, UploadedFiles, UseInterceptors } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  UploadedFiles,
+  UseInterceptors,
+} from "@nestjs/common";
 import { FilesInterceptor } from "@nestjs/platform-express";
 import {
   type AuthUser,
@@ -8,12 +17,16 @@ import {
   POST_IMAGE_TYPES,
   POST_IMAGES_MAX_COUNT,
   type PostPublic,
+  idSchema,
+  type UpdatePostCommentsInput,
+  updatePostCommentsInputSchema,
 } from "@fama/shared";
 import { CurrentUser } from "../common/decorators/current-user.decorator.js";
 import { RequirePermission } from "../common/decorators/require-permission.decorator.js";
 import { ApiException } from "../common/errors/api.exception.js";
 import { detectFileType } from "../common/files/file-type.js";
 import { JsonFieldValidationPipe } from "../common/pipes/json-field.pipe.js";
+import { ZodValidationPipe } from "../common/pipes/zod-validation.pipe.js";
 import { PostsService, type UploadedImage } from "./posts.service.js";
 
 @Controller("posts")
@@ -34,6 +47,16 @@ export class PostsController {
     @CurrentUser() author: AuthUser,
   ): Promise<PostPublic> {
     return this.postsService.create(author, input, toUploadedImages(files ?? []));
+  }
+
+  @Patch(":id/comments")
+  @RequirePermission("post.toggleComments")
+  updateComments(
+    @Param("id", new ZodValidationPipe(idSchema)) id: string,
+    @Body(new ZodValidationPipe(updatePostCommentsInputSchema)) input: UpdatePostCommentsInput,
+    @CurrentUser() editor: AuthUser,
+  ): Promise<PostPublic> {
+    return this.postsService.updateComments(editor, id, input);
   }
 }
 
