@@ -17,3 +17,7 @@ android/
 .DS_Store
 .idea/
 .vscode/
+
+# This repo uses pnpm only (a stray npm/yarn run must not add a lockfile).
+package-lock.json
+yarn.lock
