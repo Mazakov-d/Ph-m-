@@ -18,7 +18,7 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 - [x] `packages/shared` : package TypeScript consommable par les deux apps (export depuis `src/index.ts`), dépendance unique : Zod.
 - [x] `apps/api` : projet NestJS minimal avec une route `GET /health` → `{ status: "ok" }`.
 - [x] `apps/mobile` : projet Expo + Expo Router avec un écran d'accueil qui affiche une constante importée de `shared` (preuve que le partage fonctionne).
-- [ ] `docker-compose.yml` avec PostgreSQL ; `apps/api/.env.example`.
+- [x] `docker-compose.yml` avec PostgreSQL ; `apps/api/.env.example`.
 - [ ] Prisma installé dans `apps/api`, `PrismaService` injectable.
 - [ ] Scripts racine : `pnpm dev`, `pnpm check` (lint + typecheck + tests de tous les packages).
 - [ ] `docs/DECISIONS.md` créé (vide, avec le format d'une entrée).
