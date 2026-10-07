@@ -12,10 +12,17 @@ export const COMMENT_REPORT_THRESHOLD = 3;
 // SPEC §5.3: review threshold of a post = max(min score, audience ratio × viewCount).
 export const POST_REPORT_MIN_SCORE = 5;
 export const POST_REPORT_AUDIENCE_RATIO = 0.01;
+// SPEC §5.4: priority = score × log10(viewCount + offset).
+export const REVIEW_PRIORITY_VIEW_OFFSET = 10;
+// Technical: tolerance when comparing sums of decimal weights to a threshold
+// (in floating point, 15 × 0.2 = 2.9999999999999996, which must count as 3).
+export const SCORE_EPSILON = 1e-9;
 
 // SPEC §5.2: report weight.
 export const NEW_ACCOUNT_DAYS = 30;
 export const REPORT_WEIGHT_NEW_ACCOUNT = 0.2;
+// Weight of an account with too short a report history (formula of SPEC §5.2, not in the §11 table).
+export const REPORT_WEIGHT_DEFAULT = 1.0;
 export const REPORT_HISTORY_MIN_SAMPLE = 5;
 export const REPORT_WEIGHT_MIN = 0.1;
 export const REPORT_WEIGHT_MAX = 2.0;

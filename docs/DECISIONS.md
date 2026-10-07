@@ -60,3 +60,11 @@ qui la remplace.
   l'a), notamment pour contester sa sanction. Toutes les autres permissions sont retirées, y compris
   celles de modération. Un compte banni (`PERMANENT_BAN`) est traité comme suspendu sans date de fin.
 - **Pourquoi** : choix du porteur du projet.
+
+## 2026-10-07 — Libellés français des verdicts
+
+- **Question** : la barre de fiabilité (SPEC §5.6) affiche « examiné : <verdict> » sans donner le libellé
+  français de chaque `Verdict`.
+- **Décision** : `ACCURATE` → « exact », `MISSING_CONTEXT` → « contexte manquant », `MISLEADING` →
+  « trompeur », `FALSE` → « faux », `UNVERIFIABLE` → « invérifiable ».
+- **Pourquoi** : choix du porteur du projet.
