@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import * as rules from "./rules.js";
 
-// Guards against accidental edits: every value must match the table of SPEC §11.
+// Guards against accidental edits: values of SPEC §11 and docs/DECISIONS.md.
 describe("rules (SPEC §11)", () => {
   it("matches the constants table of the SPEC", () => {
     expect({ ...rules }).toEqual({
@@ -25,6 +25,24 @@ describe("rules (SPEC §11)", () => {
       COMMENT_MAX_LENGTH: 2000,
       POST_TITLE_MAX_LENGTH: 200,
       POST_SUMMARY_MAX_LENGTH: 500,
+      PSEUDO_MIN_LENGTH: 3,
+      PSEUDO_MAX_LENGTH: 30,
+      PASSWORD_MIN_LENGTH: 12,
+      PASSWORD_MAX_LENGTH: 128,
+      POST_BODY_MAX_LENGTH: 50_000,
+      SOURCES_MAX_COUNT: 20,
+      SOURCE_MAX_LENGTH: 500,
+      REGION_MAX_LENGTH: 100,
+      REPORT_DETAILS_MAX_LENGTH: 1000,
+      REVIEW_NOTE_MAX_LENGTH: 5000,
+      EDITOR_REPLY_MAX_LENGTH: 5000,
+      APPEAL_MAX_LENGTH: 2000,
+      MESSAGE_MAX_LENGTH: 4000,
+      EDITORIAL_LINE_MAX_LENGTH: 2000,
+      NAME_MAX_LENGTH: 200,
+      REJECTION_REASON_MAX_LENGTH: 1000,
+      PAGE_SIZE_DEFAULT: 20,
+      PAGE_SIZE_MAX: 50,
       RETENTION_DAYS: 365,
     });
   });

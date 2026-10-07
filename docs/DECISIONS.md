@@ -68,3 +68,16 @@ qui la remplace.
 - **Décision** : `ACCURATE` → « exact », `MISSING_CONTEXT` → « contexte manquant », `MISLEADING` →
   « trompeur », `FALSE` → « faux », `UNVERIFIABLE` → « invérifiable ».
 - **Pourquoi** : choix du porteur du projet.
+
+## 2026-10-07 — Limites provisoires des schémas
+
+- **Question** : les schémas Zod ont besoin de limites que la SPEC ne fixe pas (seules les longueurs
+  de commentaire, titre et résumé figurent au §11).
+- **Décision** (valeurs provisoires dans `rules.ts`) : pseudo de 3 à 30 caractères (lettres accentuées,
+  chiffres, `_`, `-`, `.`), unique **sans tenir compte de la casse** ; mot de passe de 12 à 128 caractères
+  (recommandation CNIL) ; corps d'un post 50 000 max ; 1 à 20 sources par post, 500 caractères chacune ;
+  région obligatoire si `zone = LOCAL`, 100 max ; texte d'un signalement obligatoire si `OTHER`, 1 000 max ;
+  note de revue et réponse de l'éditeur 5 000 max ; appel 2 000 max ; message de chat 4 000 max ;
+  ligne éditoriale 2 000 max ; noms (propriétaire, groupe, identité) 200 max ; motif de refus 1 000 max ;
+  pagination de 20 éléments par défaut, 50 max.
+- **Pourquoi** : valeurs proposées et acceptées par le porteur du projet, modifiables à tout moment.

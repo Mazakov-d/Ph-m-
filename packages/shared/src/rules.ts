@@ -39,5 +39,25 @@ export const COMMENT_MAX_LENGTH = 2000;
 export const POST_TITLE_MAX_LENGTH = 200;
 export const POST_SUMMARY_MAX_LENGTH = 500;
 
+// Provisional limits not set by the SPEC (docs/DECISIONS.md, "Limites provisoires des schémas").
+export const PSEUDO_MIN_LENGTH = 3;
+export const PSEUDO_MAX_LENGTH = 30;
+export const PASSWORD_MIN_LENGTH = 12;
+export const PASSWORD_MAX_LENGTH = 128;
+export const POST_BODY_MAX_LENGTH = 50_000;
+export const SOURCES_MAX_COUNT = 20;
+export const SOURCE_MAX_LENGTH = 500;
+export const REGION_MAX_LENGTH = 100;
+export const REPORT_DETAILS_MAX_LENGTH = 1000;
+export const REVIEW_NOTE_MAX_LENGTH = 5000;
+export const EDITOR_REPLY_MAX_LENGTH = 5000;
+export const APPEAL_MAX_LENGTH = 2000;
+export const MESSAGE_MAX_LENGTH = 4000;
+export const EDITORIAL_LINE_MAX_LENGTH = 2000;
+export const NAME_MAX_LENGTH = 200;
+export const REJECTION_REASON_MAX_LENGTH = 1000;
+export const PAGE_SIZE_DEFAULT = 20;
+export const PAGE_SIZE_MAX = 50;
+
 // SPEC §6 and §10: purge delay for logically deleted content. To be confirmed with a lawyer.
 export const RETENTION_DAYS = 365;
