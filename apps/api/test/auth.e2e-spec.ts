@@ -69,6 +69,49 @@ describe("Auth routes (e2e)", () => {
     });
   });
 
+  describe("login", () => {
+    beforeEach(async () => {
+      await request(app.getHttpServer()).post("/auth/register").send(LEA).expect(201);
+    });
+
+    it("signs in with the right password and reaches a protected route", async () => {
+      const response = await request(app.getHttpServer())
+        .post("/auth/login")
+        .send({ email: LEA.email, password: LEA.password })
+        .expect(200);
+      const { tokens } = authSessionSchema.parse(response.body);
+
+      const me = await request(app.getHttpServer())
+        .get("/auth/me")
+        .set("Authorization", `Bearer ${tokens.accessToken}`)
+        .expect(200);
+      expect(me.body).toMatchObject({ email: LEA.email, pseudo: LEA.pseudo });
+    });
+
+    it("accepts the e-mail whatever its case", async () => {
+      await request(app.getHttpServer())
+        .post("/auth/login")
+        .send({ email: "LEA@Test.fr", password: LEA.password })
+        .expect(200);
+    });
+
+    it("refuses a wrong password with INVALID_CREDENTIALS", async () => {
+      const response = await request(app.getHttpServer())
+        .post("/auth/login")
+        .send({ email: LEA.email, password: "mauvais-mot-de-passe" })
+        .expect(401);
+      expect(response.body).toMatchObject({ code: "INVALID_CREDENTIALS" });
+    });
+
+    it("refuses a taken pseudo at sign-up with PSEUDO_TAKEN", async () => {
+      const response = await request(app.getHttpServer())
+        .post("/auth/register")
+        .send({ ...LEA, email: "autre@test.fr", pseudo: "léa" })
+        .expect(409);
+      expect(response.body).toMatchObject({ code: "PSEUDO_TAKEN" });
+    });
+  });
+
   describe("web client (docs/DECISIONS.md)", () => {
     it("puts the refresh token in an httpOnly cookie only", async () => {
       const response = await request(app.getHttpServer())
