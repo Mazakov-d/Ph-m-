@@ -1,4 +1,5 @@
-// Data model. Models are added in phase 1 (see ROADMAP.md).
+// Data model (SPEC). Enum values must match packages/shared/src/enums.ts exactly
+// (checked by src/enums.consistency.spec.ts).
 // The connection URL lives in prisma.config.ts (Prisma 7).
 
 generator client {
@@ -8,4 +9,508 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+}
+
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+enum UserRole {
+  READER
+  EDITOR
+  MODERATOR
+  ADMIN
+}
+
+enum EditorStatus {
+  PENDING
+  INDEPENDENT
+  CERTIFIED
+  REJECTED
+}
+
+enum PostKind {
+  ARTICLE
+  OPINION
+}
+
+enum Zone {
+  FRANCE
+  EUROPE
+  INTERNATIONAL
+  LOCAL
+}
+
+enum Theme {
+  POLITICS
+  ECONOMY
+  SOCIAL_MOVEMENTS
+  ENVIRONMENT
+  SCIENCE_HEALTH
+  TECH
+  CULTURE
+  SPORT
+}
+
+enum PostReviewStatus {
+  NOT_REVIEWED
+  UNDER_REVIEW
+  REVIEWED
+}
+
+enum Verdict {
+  ACCURATE
+  MISSING_CONTEXT
+  MISLEADING
+  FALSE
+  UNVERIFIABLE
+}
+
+enum PostReportReason {
+  DUBIOUS_SOURCE
+  OUT_OF_CONTEXT_MEDIA
+  FALSE_INFORMATION
+  MISLEADING
+  OTHER
+}
+
+enum CommentReportReason {
+  INSULT
+  DISCRIMINATION
+  HARASSMENT
+  SPAM
+  OTHER
+}
+
+enum ReportStatus {
+  PENDING
+  UPHELD
+  DISMISSED
+}
+
+enum CommentStatus {
+  VISIBLE
+  UNDER_REVIEW
+  VERIFIED
+  REMOVED
+  DELETED
+}
+
+enum DeletedBy {
+  AUTHOR
+  MODERATOR
+}
+
+enum VoteValue {
+  AGREE
+  DISAGREE
+}
+
+enum SanctionType {
+  WARNING
+  SUSPENSION_24H
+  SUSPENSION_7D
+  PERMANENT_BAN
+}
+
+enum TicketKind {
+  SUPPORT
+  EDITOR_CHAT
+}
+
+enum TicketStatus {
+  NEW
+  ASSIGNED
+  CLOSED
+}
+
+// ─── Accounts (SPEC §2) ───────────────────────────────────────────────────────
+
+model User {
+  id                   String    @id @default(uuid()) @db.Uuid
+  email                String    @unique
+  // docs/DECISIONS.md: pseudos are unique regardless of case (citext).
+  pseudo               String    @unique @db.Citext
+  passwordHash         String
+  role                 UserRole  @default(READER)
+  // SPEC §2.1: internal report history, used by computeReportWeight.
+  upheldReportCount    Int       @default(0)
+  dismissedReportCount Int       @default(0)
+  // SPEC §6.3: current restrictions (copied from the latest sanction for fast checks).
+  suspendedUntil       DateTime? @db.Timestamptz(3)
+  bannedAt             DateTime? @db.Timestamptz(3)
+  // SPEC §2.3: editors a moderator declared a conflict of interest with.
+  conflictEditorIds    String[]  @db.Uuid
+  createdAt            DateTime  @default(now()) @db.Timestamptz(3)
+
+  editorProfile    EditorProfile?
+  editorIdentity   EditorIdentity?
+  validatedEditors EditorProfile[] @relation("EditorValidatedBy")
+  posts            Post[]
+  postViews        PostView[]
+  comments         Comment[]
+  votes            Vote[]
+  postReports      PostReport[]
+  commentReports   CommentReport[]
+  reviews          Review[]
+  editorReplies    EditorReply[]
+  appeals          Appeal[]        @relation("AppealAppellant")
+  resolvedAppeals  Appeal[]        @relation("AppealResolvedBy")
+  sanctions        Sanction[]      @relation("SanctionTarget")
+  issuedSanctions  Sanction[]      @relation("SanctionModerator")
+  blocks           Block[]         @relation("Blocker")
+  blockedBy        Block[]         @relation("Blocked")
+  openedTickets    Ticket[]        @relation("TicketOpenedBy")
+  editorTickets    Ticket[]        @relation("TicketEditor")
+  assignedTickets  Ticket[]        @relation("TicketAssignedModerator")
+  messages         Message[]
+  auditLogs        AuditLog[]
+}
+
+/// SPEC §2.2: public side of an editor.
+model EditorProfile {
+  userId               String       @id @db.Uuid
+  status               EditorStatus @default(PENDING)
+  editorialLine        String
+  ownerName            String
+  ownerGroup           String?
+  showIdentityPublicly Boolean      @default(false)
+  rejectionReason      String?
+  validatedById        String?      @db.Uuid
+  validatedAt          DateTime?    @db.Timestamptz(3)
+  createdAt            DateTime     @default(now()) @db.Timestamptz(3)
+  updatedAt            DateTime     @updatedAt @db.Timestamptz(3)
+
+  user        User  @relation(fields: [userId], references: [id])
+  validatedBy User? @relation("EditorValidatedBy", fields: [validatedById], references: [id])
+}
+
+/// SPEC §2.2: legal identity, always stored, restricted access (separate table).
+model EditorIdentity {
+  userId         String   @id @db.Uuid
+  legalFirstName String
+  legalLastName  String
+  // Keys of the identity documents in private storage (never a public URL).
+  documentKeys   String[]
+  createdAt      DateTime @default(now()) @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+// ─── Posts (SPEC §3) ──────────────────────────────────────────────────────────
+
+model Post {
+  id              String           @id @default(uuid()) @db.Uuid
+  authorId        String           @db.Uuid
+  kind            PostKind
+  title           String
+  summary         String
+  body            String
+  zone            Zone
+  // SPEC §3: only for a LOCAL zone.
+  region          String?
+  theme           Theme
+  // SPEC §3: always true for an OPINION.
+  commentsEnabled Boolean          @default(true)
+  reviewStatus    PostReviewStatus @default(NOT_REVIEWED)
+  // SPEC §3: unique readers, kept in sync with PostView.
+  viewCount       Int              @default(0)
+  createdAt       DateTime         @default(now()) @db.Timestamptz(3)
+
+  author      User             @relation(fields: [authorId], references: [id])
+  images      PostImage[]
+  sources     PostSource[]
+  views       PostView[]
+  corrections PostCorrection[]
+  comments    Comment[]
+  votes       Vote[]
+  reports     PostReport[]
+  reviews     Review[]
+  sanctions   Sanction[]
+
+  // SPEC §4.1: feed sorted by createdAt with an (createdAt, id) cursor.
+  @@index([createdAt, id])
+  @@index([authorId])
+}
+
+model PostImage {
+  id         String   @id @default(uuid()) @db.Uuid
+  postId     String   @db.Uuid
+  storageKey String
+  position   Int
+  createdAt  DateTime @default(now()) @db.Timestamptz(3)
+
+  post Post @relation(fields: [postId], references: [id])
+
+  @@unique([postId, position])
+}
+
+/// SPEC §3: a URL or a free-text reference.
+model PostSource {
+  id       String @id @default(uuid()) @db.Uuid
+  postId   String @db.Uuid
+  value    String
+  position Int
+
+  post Post @relation(fields: [postId], references: [id])
+
+  @@unique([postId, position])
+}
+
+/// SPEC §3: one view per account, anonymous visitors deduplicated by session.
+model PostView {
+  id        String   @id @default(uuid()) @db.Uuid
+  postId    String   @db.Uuid
+  userId    String?  @db.Uuid
+  sessionId String?
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+
+  post Post  @relation(fields: [postId], references: [id])
+  user User? @relation(fields: [userId], references: [id])
+
+  // NULLs are distinct in PostgreSQL, so each constraint only applies to its kind of viewer.
+  @@unique([postId, userId])
+  @@unique([postId, sessionId])
+}
+
+/// SPEC §3: the only way to change a published post, shown publicly.
+model PostCorrection {
+  id        String   @id @default(uuid()) @db.Uuid
+  postId    String   @db.Uuid
+  content   String
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+
+  post Post @relation(fields: [postId], references: [id])
+
+  @@index([postId])
+}
+
+// ─── Comments (SPEC §6) ───────────────────────────────────────────────────────
+
+model Comment {
+  id        String        @id @default(uuid()) @db.Uuid
+  postId    String        @db.Uuid
+  authorId  String        @db.Uuid
+  // SPEC §6: one level of replies, parentId points to a root comment.
+  parentId  String?       @db.Uuid
+  content   String
+  status    CommentStatus @default(VISIBLE)
+  createdAt DateTime      @default(now()) @db.Timestamptz(3)
+  // SPEC §6: deletion is always logical.
+  deletedAt DateTime?     @db.Timestamptz(3)
+  deletedBy DeletedBy?
+
+  post      Post            @relation(fields: [postId], references: [id])
+  author    User            @relation(fields: [authorId], references: [id])
+  parent    Comment?        @relation("CommentReplies", fields: [parentId], references: [id])
+  replies   Comment[]       @relation("CommentReplies")
+  reports   CommentReport[]
+  sanctions Sanction[]
+
+  // SPEC §6: comments of a post sorted by ascending date.
+  @@index([postId, createdAt])
+  @@index([authorId])
+}
+
+// ─── Votes (SPEC §7) ──────────────────────────────────────────────────────────
+
+/// One row per account and opinion. `value` is null when the reader only clicked
+/// « Voir sans voter » (revealedResults) without voting.
+model Vote {
+  id              String     @id @default(uuid()) @db.Uuid
+  postId          String     @db.Uuid
+  userId          String     @db.Uuid
+  value           VoteValue?
+  revealedResults Boolean    @default(false)
+  createdAt       DateTime   @default(now()) @db.Timestamptz(3)
+  updatedAt       DateTime   @updatedAt @db.Timestamptz(3)
+
+  post Post @relation(fields: [postId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([postId, userId])
+}
+
+// ─── Reports and reviews (SPEC §5, §6.2) ──────────────────────────────────────
+
+model PostReport {
+  id         String           @id @default(uuid()) @db.Uuid
+  postId     String           @db.Uuid
+  reporterId String           @db.Uuid
+  reason     PostReportReason
+  // SPEC §5.1: mandatory when reason = OTHER.
+  details    String?
+  // SPEC §5.2: computed and stored when the report is made.
+  weight     Float
+  status     ReportStatus     @default(PENDING)
+  createdAt  DateTime         @default(now()) @db.Timestamptz(3)
+
+  post     Post @relation(fields: [postId], references: [id])
+  reporter User @relation(fields: [reporterId], references: [id])
+
+  // SPEC §5.1: one report per account and post.
+  @@unique([postId, reporterId])
+  @@index([postId, status])
+}
+
+model CommentReport {
+  id         String              @id @default(uuid()) @db.Uuid
+  commentId  String              @db.Uuid
+  reporterId String              @db.Uuid
+  reason     CommentReportReason
+  details    String?
+  weight     Float
+  status     ReportStatus        @default(PENDING)
+  createdAt  DateTime            @default(now()) @db.Timestamptz(3)
+
+  comment  Comment @relation(fields: [commentId], references: [id])
+  reporter User    @relation(fields: [reporterId], references: [id])
+
+  // SPEC §6.2: one report per account and comment.
+  @@unique([commentId, reporterId])
+  @@index([commentId, status])
+}
+
+/// SPEC §5.5: a verdict on a post. An accepted appeal leads to a new review by another moderator.
+model Review {
+  id          String   @id @default(uuid()) @db.Uuid
+  postId      String   @db.Uuid
+  moderatorId String   @db.Uuid
+  verdict     Verdict
+  publicNote  String
+  sources     String[]
+  createdAt   DateTime @default(now()) @db.Timestamptz(3)
+
+  post        Post         @relation(fields: [postId], references: [id])
+  moderator   User         @relation(fields: [moderatorId], references: [id])
+  editorReply EditorReply?
+  appeal      Appeal?
+
+  @@index([postId])
+}
+
+/// SPEC §5.5: the editor's reply, within EDITOR_REPLY_HOURS of the verdict.
+model EditorReply {
+  id        String   @id @default(uuid()) @db.Uuid
+  reviewId  String   @unique @db.Uuid
+  authorId  String   @db.Uuid
+  content   String
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+
+  review Review @relation(fields: [reviewId], references: [id])
+  author User   @relation(fields: [authorId], references: [id])
+}
+
+/// SPEC §5.5 and §6.3: one appeal per review or sanction (exactly one of the two is set),
+/// handled by someone other than the original moderator.
+model Appeal {
+  id           String    @id @default(uuid()) @db.Uuid
+  appellantId  String    @db.Uuid
+  reviewId     String?   @unique @db.Uuid
+  sanctionId   String?   @unique @db.Uuid
+  reason       String
+  createdAt    DateTime  @default(now()) @db.Timestamptz(3)
+  resolvedById String?   @db.Uuid
+  resolvedAt   DateTime? @db.Timestamptz(3)
+  // Null while pending; true when the appeal is granted.
+  accepted     Boolean?
+
+  appellant  User      @relation("AppealAppellant", fields: [appellantId], references: [id])
+  review     Review?   @relation(fields: [reviewId], references: [id])
+  sanction   Sanction? @relation(fields: [sanctionId], references: [id])
+  resolvedBy User?     @relation("AppealResolvedBy", fields: [resolvedById], references: [id])
+}
+
+// ─── Sanctions and blocks (SPEC §6.3, §10) ────────────────────────────────────
+
+model Sanction {
+  id             String       @id @default(uuid()) @db.Uuid
+  userId         String       @db.Uuid
+  moderatorId    String       @db.Uuid
+  type           SanctionType
+  // SPEC §6.3: the removed comment (or post, same rules for editors) that caused it.
+  commentId      String?      @db.Uuid
+  postId         String?      @db.Uuid
+  // SPEC §6.3: « À signaler sur PHAROS » box.
+  reportToPharos Boolean      @default(false)
+  // End of a suspension; null for a warning or a permanent ban.
+  endsAt         DateTime?    @db.Timestamptz(3)
+  // Set when the sanction is cancelled on appeal.
+  liftedAt       DateTime?    @db.Timestamptz(3)
+  createdAt      DateTime     @default(now()) @db.Timestamptz(3)
+
+  user      User     @relation("SanctionTarget", fields: [userId], references: [id])
+  moderator User     @relation("SanctionModerator", fields: [moderatorId], references: [id])
+  comment   Comment? @relation(fields: [commentId], references: [id])
+  post      Post?    @relation(fields: [postId], references: [id])
+  appeal    Appeal?
+
+  @@index([userId, createdAt])
+}
+
+/// SPEC §10: the blocker no longer sees the blocked user's posts and comments.
+model Block {
+  blockerId String   @db.Uuid
+  blockedId String   @db.Uuid
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+
+  blocker User @relation("Blocker", fields: [blockerId], references: [id])
+  blocked User @relation("Blocked", fields: [blockedId], references: [id])
+
+  @@id([blockerId, blockedId])
+}
+
+// ─── Support and chats (SPEC §8) ──────────────────────────────────────────────
+
+model Ticket {
+  id                     String       @id @default(uuid()) @db.Uuid
+  kind                   TicketKind
+  status                 TicketStatus @default(NEW)
+  openedById             String       @db.Uuid
+  // SPEC §8: the editor of an EDITOR_CHAT.
+  editorId               String?      @db.Uuid
+  assignedModeratorId    String?      @db.Uuid
+  assignedAt             DateTime?    @db.Timestamptz(3)
+  // SPEC §8: back to NEW after TICKET_ASSIGN_TIMEOUT_HOURS without a moderator message.
+  lastModeratorMessageAt DateTime?    @db.Timestamptz(3)
+  lastMessageAt          DateTime     @default(now()) @db.Timestamptz(3)
+  closedAt               DateTime?    @db.Timestamptz(3)
+  createdAt              DateTime     @default(now()) @db.Timestamptz(3)
+
+  openedBy          User      @relation("TicketOpenedBy", fields: [openedById], references: [id])
+  editor            User?     @relation("TicketEditor", fields: [editorId], references: [id])
+  assignedModerator User?     @relation("TicketAssignedModerator", fields: [assignedModeratorId], references: [id])
+  messages          Message[]
+
+  @@index([status, createdAt])
+  @@index([assignedModeratorId])
+}
+
+/// SPEC §8: append-only, never edited nor deleted.
+model Message {
+  id        String   @id @default(uuid()) @db.Uuid
+  ticketId  String   @db.Uuid
+  authorId  String   @db.Uuid
+  content   String
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+
+  ticket Ticket @relation(fields: [ticketId], references: [id])
+  author User   @relation(fields: [authorId], references: [id])
+
+  @@index([ticketId, createdAt])
+}
+
+// ─── Audit (SPEC §2.4) ────────────────────────────────────────────────────────
+
+/// Every moderation decision and every chat read by an ADMIN.
+model AuditLog {
+  id         String   @id @default(uuid()) @db.Uuid
+  actorId    String   @db.Uuid
+  action     String
+  targetType String
+  targetId   String?
+  metadata   Json?
+  createdAt  DateTime @default(now()) @db.Timestamptz(3)
+
+  actor User @relation(fields: [actorId], references: [id])
+
+  @@index([createdAt])
 }

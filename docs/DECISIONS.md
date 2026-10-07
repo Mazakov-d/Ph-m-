@@ -81,3 +81,17 @@ qui la remplace.
   ligne éditoriale 2 000 max ; noms (propriétaire, groupe, identité) 200 max ; motif de refus 1 000 max ;
   pagination de 20 éléments par défaut, 50 max.
 - **Pourquoi** : valeurs proposées et acceptées par le porteur du projet, modifiables à tout moment.
+
+## 2026-10-07 — Choix de modélisation de la base
+
+- **Question** : plusieurs détails de stockage ne sont pas fixés par la SPEC.
+- **Décision** :
+  - pseudo stocké en `citext` (unicité sans tenir compte de la casse) ;
+  - « Voir sans voter » : ligne `Vote` avec `value = null` et `revealedResults = true` (une seule ligne par
+    compte et opinion) ;
+  - poids de signalement en `Float`, comparés aux seuils avec la tolérance `SCORE_EPSILON` ;
+  - un `Appeal` vise exactement une revue **ou** une sanction (contrainte `CHECK` en base) ;
+  - restrictions en cours recopiées sur `User` (`suspendedUntil`, `bannedAt`) pour vérifier `can()` sans
+    relire l'historique des sanctions ;
+  - documents d'identité : clés de stockage privé dans `EditorIdentity.documentKeys`.
+- **Pourquoi** : choix techniques simples, sans effet sur les règles métier.
