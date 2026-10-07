@@ -36,14 +36,14 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 - [x] `shared/src/rules.ts` : toutes les constantes de §11.
 - [x] `shared/src/enums.ts` : `UserRole`, `EditorStatus`, `PostKind`, `Zone`, `Theme`, `PostReviewStatus` (`NOT_REVIEWED`, `UNDER_REVIEW`, `REVIEWED`), `Verdict`, `PostReportReason`, `CommentReportReason`, `ReportStatus` (`PENDING`, `UPHELD`, `DISMISSED`), `CommentStatus`, `DeletedBy`, `VoteValue`, `SanctionType`, `TicketKind`, `TicketStatus`.
 - [x] `shared/src/permissions.ts` : matrice §2.5 et `can(user, permission)` (tient compte de `EditorStatus` et des suspensions). Tests : chaque rôle × chaque permission.
-- [ ] `shared/src/domain/` + tests :
+- [x] `shared/src/domain/` + tests :
   - [x] `computeReportWeight(reporter, now)` (§5.2) ;
   - [x] `computePostReviewThreshold(viewCount)` et `shouldOpenPostReview(score, viewCount)` (§5.3) ;
   - [x] `computeReviewPriority(score, viewCount)` (§5.4) ;
   - [x] `shouldHideComment(totalWeight)` (§6.2) ;
   - [x] `nextSanction(removedCountLast6Months, isDiscrimination)` (§6.3) ;
-  - [ ] `canSeeVoteResults(hasVoted, revealedResults)` (§7) ;
-  - [ ] `reliabilityLabel(post)` → texte de la barre (§5.6).
+  - [x] `canSeeVoteResults(hasVoted, revealedResults)` (§7) ;
+  - [x] `reliabilityLabel(post)` → texte de la barre (§5.6).
 - [ ] `shared/src/schemas/` : schémas d'entrée et publics pour `auth`, `user`, `editor`, `post`, `comment`, `vote`, `report`, `review`, `sanction`, `ticket`, `message`, plus `paginated()` et `cursorQuerySchema`.
 - [ ] `shared/src/errors.ts` : codes d'erreur API.
 - [ ] `schema.prisma` : modèles `User`, `EditorProfile`, `EditorIdentity` (table séparée, accès restreint), `Post`, `PostImage`, `PostSource`, `PostView`, `PostCorrection`, `Comment`, `Vote`, `PostReport`, `CommentReport`, `Review`, `EditorReply`, `Appeal`, `Sanction`, `Block`, `Ticket`, `Message`, `AuditLog`. Index sur `Post.createdAt`, clés uniques (un vote par compte et opinion, un signalement par compte et cible).

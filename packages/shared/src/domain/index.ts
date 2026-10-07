@@ -3,3 +3,5 @@ export * from "./post-review.js";
 export * from "./review-priority.js";
 export * from "./comment-review.js";
 export * from "./sanction.js";
+export * from "./vote-results.js";
+export * from "./reliability-label.js";
