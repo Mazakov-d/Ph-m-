@@ -63,7 +63,7 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 - [x] API : inscription (e-mail, mot de passe, pseudo unique), connexion, rafraîchissement de jeton, déconnexion. Mots de passe hachés avec argon2.
 - [x] `JwtAuthGuard` global, décorateurs `@Public()`, `@CurrentUser()`, `@RequirePermission()` + `PermissionGuard` basé sur `can()`.
 - [x] `ZodValidationPipe` et filtre d'erreurs au format `{ code, message }`.
-- [ ] Refus des actions d'écriture pour un compte suspendu ou banni.
+- [x] Refus des actions d'écriture pour un compte suspendu ou banni.
 - [ ] App : `tokenStorage` (SecureStore sur mobile ; stratégie web décidée et consignée dans `DECISIONS.md`).
 - [ ] App : `apiClient` typé (valide chaque réponse avec un schéma Zod, rafraîchit le jeton si expiré).
 - [ ] App : `AuthProvider` + `useAuth()` (modèle de `CLAUDE.md` §6.3), `QueryProvider`.

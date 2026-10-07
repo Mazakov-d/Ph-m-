@@ -118,4 +118,54 @@ describe("Authentication and permission guards (e2e)", () => {
         .expect(201);
     });
   });
+
+  describe("suspended or banned accounts (SPEC §6.3, docs/DECISIONS.md)", () => {
+    const tomorrow = () => new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+    it("refuses a write to a suspended account with ACCOUNT_RESTRICTED", async () => {
+      const { accessToken } = await signUp(app, prisma, "suspendu", { suspendedUntil: tomorrow() });
+      const response = await server()
+        .post("/guard-test/comment")
+        .set("Authorization", `Bearer ${accessToken}`)
+        .expect(403);
+      expect(response.body).toMatchObject({ code: "ACCOUNT_RESTRICTED" });
+    });
+
+    it("refuses a write to a banned account", async () => {
+      const { accessToken } = await signUp(app, prisma, "banni", { bannedAt: new Date() });
+      const response = await server()
+        .post("/guard-test/comment")
+        .set("Authorization", `Bearer ${accessToken}`)
+        .expect(403);
+      expect(response.body).toMatchObject({ code: "ACCOUNT_RESTRICTED" });
+    });
+
+    it("still lets a suspended account read and contact the team", async () => {
+      const { accessToken } = await signUp(app, prisma, "suspendu", { suspendedUntil: tomorrow() });
+      await server().get("/auth/me").set("Authorization", `Bearer ${accessToken}`).expect(200);
+      await server()
+        .post("/guard-test/support")
+        .set("Authorization", `Bearer ${accessToken}`)
+        .expect(201);
+    });
+
+    it("allows writing again once the suspension has ended", async () => {
+      const { accessToken } = await signUp(app, prisma, "libere", {
+        suspendedUntil: new Date(Date.now() - 1000),
+      });
+      await server()
+        .post("/guard-test/comment")
+        .set("Authorization", `Bearer ${accessToken}`)
+        .expect(201);
+    });
+
+    it("keeps FORBIDDEN when the role lacks the permission anyway", async () => {
+      const { accessToken } = await signUp(app, prisma, "suspendu", { suspendedUntil: tomorrow() });
+      const response = await server()
+        .post("/guard-test/publish")
+        .set("Authorization", `Bearer ${accessToken}`)
+        .expect(403);
+      expect(response.body).toMatchObject({ code: "FORBIDDEN" });
+    });
+  });
 });

@@ -18,6 +18,18 @@ export class GuardTestController {
     return { pseudo: user.pseudo };
   }
 
+  @RequirePermission("comment.create")
+  @Post("comment")
+  comment(): { ok: true } {
+    return { ok: true };
+  }
+
+  @RequirePermission("support.open")
+  @Post("support")
+  openSupport(): { ok: true } {
+    return { ok: true };
+  }
+
   @RequirePermission("post.create")
   @Post("publish")
   publish(): { ok: true } {

@@ -7,7 +7,12 @@ import type { PrismaService } from "../../src/prisma/prisma.service.js";
 
 export const TEST_PASSWORD = "mot-de-passe-solide";
 
-type TestAccount = { role?: UserRole; editorStatus?: EditorStatus; suspendedUntil?: Date };
+type TestAccount = {
+  role?: UserRole;
+  editorStatus?: EditorStatus;
+  suspendedUntil?: Date;
+  bannedAt?: Date;
+};
 
 /** Registers an account through the API, adjusts its role, and returns its access token. */
 export async function signUp(
@@ -25,7 +30,11 @@ export async function signUp(
 
   await prisma.user.update({
     where: { id },
-    data: { role: account.role, suspendedUntil: account.suspendedUntil },
+    data: {
+      role: account.role,
+      suspendedUntil: account.suspendedUntil,
+      bannedAt: account.bannedAt,
+    },
   });
   if (account.editorStatus) {
     await prisma.editorProfile.create({
