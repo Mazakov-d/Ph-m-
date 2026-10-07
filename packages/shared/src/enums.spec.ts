@@ -1,0 +1,61 @@
+import { describe, expect, it } from "vitest";
+import * as enums from "./enums.js";
+
+describe("enums (SPEC)", () => {
+  it("expose exactly the values named in the SPEC", () => {
+    expect({
+      UserRole: enums.UserRole.options,
+      EditorStatus: enums.EditorStatus.options,
+      PostKind: enums.PostKind.options,
+      Zone: enums.Zone.options,
+      Theme: enums.Theme.options,
+      PostReviewStatus: enums.PostReviewStatus.options,
+      Verdict: enums.Verdict.options,
+      PostReportReason: enums.PostReportReason.options,
+      CommentReportReason: enums.CommentReportReason.options,
+      ReportStatus: enums.ReportStatus.options,
+      CommentStatus: enums.CommentStatus.options,
+      DeletedBy: enums.DeletedBy.options,
+      VoteValue: enums.VoteValue.options,
+      SanctionType: enums.SanctionType.options,
+      TicketKind: enums.TicketKind.options,
+      TicketStatus: enums.TicketStatus.options,
+    }).toEqual({
+      UserRole: ["READER", "EDITOR", "MODERATOR", "ADMIN"],
+      EditorStatus: ["PENDING", "INDEPENDENT", "CERTIFIED", "REJECTED"],
+      PostKind: ["ARTICLE", "OPINION"],
+      Zone: ["FRANCE", "EUROPE", "INTERNATIONAL", "LOCAL"],
+      Theme: [
+        "POLITICS",
+        "ECONOMY",
+        "SOCIAL_MOVEMENTS",
+        "ENVIRONMENT",
+        "SCIENCE_HEALTH",
+        "TECH",
+        "CULTURE",
+        "SPORT",
+      ],
+      PostReviewStatus: ["NOT_REVIEWED", "UNDER_REVIEW", "REVIEWED"],
+      Verdict: ["ACCURATE", "MISSING_CONTEXT", "MISLEADING", "FALSE", "UNVERIFIABLE"],
+      PostReportReason: [
+        "DUBIOUS_SOURCE",
+        "OUT_OF_CONTEXT_MEDIA",
+        "FALSE_INFORMATION",
+        "MISLEADING",
+        "OTHER",
+      ],
+      CommentReportReason: ["INSULT", "DISCRIMINATION", "HARASSMENT", "SPAM", "OTHER"],
+      ReportStatus: ["PENDING", "UPHELD", "DISMISSED"],
+      CommentStatus: ["VISIBLE", "UNDER_REVIEW", "VERIFIED", "REMOVED", "DELETED"],
+      DeletedBy: ["AUTHOR", "MODERATOR"],
+      VoteValue: ["AGREE", "DISAGREE"],
+      SanctionType: ["WARNING", "SUSPENSION_24H", "SUSPENSION_7D", "PERMANENT_BAN"],
+      TicketKind: ["SUPPORT", "EDITOR_CHAT"],
+      TicketStatus: ["NEW", "ASSIGNED", "CLOSED"],
+    });
+  });
+
+  it("reject a value outside the enum", () => {
+    expect(enums.UserRole.safeParse("SUPERUSER").success).toBe(false);
+  });
+});
