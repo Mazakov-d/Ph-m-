@@ -3,13 +3,14 @@ import { HttpStatus, Injectable } from "@nestjs/common";
 import type {
   CreateEditorApplicationInput,
   EditorApplicationPublic,
+  EditorPublic,
   UpdateEditorProfileInput,
 } from "@fama/shared";
 import { ApiException } from "../common/errors/api.exception.js";
 import { PrismaService } from "../prisma/prisma.service.js";
 import { StorageService } from "../storage/storage.service.js";
 import { DOCUMENT_EXTENSIONS, type DocumentType } from "./document-type.js";
-import { toEditorApplicationPublic } from "./editors.mapper.js";
+import { toEditorApplicationPublic, toEditorPublic } from "./editors.mapper.js";
 
 export type IdentityDocument = { bytes: Uint8Array; type: DocumentType };
 
@@ -112,6 +113,18 @@ export class EditorsService {
       throw new ApiException(HttpStatus.NOT_FOUND, "NOT_FOUND", "No editor application");
     }
     return this.getMyApplication(userId);
+  }
+
+  /** SPEC §2.2: only validated editors have a public profile. */
+  async getPublicProfile(editorId: string): Promise<EditorPublic> {
+    const record = await this.prisma.editorProfile.findFirst({
+      where: { userId: editorId, status: { in: ["INDEPENDENT", "CERTIFIED"] } },
+      include: { user: { select: { pseudo: true, editorIdentity: true } } },
+    });
+    if (!record) {
+      throw new ApiException(HttpStatus.NOT_FOUND, "NOT_FOUND", "No such editor");
+    }
+    return toEditorPublic(record);
   }
 
   private async storeDocuments(userId: string, documents: IdentityDocument[]): Promise<string[]> {

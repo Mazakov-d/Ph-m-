@@ -1,4 +1,4 @@
-import type { EditorApplicationPublic, EditorModeration } from "@fama/shared";
+import type { EditorApplicationPublic, EditorModeration, EditorPublic } from "@fama/shared";
 import type { EditorIdentity, EditorProfile, User } from "../generated/prisma/client.js";
 
 /** The applicant's own view of their application (never the legal identity or documents). */
@@ -42,4 +42,27 @@ export function toEditorModeration(record: EditorApplicationRecord): EditorModer
     rejectionReason: record.rejectionReason,
     createdAt: record.createdAt.toISOString(),
   };
+}
+
+/**
+ * SPEC §2.2: public profile. When the editor hides their identity, the key is left out
+ * entirely, so the JSON never contains any identity field.
+ */
+export function toEditorPublic(record: EditorApplicationRecord): EditorPublic {
+  const profile: EditorPublic = {
+    id: record.userId,
+    pseudo: record.user.pseudo,
+    editorStatus: record.status,
+    editorialLine: record.editorialLine,
+    ownerName: record.ownerName,
+    ownerGroup: record.ownerGroup,
+  };
+  const identity = record.user.editorIdentity;
+  if (record.showIdentityPublicly && identity) {
+    profile.legalIdentity = {
+      firstName: identity.legalFirstName,
+      lastName: identity.legalLastName,
+    };
+  }
+  return profile;
 }

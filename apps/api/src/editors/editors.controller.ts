@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   HttpStatus,
+  Param,
   Patch,
   Post,
   UploadedFiles,
@@ -17,10 +18,13 @@ import {
   EDITOR_DOCUMENTS_MAX_COUNT,
   EDITOR_DOCUMENTS_MIN_COUNT,
   type EditorApplicationPublic,
+  type EditorPublic,
+  idSchema,
   type UpdateEditorProfileInput,
   updateEditorProfileInputSchema,
 } from "@fama/shared";
 import { CurrentUser } from "../common/decorators/current-user.decorator.js";
+import { Public } from "../common/decorators/public.decorator.js";
 import { RequirePermission } from "../common/decorators/require-permission.decorator.js";
 import { ApiException } from "../common/errors/api.exception.js";
 import { JsonFieldValidationPipe } from "../common/pipes/json-field.pipe.js";
@@ -60,6 +64,15 @@ export class EditorsController {
     @CurrentUser() user: AuthUser,
   ): Promise<EditorApplicationPublic> {
     return this.editorsService.updateProfile(user.id, input);
+  }
+
+  // SPEC §2: readable without an account (discovery through shared links).
+  @Public()
+  @Get(":id")
+  getPublicProfile(
+    @Param("id", new ZodValidationPipe(idSchema)) id: string,
+  ): Promise<EditorPublic> {
+    return this.editorsService.getPublicProfile(id);
   }
 }
 
