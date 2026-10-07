@@ -369,7 +369,7 @@ cp apps/api/.env.example apps/api/.env
 pnpm install                         # installe, compile shared et génère le client Prisma
 docker compose up -d                 # PostgreSQL local (port 5434), requis par les tests de l'API
 pnpm --filter api prisma migrate dev # migrations, puis `pnpm generate` (Prisma 7 ne régénère plus le client)
-pnpm --filter api prisma db seed     # données de démo
+pnpm --filter api prisma db seed     # données de démo (efface la base ; mot de passe : fama-demo-2026)
 pnpm dev                             # shared (watch) + api (:3000) + mobile (Expo, :8081)
 pnpm check                           # generate + lint + typecheck + tests (tout le monorepo)
 pnpm format                          # formate tout le dépôt avec Prettier

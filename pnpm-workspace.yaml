@@ -2,8 +2,11 @@ packages:
   - "apps/*"
   - "packages/*"
 
-# Build steps allowed to run on install (file watcher, module resolver, Prisma engines).
+# Build steps allowed to run on install (file watcher, module resolver, Prisma engines,
+# argon2 native binding, esbuild binary used by tsx).
 allowBuilds:
+  argon2: true
+  esbuild: true
   "@prisma/engines": true
   prisma: true
   "@parcel/watcher": true
