@@ -42,7 +42,7 @@ Règles :
 | Base de données              | PostgreSQL (Docker en local)                                 |
 | ORM                          | Prisma                                                       |
 | Validation et types partagés | Zod                                                          |
-| Tests                        | Jest (api, mobile via `jest-expo`), Vitest ou Jest (shared)  |
+| Tests                        | Vitest (api, shared), Jest via `jest-expo` (mobile)          |
 | Qualité                      | ESLint + Prettier                                            |
 
 Utiliser les **dernières versions stables** au moment de l'initialisation et suivre leurs idiomes

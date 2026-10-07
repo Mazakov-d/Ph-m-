@@ -38,6 +38,8 @@ export default tseslint.config(
         "error",
         { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
       ],
+      // NestJS modules are empty classes carrying a @Module() decorator.
+      "@typescript-eslint/no-extraneous-class": ["error", { allowWithDecorator: true }],
     },
   },
   {
