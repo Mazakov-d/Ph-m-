@@ -31,19 +31,19 @@ Règles :
 
 ## 2. Stack
 
-| Rôle | Outil |
-| --- | --- |
-| Langage | TypeScript, `strict: true`, `noUncheckedIndexedAccess: true` |
-| Monorepo | pnpm workspaces |
-| App (iOS, Android, web) | Expo + Expo Router |
-| État serveur côté app | TanStack Query |
-| Formulaires | react-hook-form + `@hookform/resolvers/zod` |
-| Backend | NestJS |
-| Base de données | PostgreSQL (Docker en local) |
-| ORM | Prisma |
-| Validation et types partagés | Zod |
-| Tests | Jest (api, mobile via `jest-expo`), Vitest ou Jest (shared) |
-| Qualité | ESLint + Prettier |
+| Rôle                         | Outil                                                        |
+| ---------------------------- | ------------------------------------------------------------ |
+| Langage                      | TypeScript, `strict: true`, `noUncheckedIndexedAccess: true` |
+| Monorepo                     | pnpm workspaces                                              |
+| App (iOS, Android, web)      | Expo + Expo Router                                           |
+| État serveur côté app        | TanStack Query                                               |
+| Formulaires                  | react-hook-form + `@hookform/resolvers/zod`                  |
+| Backend                      | NestJS                                                       |
+| Base de données              | PostgreSQL (Docker en local)                                 |
+| ORM                          | Prisma                                                       |
+| Validation et types partagés | Zod                                                          |
+| Tests                        | Jest (api, mobile via `jest-expo`), Vitest ou Jest (shared)  |
+| Qualité                      | ESLint + Prettier                                            |
 
 Utiliser les **dernières versions stables** au moment de l'initialisation et suivre leurs idiomes
 (les exemples ci-dessous sont illustratifs : adapter la syntaxe si la version de Zod l'exige).
@@ -138,14 +138,14 @@ export type CommentPublic = z.infer<typeof commentPublicSchema>;
 
 ### 4.2 Conventions de nommage
 
-| Ce que c'est | Nom du schéma | Nom du type |
-| --- | --- | --- |
-| Entrée d'une création | `createXInputSchema` | `CreateXInput` |
-| Entrée d'une mise à jour | `updateXInputSchema` | `UpdateXInput` |
-| Paramètres de requête (filtres, pagination) | `xQuerySchema` | `XQuery` |
-| Réponse publique | `xPublicSchema` | `XPublic` |
-| Réponse réservée à la modération | `xModerationSchema` | `XModeration` |
-| Liste paginée | `paginated(xPublicSchema)` | `Paginated<XPublic>` |
+| Ce que c'est                                | Nom du schéma              | Nom du type          |
+| ------------------------------------------- | -------------------------- | -------------------- |
+| Entrée d'une création                       | `createXInputSchema`       | `CreateXInput`       |
+| Entrée d'une mise à jour                    | `updateXInputSchema`       | `UpdateXInput`       |
+| Paramètres de requête (filtres, pagination) | `xQuerySchema`             | `XQuery`             |
+| Réponse publique                            | `xPublicSchema`            | `XPublic`            |
+| Réponse réservée à la modération            | `xModerationSchema`        | `XModeration`        |
+| Liste paginée                               | `paginated(xPublicSchema)` | `Paginated<XPublic>` |
 
 ### 4.3 Règles
 
@@ -167,11 +167,11 @@ export type CommentPublic = z.infer<typeof commentPublicSchema>;
 
 ### 5.1 Trois couches
 
-| Couche | Rôle | Interdit |
-| --- | --- | --- |
-| Controller | Route HTTP, validation d'entrée, permission, appel du service, renvoi du DTO | Logique métier, accès Prisma |
-| Service | Règles métier, transactions, appels Prisma | Connaître HTTP (`Request`, `Response`) |
-| Mapper | Entité Prisma → schéma public | Effets de bord |
+| Couche     | Rôle                                                                         | Interdit                               |
+| ---------- | ---------------------------------------------------------------------------- | -------------------------------------- |
+| Controller | Route HTTP, validation d'entrée, permission, appel du service, renvoi du DTO | Logique métier, accès Prisma           |
+| Service    | Règles métier, transactions, appels Prisma                                   | Connaître HTTP (`Request`, `Response`) |
+| Mapper     | Entité Prisma → schéma public                                                | Effets de bord                         |
 
 ### 5.2 Validation des entrées
 
@@ -225,13 +225,13 @@ create(
 
 ### 6.1 Où vit chaque type d'état
 
-| Type d'état | Outil | Exemples |
-| --- | --- | --- |
-| Données venant de l'API | **TanStack Query** | fil, post, commentaires, tickets |
-| État local d'un composant | `useState` | texte d'un champ, modal ouverte, onglet actif |
-| Valeur calculée à partir d'autres | **calcul direct dans le rendu** (`useMemo` seulement si coûteux) | nombre de réponses, libellé du statut |
-| Session globale, rarement modifiée | **Context** | utilisateur connecté (`AuthContext`) |
-| Formulaire | react-hook-form + schéma Zod partagé | publier un article, commenter |
+| Type d'état                        | Outil                                                            | Exemples                                      |
+| ---------------------------------- | ---------------------------------------------------------------- | --------------------------------------------- |
+| Données venant de l'API            | **TanStack Query**                                               | fil, post, commentaires, tickets              |
+| État local d'un composant          | `useState`                                                       | texte d'un champ, modal ouverte, onglet actif |
+| Valeur calculée à partir d'autres  | **calcul direct dans le rendu** (`useMemo` seulement si coûteux) | nombre de réponses, libellé du statut         |
+| Session globale, rarement modifiée | **Context**                                                      | utilisateur connecté (`AuthContext`)          |
+| Formulaire                         | react-hook-form + schéma Zod partagé                             | publier un article, commenter                 |
 
 ### 6.2 Règles React
 
@@ -253,7 +253,9 @@ create(
 ```tsx
 const [comments, setComments] = useState<CommentPublic[]>([]);
 useEffect(() => {
-  fetch(`/posts/${postId}/comments`).then((r) => r.json()).then(setComments);
+  fetch(`/posts/${postId}/comments`)
+    .then((r) => r.json())
+    .then(setComments);
 }, [postId]);
 ```
 

@@ -25,12 +25,12 @@ Principes non négociables :
 
 ## 2. Rôles (`UserRole`)
 
-| Enum | Nom affiché | Résumé |
-| --- | --- | --- |
-| `READER` | Lecteur | Lit, commente, vote, signale, contacte l'équipe. Pas de page profil. |
-| `EDITOR` | Éditeur | Lecteur + publie (après validation). Page profil publique. |
-| `MODERATOR` | Modérateur | Traite signalements, tickets et chats. Bénévole au lancement. |
-| `ADMIN` | Dirigeant | Tout voir, nommer les modérateurs, valider les certifiés. Actions auditées. |
+| Enum        | Nom affiché | Résumé                                                                      |
+| ----------- | ----------- | --------------------------------------------------------------------------- |
+| `READER`    | Lecteur     | Lit, commente, vote, signale, contacte l'équipe. Pas de page profil.        |
+| `EDITOR`    | Éditeur     | Lecteur + publie (après validation). Page profil publique.                  |
+| `MODERATOR` | Modérateur  | Traite signalements, tickets et chats. Bénévole au lancement.               |
+| `ADMIN`     | Dirigeant   | Tout voir, nommer les modérateurs, valider les certifiés. Actions auditées. |
 
 Un compte a **un seul rôle**. Un `EDITOR` a toutes les permissions d'un `READER`.
 Un visiteur **non connecté** peut lire le fil et les articles (découverte via liens partagés),
@@ -46,12 +46,12 @@ mais pas commenter, voter ni signaler.
 
 N'importe quel compte peut demander le statut éditeur.
 
-| Enum | Signification | Peut publier |
-| --- | --- | --- |
-| `PENDING` | Demande envoyée, en attente | Non |
+| Enum          | Signification                                                                             | Peut publier               |
+| ------------- | ----------------------------------------------------------------------------------------- | -------------------------- |
+| `PENDING`     | Demande envoyée, en attente                                                               | Non                        |
 | `INDEPENDENT` | Identité vérifiée + entretien + exemples de travaux. Validé par un `MODERATOR` ou `ADMIN` | Oui, badge « Indépendant » |
-| `CERTIFIED` | Documents officiels (Kbis, carte de presse, CPPAP…). Validé par un `ADMIN` uniquement | Oui, badge « Certifié » |
-| `REJECTED` | Demande refusée (motif obligatoire) | Non |
+| `CERTIFIED`   | Documents officiels (Kbis, carte de presse, CPPAP…). Validé par un `ADMIN` uniquement     | Oui, badge « Certifié »    |
+| `REJECTED`    | Demande refusée (motif obligatoire)                                                       | Non                        |
 
 - L'éditeur publie sous un **pseudo** (compte, profil, publications).
 - Son **identité légale** est vérifiée et stockée à l'inscription éditeur, **toujours**.
@@ -75,21 +75,21 @@ N'importe quel compte peut demander le statut éditeur.
 
 ### 2.5 Matrice de permissions (source : `packages/shared/src/permissions.ts`)
 
-| Permission | READER | EDITOR | MODERATOR | ADMIN |
-| --- | --- | --- | --- | --- |
-| `post.read` (aussi visiteur anonyme) | ✓ | ✓ | ✓ | ✓ |
-| `comment.create` / `vote.cast` / `report.create` | ✓ | ✓ | ✓ | ✓ |
-| `support.open` | ✓ | ✓ | — | — |
-| `user.block` | ✓ | ✓ | ✓ | ✓ |
-| `post.create` (si `EditorStatus` ∈ INDEPENDENT, CERTIFIED) | — | ✓ | — | — |
-| `post.toggleComments` (ses articles) | — | ✓ | — | — |
-| `moderation.queue.read` / `moderation.decide` | — | — | ✓ | ✓ |
-| `ticket.assign` | — | — | ✓ | ✓ |
-| `chat.readAll` | — | — | — | ✓ |
-| `editor.validateIndependent` | — | — | ✓ | ✓ |
-| `editor.validateCertified` | — | — | — | ✓ |
-| `moderator.manage` | — | — | — | ✓ |
-| `audit.read` | — | — | — | ✓ |
+| Permission                                                 | READER | EDITOR | MODERATOR | ADMIN |
+| ---------------------------------------------------------- | ------ | ------ | --------- | ----- |
+| `post.read` (aussi visiteur anonyme)                       | ✓      | ✓      | ✓         | ✓     |
+| `comment.create` / `vote.cast` / `report.create`           | ✓      | ✓      | ✓         | ✓     |
+| `support.open`                                             | ✓      | ✓      | —         | —     |
+| `user.block`                                               | ✓      | ✓      | ✓         | ✓     |
+| `post.create` (si `EditorStatus` ∈ INDEPENDENT, CERTIFIED) | —      | ✓      | —         | —     |
+| `post.toggleComments` (ses articles)                       | —      | ✓      | —         | —     |
+| `moderation.queue.read` / `moderation.decide`              | —      | —      | ✓         | ✓     |
+| `ticket.assign`                                            | —      | —      | ✓         | ✓     |
+| `chat.readAll`                                             | —      | —      | —         | ✓     |
+| `editor.validateIndependent`                               | —      | —      | ✓         | ✓     |
+| `editor.validateCertified`                                 | —      | —      | —         | ✓     |
+| `moderator.manage`                                         | —      | —      | —         | ✓     |
+| `audit.read`                                               | —      | —      | —         | ✓     |
 
 ---
 
@@ -103,12 +103,12 @@ Deux types (`PostKind`) : `ARTICLE` et `OPINION` (case « Opinion » au moment d
 - `Zone` : `FRANCE`, `EUROPE`, `INTERNATIONAL`, `LOCAL` (+ champ `region` texte si `LOCAL`).
 - `Theme` : `POLITICS`, `ECONOMY`, `SOCIAL_MOVEMENTS`, `ENVIRONMENT`, `SCIENCE_HEALTH`, `TECH`, `CULTURE`, `SPORT`.
 
-| | `ARTICLE` | `OPINION` |
-| --- | --- | --- |
-| Indicateur | Barre de fiabilité | Vote `AGREE` / `DISAGREE` |
-| Résultat du vote | — | Caché tant que l'utilisateur n'a pas voté ou cliqué « Voir sans voter » |
-| Commentaires | `commentsEnabled` au choix de l'éditeur | **Toujours** activés (non désactivable) |
-| Signalement | Oui | Oui |
+|                  | `ARTICLE`                               | `OPINION`                                                               |
+| ---------------- | --------------------------------------- | ----------------------------------------------------------------------- |
+| Indicateur       | Barre de fiabilité                      | Vote `AGREE` / `DISAGREE`                                               |
+| Résultat du vote | —                                       | Caché tant que l'utilisateur n'a pas voté ou cliqué « Voir sans voter » |
+| Commentaires     | `commentsEnabled` au choix de l'éditeur | **Toujours** activés (non désactivable)                                 |
+| Signalement      | Oui                                     | Oui                                                                     |
 
 - Un post publié n'est **pas modifiable** sauf via une **correction** (`PostCorrection` : texte + date),
   affichée publiquement sous l'article. Hors MVP si besoin, mais le modèle doit le prévoir.
@@ -188,12 +188,12 @@ Triée par priorité décroissante : `priorité = score × log10(viewCount + 10)
 
 ### 5.6 Barre de fiabilité (affichage)
 
-| État | Texte |
-| --- | --- |
-| Aucun signalement | « Non examiné » |
-| Signalements sous le seuil | « Non examiné · N signalements » |
-| `UNDER_REVIEW` | « N signalements · en cours d'examen » |
-| `REVIEWED` | « N signalements · examiné : <verdict> » + bouton « Pourquoi ? » (note, sources, réponse de l'éditeur) |
+| État                       | Texte                                                                                                  |
+| -------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Aucun signalement          | « Non examiné »                                                                                        |
+| Signalements sous le seuil | « Non examiné · N signalements »                                                                       |
+| `UNDER_REVIEW`             | « N signalements · en cours d'examen »                                                                 |
+| `REVIEWED`                 | « N signalements · examiné : <verdict> » + bouton « Pourquoi ? » (note, sources, réponse de l'éditeur) |
 
 Les opinions n'ont pas de barre de fiabilité.
 
@@ -239,12 +239,12 @@ source obligatoire par vote, validation finale par un modérateur.
 
 Comptées sur les commentaires `REMOVED` des 6 derniers mois (`SANCTION_RESET_MONTHS`) :
 
-| N° | Sanction |
-| --- | --- |
-| 1 | `WARNING` |
-| 2 | `SUSPENSION_24H` |
-| 3 | `SUSPENSION_7D` |
-| 4 | `PERMANENT_BAN` |
+| N°  | Sanction         |
+| --- | ---------------- |
+| 1   | `WARNING`        |
+| 2   | `SUSPENSION_24H` |
+| 3   | `SUSPENSION_7D`  |
+| 4   | `PERMANENT_BAN`  |
 
 - **Discrimination** (motif confirmé par un humain : origine, religion, sexe, orientation sexuelle, handicap…) → `PERMANENT_BAN` direct.
 - Le modérateur peut cocher « À signaler sur PHAROS » : le dossier est marqué et exportable (le signalement lui-même se fait manuellement sur le site officiel).
@@ -295,22 +295,22 @@ Comptées sur les commentaires `REMOVED` des 6 derniers mois (`SANCTION_RESET_MO
 
 ## 11. Constantes (source : `packages/shared/src/rules.ts`)
 
-| Constante | Valeur | Remarque |
-| --- | --- | --- |
-| `FEED_WINDOW_HOURS` | 48 | |
-| `TODAY_WINDOW_HOURS` | 24 | Fenêtre glissante |
-| `COMMENT_REPORT_THRESHOLD` | 3 | Somme des poids |
-| `POST_REPORT_MIN_SCORE` | 5 | |
-| `POST_REPORT_AUDIENCE_RATIO` | 0.01 | 1 % des lecteurs |
-| `NEW_ACCOUNT_DAYS` | 30 | |
-| `REPORT_WEIGHT_NEW_ACCOUNT` | 0.2 | |
-| `REPORT_HISTORY_MIN_SAMPLE` | 5 | |
-| `REPORT_WEIGHT_MIN` / `MAX` | 0.1 / 2.0 | |
-| `EDITOR_REPLY_HOURS` | 48 | |
-| `TICKET_ASSIGN_TIMEOUT_HOURS` | 24 | |
-| `SANCTION_RESET_MONTHS` | 6 | |
-| `FEED_SPACING` | 4 | Post-MVP |
-| `COMMENT_MAX_LENGTH` | 2000 | Provisoire |
-| `POST_TITLE_MAX_LENGTH` | 200 | Provisoire |
-| `POST_SUMMARY_MAX_LENGTH` | 500 | Provisoire |
-| `RETENTION_DAYS` | 365 | **À confirmer avec un juriste** |
+| Constante                     | Valeur    | Remarque                        |
+| ----------------------------- | --------- | ------------------------------- |
+| `FEED_WINDOW_HOURS`           | 48        |                                 |
+| `TODAY_WINDOW_HOURS`          | 24        | Fenêtre glissante               |
+| `COMMENT_REPORT_THRESHOLD`    | 3         | Somme des poids                 |
+| `POST_REPORT_MIN_SCORE`       | 5         |                                 |
+| `POST_REPORT_AUDIENCE_RATIO`  | 0.01      | 1 % des lecteurs                |
+| `NEW_ACCOUNT_DAYS`            | 30        |                                 |
+| `REPORT_WEIGHT_NEW_ACCOUNT`   | 0.2       |                                 |
+| `REPORT_HISTORY_MIN_SAMPLE`   | 5         |                                 |
+| `REPORT_WEIGHT_MIN` / `MAX`   | 0.1 / 2.0 |                                 |
+| `EDITOR_REPLY_HOURS`          | 48        |                                 |
+| `TICKET_ASSIGN_TIMEOUT_HOURS` | 24        |                                 |
+| `SANCTION_RESET_MONTHS`       | 6         |                                 |
+| `FEED_SPACING`                | 4         | Post-MVP                        |
+| `COMMENT_MAX_LENGTH`          | 2000      | Provisoire                      |
+| `POST_TITLE_MAX_LENGTH`       | 200       | Provisoire                      |
+| `POST_SUMMARY_MAX_LENGTH`     | 500       | Provisoire                      |
+| `RETENTION_DAYS`              | 365       | **À confirmer avec un juriste** |
