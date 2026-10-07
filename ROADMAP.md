@@ -38,7 +38,7 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 - [x] `shared/src/permissions.ts` : matrice §2.5 et `can(user, permission)` (tient compte de `EditorStatus` et des suspensions). Tests : chaque rôle × chaque permission.
 - [ ] `shared/src/domain/` + tests :
   - [x] `computeReportWeight(reporter, now)` (§5.2) ;
-  - [ ] `computePostReviewThreshold(viewCount)` et `shouldOpenPostReview(score, viewCount)` (§5.3) ;
+  - [x] `computePostReviewThreshold(viewCount)` et `shouldOpenPostReview(score, viewCount)` (§5.3) ;
   - [ ] `computeReviewPriority(score, viewCount)` (§5.4) ;
   - [ ] `shouldHideComment(totalWeight)` (§6.2) ;
   - [ ] `nextSanction(removedCountLast6Months, isDiscrimination)` (§6.3) ;
