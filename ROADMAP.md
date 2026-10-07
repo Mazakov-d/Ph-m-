@@ -86,7 +86,7 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 - [x] API : profil public d'un éditeur (§2.2), sans identité si `showIdentityPublicly = false`.
 - [x] App : écran « Devenir éditeur », écran profil éditeur public, réglage de visibilité de l'identité.
 - [x] App : écran modérateur « Demandes éditeurs ».
-- [ ] Tests e2e : un modérateur ne peut pas valider `CERTIFIED` ; l'identité masquée n'apparaît jamais dans la réponse publique.
+- [x] Tests e2e : un modérateur ne peut pas valider `CERTIFIED` ; l'identité masquée n'apparaît jamais dans la réponse publique.
 
 **Critères de validation**
 
