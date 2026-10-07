@@ -68,7 +68,8 @@ Utiliser les **dernières versions stables** au moment de l'initialisation et su
 │   │           └── <domain>.service.spec.ts
 │   └── mobile/              Expo
 │       └── src/
-│           ├── app/         écrans (Expo Router)
+│           ├── app/         écrans (Expo Router) : chaque fichier est une route, donc AUCUN test ici
+│           ├── __tests__/   tests des écrans de app/
 │           ├── features/<domain>/
 │           │   ├── api.ts           hooks TanStack Query du domaine
 │           │   └── components/      composants propres au domaine
@@ -372,6 +373,14 @@ pnpm --filter api prisma db seed     # données de démo
 pnpm dev                             # shared (watch) + api (:3000) + mobile (Expo, :8081)
 pnpm check                           # generate + lint + typecheck + tests (tout le monorepo)
 pnpm format                          # formate tout le dépôt avec Prettier
+```
+
+Sous Linux, si Expo échoue avec `ENOSPC: System limit for number of file watchers reached`, augmenter
+la limite inotify (Metro surveille tout `node_modules`) :
+
+```bash
+echo fs.inotify.max_user_watches=524288 | sudo tee /etc/sysctl.d/60-inotify.conf
+sudo sysctl -w fs.inotify.max_user_watches=524288
 ```
 
 Mettre à jour cette section si les commandes changent.

@@ -1,6 +1,6 @@
 import { APP_NAME, APP_SLOGAN } from "@fama/shared";
 import { render, screen } from "@testing-library/react-native";
-import HomeScreen from "./index";
+import HomeScreen from "../app/index";
 
 describe("HomeScreen", () => {
   it("displays the application name and slogan imported from shared", async () => {
