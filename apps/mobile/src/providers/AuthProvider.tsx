@@ -7,6 +7,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { authApi } from "../features/auth/api";
@@ -28,16 +29,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
   const [user, setUser] = useState<AuthUser | null>(null);
   const [status, setStatus] = useState<AuthStatus>("loading");
+  // Who was signed in, to clear the cache only when that person signs out.
+  const signedInUserId = useRef<string | null>(null);
 
   // Sync with apiClient, which owns the tokens: sign-in, refresh and expiry all go through it.
   useEffect(() => {
     const unsubscribe = apiClient.onSessionChange((session) => {
-      setUser(session?.user ?? null);
-      setStatus(session ? "authenticated" : "anonymous");
-      if (!session) {
-        // Never show one account's data to the next one.
+      // Never show one account's data to the next one. Only on a real sign-out: clearing when
+      // an anonymous visitor's session check fails would drop the queries already in flight.
+      if (!session && signedInUserId.current !== null) {
         queryClient.clear();
       }
+      signedInUserId.current = session?.user.id ?? null;
+      setUser(session?.user ?? null);
+      setStatus(session ? "authenticated" : "anonymous");
     });
 
     // Restores the session kept from a previous launch (SecureStore or web cookie).

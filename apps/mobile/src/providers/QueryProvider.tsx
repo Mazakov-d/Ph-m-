@@ -1,4 +1,4 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, type QueryClientConfig, QueryClientProvider } from "@tanstack/react-query";
 import { type ReactNode, useState } from "react";
 import { ApiRequestError } from "../lib/apiClient";
 
@@ -15,10 +15,17 @@ export function shouldRetry(failureCount: number, error: unknown): boolean {
   return !isClientError && failureCount < MAX_RETRIES;
 }
 
-export function QueryProvider({ children }: { children: ReactNode }) {
+/** The app's query client; tests pass extra options (see renderWithProviders). */
+export function createQueryClient(
+  queries: NonNullable<QueryClientConfig["defaultOptions"]>["queries"] = {},
+) {
+  return new QueryClient({ defaultOptions: { queries: { retry: shouldRetry, ...queries } } });
+}
+
+type Props = { children: ReactNode; client?: QueryClient };
+
+export function QueryProvider({ children, client }: Props) {
   // One client for the app's lifetime (created once, not on every render).
-  const [queryClient] = useState(
-    () => new QueryClient({ defaultOptions: { queries: { retry: shouldRetry } } }),
-  );
+  const [queryClient] = useState(() => client ?? createQueryClient());
   return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 }

@@ -4,7 +4,7 @@ import { Pressable, Text, View } from "react-native";
 import { apiClient } from "../../lib/apiClient";
 import { tokenStorage } from "../../lib/tokenStorage";
 import { AuthProvider, useAuth } from "../AuthProvider";
-import { QueryProvider } from "../QueryProvider";
+import { createQueryClient, QueryProvider } from "../QueryProvider";
 
 const session: AuthSession = {
   user: {
@@ -39,9 +39,9 @@ function Probe() {
   );
 }
 
-function renderWithProviders() {
+function renderWithProviders(client = createQueryClient({ gcTime: Infinity })) {
   return render(
-    <QueryProvider>
+    <QueryProvider client={client}>
       <AuthProvider>
         <Probe />
       </AuthProvider>
@@ -84,6 +84,35 @@ describe("AuthProvider", () => {
     await fireEvent.press(screen.getByText("sign-out"));
     expect(await screen.findByText("status:anonymous")).toBeTruthy();
     expect(await tokenStorage.getRefreshToken()).toBeNull();
+  });
+
+  it("keeps the cached data when an anonymous visitor's session check fails", async () => {
+    // A stale refresh token is rejected at start: the visitor is anonymous, nothing was cached
+    // for an account, and the requests already in flight must survive.
+    await tokenStorage.save(session.tokens);
+    fetchMock.mockResolvedValueOnce(
+      jsonResponse(401, { code: "INVALID_REFRESH_TOKEN", message: "no" }),
+    );
+    const client = createQueryClient({ gcTime: Infinity });
+    const clear = jest.spyOn(client, "clear");
+    await renderWithProviders(client);
+    await screen.findByText("status:anonymous");
+    expect(clear).not.toHaveBeenCalled();
+  });
+
+  it("clears the cached data when the signed-in user signs out", async () => {
+    const client = createQueryClient({ gcTime: Infinity });
+    const clear = jest.spyOn(client, "clear");
+    await renderWithProviders(client);
+    await screen.findByText("status:anonymous");
+
+    fetchMock.mockResolvedValueOnce(jsonResponse(200, session));
+    await fireEvent.press(screen.getByText("sign-in"));
+    await screen.findByText("status:authenticated");
+    fetchMock.mockResolvedValueOnce(jsonResponse(204));
+    await fireEvent.press(screen.getByText("sign-out"));
+    await screen.findByText("status:anonymous");
+    expect(clear).toHaveBeenCalledTimes(1);
   });
 
   it("requires the provider", async () => {
