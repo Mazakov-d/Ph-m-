@@ -6,6 +6,7 @@
     "node": ">=22"
   },
   "scripts": {
+    "postinstall": "pnpm --filter @fama/shared build",
     "lint": "eslint . && prettier --check .",
     "format": "prettier --write .",
     "typecheck": "pnpm -r --if-present run typecheck"
