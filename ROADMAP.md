@@ -40,7 +40,7 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
   - [x] `computeReportWeight(reporter, now)` (§5.2) ;
   - [x] `computePostReviewThreshold(viewCount)` et `shouldOpenPostReview(score, viewCount)` (§5.3) ;
   - [x] `computeReviewPriority(score, viewCount)` (§5.4) ;
-  - [ ] `shouldHideComment(totalWeight)` (§6.2) ;
+  - [x] `shouldHideComment(totalWeight)` (§6.2) ;
   - [ ] `nextSanction(removedCountLast6Months, isDiscrimination)` (§6.3) ;
   - [ ] `canSeeVoteResults(hasVoted, revealedResults)` (§7) ;
   - [ ] `reliabilityLabel(post)` → texte de la barre (§5.6).
