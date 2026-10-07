@@ -35,7 +35,7 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 
 - [x] `shared/src/rules.ts` : toutes les constantes de §11.
 - [x] `shared/src/enums.ts` : `UserRole`, `EditorStatus`, `PostKind`, `Zone`, `Theme`, `PostReviewStatus` (`NOT_REVIEWED`, `UNDER_REVIEW`, `REVIEWED`), `Verdict`, `PostReportReason`, `CommentReportReason`, `ReportStatus` (`PENDING`, `UPHELD`, `DISMISSED`), `CommentStatus`, `DeletedBy`, `VoteValue`, `SanctionType`, `TicketKind`, `TicketStatus`.
-- [ ] `shared/src/permissions.ts` : matrice §2.5 et `can(user, permission)` (tient compte de `EditorStatus` et des suspensions). Tests : chaque rôle × chaque permission.
+- [x] `shared/src/permissions.ts` : matrice §2.5 et `can(user, permission)` (tient compte de `EditorStatus` et des suspensions). Tests : chaque rôle × chaque permission.
 - [ ] `shared/src/domain/` + tests :
   - [ ] `computeReportWeight(reporter, now)` (§5.2) ;
   - [ ] `computePostReviewThreshold(viewCount)` et `shouldOpenPostReview(score, viewCount)` (§5.3) ;

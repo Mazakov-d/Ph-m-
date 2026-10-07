@@ -50,3 +50,13 @@ qui la remplace.
 - **Question** : le port 5432 est déjà utilisé sur la machine de développement.
 - **Décision** : le conteneur PostgreSQL est exposé sur `127.0.0.1:5434`.
 - **Pourquoi** : éviter le conflit sans toucher au PostgreSQL existant.
+
+## 2026-10-07 — Permissions d'un compte suspendu ou banni
+
+- **Question** : la SPEC (§6.3) retire à un compte suspendu publier, commenter, voter et signaler, sans
+  dire ce qu'il advient des autres permissions de la matrice §2.5 (`support.open`, `user.block`,
+  `post.toggleComments`, permissions de modération). Le bannissement est-il traité comme une suspension ?
+- **Décision** : un compte suspendu ne garde que la lecture (`post.read`) et `support.open` (si son rôle
+  l'a), notamment pour contester sa sanction. Toutes les autres permissions sont retirées, y compris
+  celles de modération. Un compte banni (`PERMANENT_BAN`) est traité comme suspendu sans date de fin.
+- **Pourquoi** : choix du porteur du projet.
