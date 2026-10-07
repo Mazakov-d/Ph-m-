@@ -102,10 +102,10 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 - [x] API : `commentsEnabled` modifiable par l'éditeur sur ses articles ; forcé à `true` pour les opinions.
 - [x] API : fil public (§4.1) — 48 h, tri chronologique, pagination par curseur, filtres `today` / `zone` / `theme` combinables (§4.3), exclusion des comptes bloqués.
 - [x] API : détail d'un post + comptage des vues uniques (`PostView`).
-- [ ] App : écran Fil (scroll infini via `useInfiniteQuery`), barre de filtres en haut (Aujourd'hui, zones, thèmes).
-- [ ] App : carte de post (éditeur + badge, date, titre, image, barre de fiabilité ou étiquette « Opinion », compteur de commentaires).
-- [ ] App : écran détail d'un post ; écran « Publier » réservé aux éditeurs validés (bouton masqué via `can()`).
-- [ ] Lecture du fil et des posts possible **sans compte** (§2).
+- [x] App : écran Fil (scroll infini via `useInfiniteQuery`), barre de filtres en haut (Aujourd'hui, zones, thèmes).
+- [x] App : carte de post (éditeur + badge, date, titre, image, barre de fiabilité ou étiquette « Opinion », compteur de commentaires).
+- [x] App : écran détail d'un post ; écran « Publier » réservé aux éditeurs validés (bouton masqué via `can()`).
+- [x] Lecture du fil et des posts possible **sans compte** (§2).
 
 **Critères de validation**
 

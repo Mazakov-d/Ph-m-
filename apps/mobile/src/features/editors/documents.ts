@@ -4,16 +4,9 @@ import {
   EDITOR_DOCUMENTS_MAX_COUNT,
 } from "@fama/shared";
 import type { DocumentPickerAsset } from "expo-document-picker";
-import { Platform } from "react-native";
+import type { LocalFile } from "../../lib/formDataFile";
 
-export type PickedDocument = {
-  name: string;
-  uri: string;
-  mimeType: string;
-  size: number;
-  // Web only: the browser File to upload.
-  file?: File;
-};
+export type PickedDocument = LocalFile;
 
 export function toPickedDocument(asset: DocumentPickerAsset): PickedDocument {
   return {
@@ -44,17 +37,4 @@ export function documentsProblem(documents: PickedDocument[]): string | null {
     return `${tooBig.name} dépasse ${EDITOR_DOCUMENT_MAX_BYTES / (1024 * 1024)} Mo.`;
   }
   return null;
-}
-
-/**
- * The value FormData needs for a file: a File on the web; on iOS/Android, React Native
- * accepts a { uri, name, type } object that it reads from the device when uploading.
- */
-export function toFormDataFile(document: PickedDocument): Blob {
-  if (Platform.OS === "web" && document.file) {
-    return document.file;
-  }
-  const nativeFile = { uri: document.uri, name: document.name, type: document.mimeType };
-  // React Native's FormData accepts this object, which the DOM typings do not describe.
-  return nativeFile as unknown as Blob;
 }

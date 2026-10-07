@@ -1,12 +1,14 @@
 import { render } from "@testing-library/react-native";
 import type { ReactElement } from "react";
 import { AuthProvider } from "../providers/AuthProvider";
-import { QueryProvider } from "../providers/QueryProvider";
+import { createQueryClient, QueryProvider } from "../providers/QueryProvider";
 
 /** Renders a screen or component inside the app providers. */
 export function renderWithProviders(ui: ReactElement) {
   return render(
-    <QueryProvider>
+    // gcTime Infinity: no garbage-collection timer, which would keep Jest running for minutes
+    // after the tests (TanStack Query testing guide).
+    <QueryProvider client={createQueryClient({ gcTime: Infinity })}>
       <AuthProvider>{ui}</AuthProvider>
     </QueryProvider>,
   );

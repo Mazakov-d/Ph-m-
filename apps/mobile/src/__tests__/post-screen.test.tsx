@@ -1,0 +1,44 @@
+import { screen } from "@testing-library/react-native";
+import PostScreen from "../app/posts/[id]";
+import { apiClient } from "../lib/apiClient";
+import { ARTICLE_DETAIL } from "../test/fixtures";
+import { jsonResponse, renderWithProviders } from "../test/renderWithProviders";
+
+jest.mock("expo-router", () => ({
+  useLocalSearchParams: () => ({ id: "1b1e4a3c-6f1d-4d6b-9a52-3c2f0e7d8a11" }),
+  // A link is a Text in React Native.
+  Link: ({ children }: { children: string }) => {
+    const { createElement } = jest.requireActual<typeof import("react")>("react");
+    const { Text } = jest.requireActual<typeof import("react-native")>("react-native");
+    return createElement(Text, null, children);
+  },
+  Stack: { Screen: () => null },
+}));
+
+describe("PostScreen", () => {
+  const fetchMock = jest.spyOn(globalThis, "fetch");
+
+  beforeEach(async () => {
+    fetchMock.mockReset();
+    await apiClient.endSession();
+  });
+
+  it("shows the full post with its place, sources and reliability", async () => {
+    fetchMock.mockResolvedValueOnce(jsonResponse(200, ARTICLE_DETAIL));
+    await renderWithProviders(<PostScreen />);
+
+    expect(await screen.findByText("Texte complet de l'article.")).toBeTruthy();
+    expect(screen.getByText("Local · Bretagne · Politique")).toBeTruthy();
+    expect(screen.getByText("https://www.insee.fr")).toBeTruthy();
+    expect(screen.getByText("Compte rendu de séance")).toBeTruthy();
+    expect(screen.getByText("Non examiné")).toBeTruthy();
+  });
+
+  it("says when the post does not exist", async () => {
+    fetchMock.mockResolvedValueOnce(
+      jsonResponse(404, { code: "NOT_FOUND", message: "No such post" }),
+    );
+    await renderWithProviders(<PostScreen />);
+    expect(await screen.findByText("Cette publication n'existe pas.")).toBeTruthy();
+  });
+});

@@ -5,13 +5,17 @@ import {
   authSessionSchema,
   CLIENT_KIND_HEADER,
   type ErrorCode,
+  VIEWER_SESSION_HEADER,
 } from "@fama/shared";
+import { randomUUID } from "expo-crypto";
 import { Platform } from "react-native";
 import type { ZodType } from "zod";
 import { resolveApiUrl } from "./apiUrl";
 import { tokenStorage } from "./tokenStorage";
 
 const API_URL = resolveApiUrl();
+// docs/DECISIONS.md: a random id for this app session, so an anonymous reader is counted once.
+const VIEWER_SESSION_ID = randomUUID();
 const IS_WEB = Platform.OS === "web";
 const HTTP_UNAUTHORIZED = 401;
 const HTTP_NO_CONTENT = 204;
@@ -41,7 +45,10 @@ function notifySession(session: AuthSession | null): void {
 }
 
 async function send(method: string, path: string, body: unknown): Promise<Response> {
-  const headers: Record<string, string> = { [CLIENT_KIND_HEADER]: IS_WEB ? "web" : "native" };
+  const headers: Record<string, string> = {
+    [CLIENT_KIND_HEADER]: IS_WEB ? "web" : "native",
+    [VIEWER_SESSION_HEADER]: VIEWER_SESSION_ID,
+  };
   const isForm = body instanceof FormData;
   // A multipart form sets its own Content-Type (with the boundary); JSON needs it explicitly.
   if (body !== undefined && !isForm) {
@@ -153,6 +160,8 @@ export const apiClient = {
     request("PATCH", path, body, schema),
   delete: <T>(path: string, schema: ZodType<T>) => request("DELETE", path, undefined, schema),
   getBlob,
+  /** Full address of a resource served by the API (e.g. an image path of a post). */
+  url: (path: string) => `${API_URL}${path}`,
   /** Multipart upload (files). */
   postForm: <T>(path: string, form: FormData, schema: ZodType<T>) =>
     request("POST", path, form, schema),

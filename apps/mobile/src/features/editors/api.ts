@@ -6,7 +6,8 @@ import {
 } from "@fama/shared";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient, ApiRequestError } from "../../lib/apiClient";
-import { type PickedDocument, toFormDataFile } from "./documents";
+import { toFormDataFile } from "../../lib/formDataFile";
+import type { PickedDocument } from "./documents";
 
 export const editorKeys = {
   all: ["editors"] as const,
