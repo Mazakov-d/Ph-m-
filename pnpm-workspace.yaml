@@ -1,3 +1,13 @@
 packages:
   - "apps/*"
   - "packages/*"
+
+# Native build steps allowed to run on install (file watcher and module resolver used by the tooling).
+allowBuilds:
+  "@parcel/watcher": true
+  unrs-resolver: true
+
+# Auto-installed peers must match the versions bundled with Expo SDK 57 / React Native 0.86.
+overrides:
+  "@react-native/metro-config": 0.86.3
+  react-native-worklets: 0.10.1

@@ -1,0 +1,17 @@
+{
+  "expo": {
+    "name": "Fama",
+    "slug": "fama",
+    "version": "0.0.0",
+    "orientation": "portrait",
+    "scheme": "fama",
+    "userInterfaceStyle": "automatic",
+    "web": {
+      "output": "single"
+    },
+    "plugins": ["expo-router", "expo-status-bar"],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

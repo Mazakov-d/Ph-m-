@@ -1,6 +1,7 @@
 // Shared ESLint configuration for the whole monorepo (flat config).
 import js from "@eslint/js";
 import prettier from "eslint-config-prettier";
+import reactHooks from "eslint-plugin-react-hooks";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 
@@ -47,6 +48,11 @@ export default tseslint.config(
     rules: {
       "@typescript-eslint/no-require-imports": "off",
     },
+  },
+  {
+    // CLAUDE.md §6.2: React rules for the app (hooks order, effect dependencies).
+    files: ["apps/mobile/**/*.{ts,tsx}"],
+    ...reactHooks.configs.flat["recommended-latest"],
   },
   // Must stay last: disables stylistic rules that conflict with Prettier.
   prettier,
