@@ -20,6 +20,12 @@ export function editorErrorMessage(error: unknown): string {
     switch (error.code) {
       case "INVALID_DOCUMENT":
         return "Un document est invalide : PDF, JPEG ou PNG de 10 Mo maximum.";
+      case "INVALID_STATUS_TRANSITION":
+        return "Cette demande a déjà été traitée.";
+      case "CONFLICT_OF_INTEREST":
+        return "Vous ne pouvez pas traiter cette demande (conflit d'intérêts).";
+      case "FORBIDDEN":
+        return "Vous n'avez pas le droit d'effectuer cette action.";
       case "EDITOR_APPLICATION_EXISTS":
         return "Vous avez déjà une demande en cours.";
       case "ACCOUNT_RESTRICTED":

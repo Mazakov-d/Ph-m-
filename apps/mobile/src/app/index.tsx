@@ -1,4 +1,4 @@
-import { APP_NAME, APP_SLOGAN } from "@fama/shared";
+import { APP_NAME, APP_SLOGAN, can } from "@fama/shared";
 import { useRouter } from "expo-router";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { Button } from "../components/ui/Button";
@@ -11,6 +11,7 @@ const texts = {
   signOut: "Se déconnecter",
   becomeEditor: "Devenir éditeur",
   editorSpace: "Mon espace éditeur",
+  editorApplications: "Demandes éditeurs",
 };
 
 export default function HomeScreen() {
@@ -40,6 +41,12 @@ export default function HomeScreen() {
               <Button
                 label={user.role === "EDITOR" ? texts.editorSpace : texts.becomeEditor}
                 onPress={() => router.push("/editor")}
+              />
+            ) : null}
+            {can(user, "editor.validateIndependent") ? (
+              <Button
+                label={texts.editorApplications}
+                onPress={() => router.push("/moderation/editor-applications")}
               />
             ) : null}
             <Button label={texts.signOut} variant="secondary" onPress={signOut} />

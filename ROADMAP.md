@@ -85,7 +85,7 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 - [x] API modération : liste des demandes, validation `INDEPENDENT` (modérateur ou admin), `CERTIFIED` (admin seulement), refus avec motif. Chaque décision → `AuditLog`.
 - [x] API : profil public d'un éditeur (§2.2), sans identité si `showIdentityPublicly = false`.
 - [x] App : écran « Devenir éditeur », écran profil éditeur public, réglage de visibilité de l'identité.
-- [ ] App : écran modérateur « Demandes éditeurs ».
+- [x] App : écran modérateur « Demandes éditeurs ».
 - [ ] Tests e2e : un modérateur ne peut pas valider `CERTIFIED` ; l'identité masquée n'apparaît jamais dans la réponse publique.
 
 **Critères de validation**

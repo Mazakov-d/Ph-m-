@@ -7,6 +7,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { hash } from "argon2";
 import type { PostKind, Theme, UserRole, Zone } from "@fama/shared";
 import { PrismaClient } from "../src/generated/prisma/client.js";
+import { StorageService } from "../src/storage/storage.service.js";
 
 const DEMO_PASSWORD = "fama-demo-2026";
 const POST_COUNT = 20;
@@ -148,6 +149,32 @@ async function createEditors(editors: { id: string; pseudo: string }[]) {
   for (const identity of identities) {
     await prisma.editorIdentity.create({ data: { ...identity, documentKeys: [] } });
   }
+  // The pending applicant gets a demo document, to try the moderator screen.
+  await prisma.editorIdentity.update({
+    where: { userId: nouveau.id },
+    data: { documentKeys: [await storeDemoDocument(nouveau.id)] },
+  });
+}
+
+// A minimal valid one-page PDF reading "Document de demonstration".
+const DEMO_PDF = `%PDF-1.4
+1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj
+2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj
+3 0 obj<</Type/Page/Parent 2 0 R/MediaBox[0 0 300 120]/Contents 4 0 R/Resources<</Font<</F1 5 0 R>>>>>>endobj
+4 0 obj<</Length 58>>stream
+BT /F1 16 Tf 20 60 Td (Document de demonstration) Tj ET
+endstream endobj
+5 0 obj<</Type/Font/Subtype/Type1/BaseFont/Helvetica>>endobj
+trailer<</Root 1 0 R>>
+%%EOF
+`;
+
+async function storeDemoDocument(userId: string): Promise<string> {
+  const storage = new StorageService();
+  await storage.onModuleInit();
+  const key = `editor-documents/${userId}/demo.pdf`;
+  await storage.put(key, new TextEncoder().encode(DEMO_PDF), "application/pdf");
+  return key;
 }
 
 type SeedPost = { title: string; summary: string; zone: Zone; region: string | null; theme: Theme };

@@ -107,16 +107,31 @@ function refreshSession(): Promise<AuthSession | null> {
   return refreshInFlight;
 }
 
-async function request<T>(method: string, path: string, body: unknown, schema: ZodType<T>) {
-  let response = await send(method, path, body);
+/** Sends a request; on an expired access token, refreshes the session once and retries. */
+async function sendWithRefresh(method: string, path: string, body: unknown): Promise<Response> {
+  const response = await send(method, path, body);
   const isAuthRoute = path.startsWith("/auth/") && path !== "/auth/me";
   if (response.status === HTTP_UNAUTHORIZED && !isAuthRoute) {
     const session = await refreshSession();
     if (session) {
-      response = await send(method, path, body);
+      return send(method, path, body);
     }
   }
-  return parseResponse(response, schema);
+  return response;
+}
+
+async function request<T>(method: string, path: string, body: unknown, schema: ZodType<T>) {
+  return parseResponse(await sendWithRefresh(method, path, body), schema);
+}
+
+/** Downloads a file (e.g. an identity document) with the session's credentials. */
+async function getBlob(path: string): Promise<Blob> {
+  const response = await sendWithRefresh("GET", path, undefined);
+  if (!response.ok) {
+    // Error answers are JSON ({ code, message }): reuse the usual error handling.
+    await parseResponse(response, apiErrorSchema);
+  }
+  return response.blob();
 }
 
 async function startSession(session: AuthSession): Promise<void> {
@@ -137,6 +152,7 @@ export const apiClient = {
   patch: <T>(path: string, body: unknown, schema: ZodType<T>) =>
     request("PATCH", path, body, schema),
   delete: <T>(path: string, schema: ZodType<T>) => request("DELETE", path, undefined, schema),
+  getBlob,
   /** Multipart upload (files). */
   postForm: <T>(path: string, form: FormData, schema: ZodType<T>) =>
     request("POST", path, form, schema),
