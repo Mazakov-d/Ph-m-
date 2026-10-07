@@ -5,7 +5,7 @@ import {
   NAME_MAX_LENGTH,
   REJECTION_REASON_MAX_LENGTH,
 } from "../rules.js";
-import { idSchema, isoDateTimeSchema } from "./common.js";
+import { cursorQuerySchema, idSchema, isoDateTimeSchema } from "./common.js";
 
 const nameSchema = z.string().trim().min(1).max(NAME_MAX_LENGTH);
 
@@ -22,6 +22,24 @@ export const createEditorApplicationInputSchema = z.object({
   showIdentityPublicly: z.boolean().default(false),
 });
 export type CreateEditorApplicationInput = z.infer<typeof createEditorApplicationInputSchema>;
+
+/** The applicant's own view of their application (« Devenir éditeur » screen). */
+export const editorApplicationPublicSchema = z.object({
+  status: EditorStatus,
+  rejectionReason: z.string().nullable(),
+  editorialLine: z.string(),
+  ownerName: z.string(),
+  ownerGroup: z.string().nullable(),
+  showIdentityPublicly: z.boolean(),
+  documentCount: z.number().int().nonnegative(),
+  createdAt: isoDateTimeSchema,
+});
+export type EditorApplicationPublic = z.infer<typeof editorApplicationPublicSchema>;
+
+export const editorApplicationQuerySchema = cursorQuerySchema.extend({
+  status: EditorStatus.default("PENDING"),
+});
+export type EditorApplicationQuery = z.infer<typeof editorApplicationQuerySchema>;
 
 export const updateEditorProfileInputSchema = z.object({
   showIdentityPublicly: z.boolean(),

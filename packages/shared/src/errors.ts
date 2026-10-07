@@ -19,6 +19,9 @@ export const ErrorCode = z.enum([
   // Editors (SPEC §2.2)
   "EDITOR_APPLICATION_EXISTS",
   "EDITOR_NOT_VALIDATED",
+  "INVALID_DOCUMENT",
+  // A decision that does not apply to the current status (e.g. validating a rejected application).
+  "INVALID_STATUS_TRANSITION",
   // Posts and comments (SPEC §3, §6)
   "COMMENTS_DISABLED",
   "INVALID_PARENT_COMMENT",

@@ -116,3 +116,30 @@ qui la remplace.
   - web : jeton de rafraîchissement dans un cookie `httpOnly`, `Secure`, `SameSite=Strict`, jamais
     lisible par JavaScript.
 - **Pourquoi** : choix du porteur du projet ; le cookie `httpOnly` empêche une faille XSS de voler la session.
+
+## 2026-10-07 — Parcours éditeur
+
+- **Question** : la SPEC (§2.2) ne précise pas quand un compte devient `EDITOR`, si un refus est définitif,
+  quels documents sont acceptés, ni si la consultation des documents est tracée.
+- **Décision** :
+  - seul un `READER` peut demander le statut éditeur (nouvelle permission `editor.apply`, réservée au
+    rôle `READER`, donc refusée à un compte suspendu) ; il reste `READER` tant que la demande est
+    `PENDING` ou `REJECTED`, et devient `EDITOR` à la validation (`INDEPENDENT` ou `CERTIFIED`) ;
+    un modérateur ou un dirigeant ne peut pas demander (un compte n'a qu'un rôle) ;
+  - après un refus, une nouvelle demande remplace l'ancienne et repasse en `PENDING` (les anciens
+    documents sont supprimés du stockage ; la décision reste dans le journal d'audit) ;
+  - documents : 1 à 5 fichiers PDF, JPEG ou PNG de 10 Mo maximum chacun ; le type est vérifié sur le
+    contenu du fichier, pas seulement sur le type déclaré ;
+  - les documents ne sont jamais exposés par une URL : l'API les transmet à un modérateur ou dirigeant
+    authentifié, et **chaque consultation crée une entrée `AuditLog`** ;
+  - un dirigeant peut certifier une demande `PENDING` ou un éditeur déjà `INDEPENDENT`.
+- **Pourquoi** : choix du porteur du projet ; l'identité des éditeurs est la donnée la plus sensible.
+
+## 2026-10-07 — Stockage S3 local : RustFS au lieu de MinIO
+
+- **Question** : la ROADMAP (phase 3) prévoit MinIO en local, mais MinIO ne publie plus d'images Docker
+  gratuites (dépôt Docker Hub supprimé, quay.io sur authentification).
+- **Décision** : RustFS (`rustfs/rustfs`, Apache 2.0), compatible S3 et conçu comme remplaçant de MinIO,
+  dans `docker-compose.yml` (API S3 sur `127.0.0.1:9000`, console sur `127.0.0.1:9001`). Le code de
+  l'API utilise le client S3 standard et ne dépend pas de ce choix.
+- **Pourquoi** : choix du porteur du projet.

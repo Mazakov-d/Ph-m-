@@ -81,7 +81,7 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 ## Phase 3 — Parcours éditeur
 
 - [ ] API : demande de statut éditeur (identité légale, documents, ligne éditoriale, propriétaire, `showIdentityPublicly`) → `PENDING`.
-- [ ] Stockage des documents dans un espace privé (S3 compatible ; MinIO en local via docker-compose). Aucune URL publique.
+- [x] Stockage des documents dans un espace privé (S3 compatible ; MinIO en local via docker-compose). Aucune URL publique.
 - [ ] API modération : liste des demandes, validation `INDEPENDENT` (modérateur ou admin), `CERTIFIED` (admin seulement), refus avec motif. Chaque décision → `AuditLog`.
 - [ ] API : profil public d'un éditeur (§2.2), sans identité si `showIdentityPublicly = false`.
 - [ ] App : écran « Devenir éditeur », écran profil éditeur public, réglage de visibilité de l'identité.

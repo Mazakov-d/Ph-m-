@@ -1,4 +1,4 @@
-// Runs in every test worker: the API under test talks to the test database, never the dev one.
+// Runs in every test worker: the API under test uses the test database and bucket, never the dev ones.
 import "dotenv/config";
 
 const testUrl = process.env.TEST_DATABASE_URL;
@@ -6,3 +6,9 @@ if (!testUrl) {
   throw new Error("TEST_DATABASE_URL is not set (see apps/api/.env.example)");
 }
 process.env.DATABASE_URL = testUrl;
+
+const testBucket = process.env.TEST_S3_PRIVATE_BUCKET;
+if (!testBucket) {
+  throw new Error("TEST_S3_PRIVATE_BUCKET is not set (see apps/api/.env.example)");
+}
+process.env.S3_PRIVATE_BUCKET = testBucket;

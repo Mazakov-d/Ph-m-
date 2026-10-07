@@ -9,6 +9,7 @@ export const PERMISSIONS = [
   "report.create",
   "support.open",
   "user.block",
+  "editor.apply",
   "post.create",
   "post.toggleComments",
   "moderation.queue.read",
@@ -23,6 +24,7 @@ export const PERMISSIONS = [
 export type Permission = (typeof PERMISSIONS)[number];
 
 export const PERMISSION_MATRIX: Record<UserRole, readonly Permission[]> = {
+  // docs/DECISIONS.md: only a reader can apply for the editor status.
   READER: [
     "post.read",
     "comment.create",
@@ -30,6 +32,7 @@ export const PERMISSION_MATRIX: Record<UserRole, readonly Permission[]> = {
     "report.create",
     "support.open",
     "user.block",
+    "editor.apply",
   ],
   EDITOR: [
     "post.read",

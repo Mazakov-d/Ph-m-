@@ -63,5 +63,11 @@ export const REJECTION_REASON_MAX_LENGTH = 1000;
 export const PAGE_SIZE_DEFAULT = 20;
 export const PAGE_SIZE_MAX = 50;
 
+// docs/DECISIONS.md: identity documents of an editor application.
+export const EDITOR_DOCUMENTS_MIN_COUNT = 1;
+export const EDITOR_DOCUMENTS_MAX_COUNT = 5;
+export const EDITOR_DOCUMENT_MAX_BYTES = 10 * 1024 * 1024;
+export const EDITOR_DOCUMENT_TYPES = ["application/pdf", "image/jpeg", "image/png"] as const;
+
 // SPEC §6 and §10: purge delay for logically deleted content. To be confirmed with a lawyer.
 export const RETENTION_DAYS = 365;

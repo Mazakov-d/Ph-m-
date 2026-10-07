@@ -45,6 +45,10 @@ describe("rules (SPEC §11)", () => {
       REJECTION_REASON_MAX_LENGTH: 1000,
       PAGE_SIZE_DEFAULT: 20,
       PAGE_SIZE_MAX: 50,
+      EDITOR_DOCUMENTS_MIN_COUNT: 1,
+      EDITOR_DOCUMENTS_MAX_COUNT: 5,
+      EDITOR_DOCUMENT_MAX_BYTES: 10 * 1024 * 1024,
+      EDITOR_DOCUMENT_TYPES: ["application/pdf", "image/jpeg", "image/png"],
       RETENTION_DAYS: 365,
     });
   });

@@ -4,9 +4,10 @@ import { AuthModule } from "./auth/auth.module.js";
 import { ApiExceptionFilter } from "./common/filters/api-exception.filter.js";
 import { HealthModule } from "./health/health.module.js";
 import { PrismaModule } from "./prisma/prisma.module.js";
+import { StorageModule } from "./storage/storage.module.js";
 
 @Module({
-  imports: [PrismaModule, HealthModule, AuthModule],
+  imports: [PrismaModule, StorageModule, HealthModule, AuthModule],
   providers: [{ provide: APP_FILTER, useClass: ApiExceptionFilter }],
 })
 export class AppModule {}

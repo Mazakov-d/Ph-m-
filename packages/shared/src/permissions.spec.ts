@@ -20,7 +20,7 @@ function subject(role: UserRole, overrides: Partial<PermissionSubject> = {}): Pe
   };
 }
 
-// Transcribed from the table of SPEC §2.5: [READER, EDITOR, MODERATOR, ADMIN].
+// Transcribed from the table of SPEC §2.5 (+ docs/DECISIONS.md): [READER, EDITOR, MODERATOR, ADMIN].
 const EXPECTED: Record<Permission, [boolean, boolean, boolean, boolean]> = {
   "post.read": [true, true, true, true],
   "comment.create": [true, true, true, true],
@@ -28,6 +28,8 @@ const EXPECTED: Record<Permission, [boolean, boolean, boolean, boolean]> = {
   "report.create": [true, true, true, true],
   "support.open": [true, true, false, false],
   "user.block": [true, true, true, true],
+  // docs/DECISIONS.md: not in the SPEC table; only a reader applies for the editor status.
+  "editor.apply": [true, false, false, false],
   "post.create": [false, true, false, false],
   "post.toggleComments": [false, true, false, false],
   "moderation.queue.read": [false, false, true, true],

@@ -17,5 +17,20 @@ services:
       timeout: 5s
       retries: 10
 
+  # docs/DECISIONS.md: S3-compatible private storage for editor identity documents
+  # (RustFS, as MinIO no longer publishes free images). Never exposed publicly.
+  storage:
+    image: rustfs/rustfs:1.0.1
+    restart: unless-stopped
+    environment:
+      RUSTFS_ACCESS_KEY: fama
+      RUSTFS_SECRET_KEY: fama-dev-secret
+    ports:
+      - "127.0.0.1:9000:9000" # S3 API
+      - "127.0.0.1:9001:9001" # web console
+    volumes:
+      - storage-data:/data
+
 volumes:
   postgres-data:
+  storage-data:
