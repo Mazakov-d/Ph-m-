@@ -21,7 +21,7 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 - [x] `docker-compose.yml` avec PostgreSQL ; `apps/api/.env.example`.
 - [x] Prisma installé dans `apps/api`, `PrismaService` injectable.
 - [x] Scripts racine : `pnpm dev`, `pnpm check` (lint + typecheck + tests de tous les packages).
-- [ ] `docs/DECISIONS.md` créé (vide, avec le format d'une entrée).
+- [x] `docs/DECISIONS.md` créé (vide, avec le format d'une entrée).
 
 **Critères de validation**
 
