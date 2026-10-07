@@ -3,6 +3,7 @@ import { HttpStatus, Injectable } from "@nestjs/common";
 import {
   type AuthUser,
   type CreatePostInput,
+  type CursorQuery,
   feedWindowStart,
   type Paginated,
   type PostPublic,
@@ -14,7 +15,7 @@ import { ApiException } from "../common/errors/api.exception.js";
 import { FILE_EXTENSIONS } from "../common/files/file-type.js";
 import { decodeCursor, toPage } from "../common/pagination/cursor.js";
 import { PrismaService } from "../prisma/prisma.service.js";
-import { StorageService } from "../storage/storage.service.js";
+import { type StoredObject, StorageService } from "../storage/storage.service.js";
 import { type PostImageType, sanitizeImage } from "./post-images.js";
 import { POST_INCLUDE } from "./post-record.js";
 import { toPostPublic, toPostSummaryPublic } from "./posts.mapper.js";
@@ -96,6 +97,83 @@ export class PostsService {
     });
     const page = toPage(rows, query.limit, (row) => row);
     return { items: page.rows.map(toPostSummaryPublic), nextCursor: page.nextCursor };
+  }
+
+  /**
+   * A full post, reachable by direct link even after 48 hours (SPEC §4.1). Counts the reader
+   * once (SPEC §3): one view per account, or per session for anonymous visitors; the author's
+   * own views do not count (docs/DECISIONS.md).
+   */
+  async findOne(
+    viewer: AuthUser | null,
+    postId: string,
+    sessionId: string | null,
+  ): Promise<PostPublic> {
+    const post = await this.prisma.post.findUnique({
+      where: { id: postId },
+      include: POST_INCLUDE,
+    });
+    if (!post) {
+      throw new ApiException(HttpStatus.NOT_FOUND, "NOT_FOUND", "No such post");
+    }
+    if (viewer?.id !== post.authorId) {
+      await this.recordView(
+        postId,
+        viewer ? { userId: viewer.id } : sessionId ? { sessionId } : null,
+      );
+    }
+    return toPostPublic(post);
+  }
+
+  /** All the publications of an editor, newest first (SPEC §2.2: public profile). */
+  async listByEditor(editorId: string, query: CursorQuery): Promise<Paginated<PostSummaryPublic>> {
+    const after = query.cursor ? decodeCursor(query.cursor) : null;
+    const rows = await this.prisma.post.findMany({
+      where: {
+        authorId: editorId,
+        ...(after && {
+          OR: [
+            { createdAt: { lt: after.createdAt } },
+            { createdAt: after.createdAt, id: { lt: after.id } },
+          ],
+        }),
+      },
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      take: query.limit + 1,
+      include: POST_INCLUDE,
+      omit: { body: true },
+    });
+    const page = toPage(rows, query.limit, (row) => row);
+    return { items: page.rows.map(toPostSummaryPublic), nextCursor: page.nextCursor };
+  }
+
+  /** An image of a post, read from private storage (docs/DECISIONS.md: served by the API). */
+  async readImage(postId: string, imageId: string): Promise<StoredObject> {
+    const image = await this.prisma.postImage.findFirst({ where: { id: imageId, postId } });
+    if (!image) {
+      throw new ApiException(HttpStatus.NOT_FOUND, "NOT_FOUND", "No such image");
+    }
+    return this.storage.get(image.storageKey);
+  }
+
+  private async recordView(
+    postId: string,
+    viewer: { userId: string } | { sessionId: string } | null,
+  ): Promise<void> {
+    if (!viewer) {
+      // Neither an account nor a session: the view cannot be deduplicated, so it is not counted.
+      return;
+    }
+    await this.prisma.$transaction(async (tx) => {
+      // The unique keys (post, user) and (post, session) skip a reader already counted.
+      const created = await tx.postView.createMany({
+        data: [{ postId, ...viewer }],
+        skipDuplicates: true,
+      });
+      if (created.count === 1) {
+        await tx.post.update({ where: { id: postId }, data: { viewCount: { increment: 1 } } });
+      }
+    });
   }
 
   private async blockedAuthorIds(viewerId: string): Promise<string[]> {
