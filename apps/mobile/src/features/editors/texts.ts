@@ -18,6 +18,7 @@ export const APPLICATION_STATUS_TEXTS: Record<EditorStatus, string> = {
 export function editorErrorMessage(error: unknown): string {
   if (error instanceof ApiRequestError) {
     switch (error.code) {
+      case "FILE_TOO_LARGE":
       case "INVALID_DOCUMENT":
         return "Un document est invalide : PDF, JPEG ou PNG de 10 Mo maximum.";
       case "INVALID_STATUS_TRANSITION":

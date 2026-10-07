@@ -124,7 +124,7 @@ describe("Editor application (e2e, SPEC §2.2)", () => {
     const { accessToken } = await signUp(app, prisma, "clara");
     const tooBig = Buffer.concat([PDF, Buffer.alloc(10 * 1024 * 1024)]);
     const response = await apply(accessToken, APPLICATION, [tooBig]).expect(413);
-    expect(response.body).toMatchObject({ code: "INVALID_DOCUMENT" });
+    expect(response.body).toMatchObject({ code: "FILE_TOO_LARGE" });
   });
 
   it("validates the application fields", async () => {

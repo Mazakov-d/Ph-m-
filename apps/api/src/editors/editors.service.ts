@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { HttpStatus, Injectable } from "@nestjs/common";
 import type {
   CreateEditorApplicationInput,
+  EDITOR_DOCUMENT_TYPES,
   EditorApplicationPublic,
   EditorPublic,
   UpdateEditorProfileInput,
@@ -9,10 +10,13 @@ import type {
 import { ApiException } from "../common/errors/api.exception.js";
 import { PrismaService } from "../prisma/prisma.service.js";
 import { StorageService } from "../storage/storage.service.js";
-import { DOCUMENT_EXTENSIONS, type DocumentType } from "./document-type.js";
+import { FILE_EXTENSIONS } from "../common/files/file-type.js";
 import { toEditorApplicationPublic, toEditorPublic } from "./editors.mapper.js";
 
-export type IdentityDocument = { bytes: Uint8Array; type: DocumentType };
+export type IdentityDocument = {
+  bytes: Uint8Array;
+  type: (typeof EDITOR_DOCUMENT_TYPES)[number];
+};
 
 @Injectable()
 export class EditorsService {
@@ -131,7 +135,7 @@ export class EditorsService {
     const keys: string[] = [];
     try {
       for (const document of documents) {
-        const key = `editor-documents/${userId}/${randomUUID()}.${DOCUMENT_EXTENSIONS[document.type]}`;
+        const key = `editor-documents/${userId}/${randomUUID()}.${FILE_EXTENSIONS[document.type]}`;
         await this.storage.put(key, document.bytes, document.type);
         keys.push(key);
       }

@@ -143,3 +143,25 @@ qui la remplace.
   dans `docker-compose.yml` (API S3 sur `127.0.0.1:9000`, console sur `127.0.0.1:9001`). Le code de
   l'API utilise le client S3 standard et ne dépend pas de ce choix.
 - **Pourquoi** : choix du porteur du projet.
+
+## 2026-10-07 — Publications et fil
+
+- **Question** : la SPEC (§3, §4) ne fixe ni les limites des images, ni leur traitement, ni plusieurs
+  détails de comptage et d'affichage.
+- **Décision** :
+  - images : 0 à 4 par post, JPEG, PNG ou WebP de 5 Mo maximum, envoyées **avec** le post (un post
+    publié n'est pas modifiable) ; la première sert de couverture sur la carte du fil ;
+  - l'API ré-encode chaque image (bibliothèque `sharp`) : **toutes les métadonnées sont supprimées**
+    (position GPS, appareil) et les images de plus de 2000 px de large sont réduites ;
+  - les images sont du contenu public, servies par l'API (`/posts/:id/images/:imageId`), jamais par une
+    URL du stockage, qui reste privé ; l'API renvoie ce chemin et l'app y ajoute son adresse d'API ;
+  - vues uniques (§3) : un compte = une vue ; un visiteur anonyme est dédupliqué par un identifiant de
+    session aléatoire généré par l'app à son lancement ; les vues de l'auteur ne comptent pas ;
+  - compteur de commentaires : seuls les commentaires affichés à tous (`VISIBLE`, `VERIFIED`) ;
+  - le profil public d'un éditeur liste toutes ses publications (§2.2), sans limite des 48 h ;
+  - un post reste accessible par lien direct, même au-delà de 48 h ou si son auteur est bloqué ;
+  - libellés : zones « France », « Europe », « International », « Local » ; thèmes « Politique »,
+    « Économie », « Mouvements sociaux », « Environnement », « Sciences et santé », « Tech »,
+    « Culture », « Sport ».
+- **Pourquoi** : limites et traitement des images choisis par le porteur du projet ; le reste découle de
+  la SPEC ou relève de choix techniques simples.

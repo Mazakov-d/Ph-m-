@@ -14,8 +14,8 @@ const CODE_BY_STATUS: Partial<Record<number, ErrorCode>> = {
   [HttpStatus.UNAUTHORIZED]: "UNAUTHENTICATED",
   [HttpStatus.FORBIDDEN]: "FORBIDDEN",
   [HttpStatus.NOT_FOUND]: "NOT_FOUND",
-  // Raised by the upload limits (file size): only identity documents are uploaded.
-  [HttpStatus.PAYLOAD_TOO_LARGE]: "INVALID_DOCUMENT",
+  // Raised by the upload limits (file size).
+  [HttpStatus.PAYLOAD_TOO_LARGE]: "FILE_TOO_LARGE",
   [HttpStatus.TOO_MANY_REQUESTS]: "RATE_LIMITED",
 };
 

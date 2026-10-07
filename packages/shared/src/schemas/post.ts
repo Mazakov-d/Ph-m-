@@ -38,6 +38,10 @@ export const updatePostCommentsInputSchema = z.object({
 });
 export type UpdatePostCommentsInput = z.infer<typeof updatePostCommentsInputSchema>;
 
+// docs/DECISIONS.md: anonymous readers send a random per-session id, so that a reader who opens
+// a post twice is counted once (SPEC §3: unique readers).
+export const VIEWER_SESSION_HEADER = "x-fama-session";
+
 // SPEC §4.3: combinable filters of the feed. `today` comes from the query string ("true"/"false").
 export const postQuerySchema = cursorQuerySchema.extend({
   today: z.stringbool().default(false),
@@ -46,9 +50,10 @@ export const postQuerySchema = cursorQuerySchema.extend({
 });
 export type PostQuery = z.infer<typeof postQuerySchema>;
 
+// docs/DECISIONS.md: images are served by the API; `path` is relative to the API address.
 export const postImagePublicSchema = z.object({
   id: idSchema,
-  url: z.url(),
+  path: z.string().startsWith("/"),
 });
 export type PostImagePublic = z.infer<typeof postImagePublicSchema>;
 

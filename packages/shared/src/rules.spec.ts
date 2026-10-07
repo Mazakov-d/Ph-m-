@@ -49,6 +49,10 @@ describe("rules (SPEC §11)", () => {
       EDITOR_DOCUMENTS_MAX_COUNT: 5,
       EDITOR_DOCUMENT_MAX_BYTES: 10 * 1024 * 1024,
       EDITOR_DOCUMENT_TYPES: ["application/pdf", "image/jpeg", "image/png"],
+      POST_IMAGES_MAX_COUNT: 4,
+      POST_IMAGE_MAX_BYTES: 5 * 1024 * 1024,
+      POST_IMAGE_TYPES: ["image/jpeg", "image/png", "image/webp"],
+      POST_IMAGE_MAX_WIDTH: 2000,
       RETENTION_DAYS: 365,
     });
   });

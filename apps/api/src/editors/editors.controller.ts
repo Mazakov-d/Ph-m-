@@ -15,6 +15,7 @@ import {
   type CreateEditorApplicationInput,
   createEditorApplicationInputSchema,
   EDITOR_DOCUMENT_MAX_BYTES,
+  EDITOR_DOCUMENT_TYPES,
   EDITOR_DOCUMENTS_MAX_COUNT,
   EDITOR_DOCUMENTS_MIN_COUNT,
   type EditorApplicationPublic,
@@ -29,7 +30,7 @@ import { RequirePermission } from "../common/decorators/require-permission.decor
 import { ApiException } from "../common/errors/api.exception.js";
 import { JsonFieldValidationPipe } from "../common/pipes/json-field.pipe.js";
 import { ZodValidationPipe } from "../common/pipes/zod-validation.pipe.js";
-import { detectDocumentType } from "./document-type.js";
+import { detectFileType } from "../common/files/file-type.js";
 import { EditorsService, type IdentityDocument } from "./editors.service.js";
 
 @Controller("editors")
@@ -87,7 +88,7 @@ function toIdentityDocuments(files: Express.Multer.File[]): IdentityDocument[] {
   }
   return files.map((file) => {
     const bytes = new Uint8Array(file.buffer);
-    const type = detectDocumentType(bytes);
+    const type = detectFileType(bytes, EDITOR_DOCUMENT_TYPES);
     if (!type) {
       throw new ApiException(
         HttpStatus.BAD_REQUEST,

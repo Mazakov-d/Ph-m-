@@ -8,6 +8,8 @@ export const ErrorCode = z.enum([
   "FORBIDDEN",
   "NOT_FOUND",
   "RATE_LIMITED",
+  // An uploaded file exceeds its size limit.
+  "FILE_TOO_LARGE",
   "INTERNAL_ERROR",
   // Accounts (SPEC §2.1)
   "EMAIL_TAKEN",
@@ -23,6 +25,9 @@ export const ErrorCode = z.enum([
   // A decision that does not apply to the current status (e.g. validating a rejected application).
   "INVALID_STATUS_TRANSITION",
   // Posts and comments (SPEC §3, §6)
+  "INVALID_IMAGE",
+  // SPEC §3: comments cannot be turned off on an opinion.
+  "COMMENTS_REQUIRED_FOR_OPINION",
   "COMMENTS_DISABLED",
   "INVALID_PARENT_COMMENT",
   "COMMENT_UNDER_REVIEW",

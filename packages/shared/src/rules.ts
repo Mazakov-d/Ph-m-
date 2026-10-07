@@ -69,5 +69,11 @@ export const EDITOR_DOCUMENTS_MAX_COUNT = 5;
 export const EDITOR_DOCUMENT_MAX_BYTES = 10 * 1024 * 1024;
 export const EDITOR_DOCUMENT_TYPES = ["application/pdf", "image/jpeg", "image/png"] as const;
 
+// docs/DECISIONS.md: images of a post (metadata stripped, wide images reduced by the API).
+export const POST_IMAGES_MAX_COUNT = 4;
+export const POST_IMAGE_MAX_BYTES = 5 * 1024 * 1024;
+export const POST_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"] as const;
+export const POST_IMAGE_MAX_WIDTH = 2000;
+
 // SPEC §6 and §10: purge delay for logically deleted content. To be confirmed with a lawyer.
 export const RETENTION_DAYS = 365;
