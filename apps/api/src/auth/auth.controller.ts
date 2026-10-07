@@ -1,6 +1,7 @@
-import { Body, Controller, Headers, HttpCode, HttpStatus, Post, Res } from "@nestjs/common";
+import { Body, Controller, Get, Headers, HttpCode, HttpStatus, Post, Res } from "@nestjs/common";
 import {
   type AuthSession,
+  type AuthUser,
   CLIENT_KIND_HEADER,
   ClientKind,
   type LoginInput,
@@ -14,6 +15,8 @@ import {
 } from "@fama/shared";
 import type { CookieOptions, Response } from "express";
 import { Cookie } from "../common/decorators/cookie.decorator.js";
+import { CurrentUser } from "../common/decorators/current-user.decorator.js";
+import { Public } from "../common/decorators/public.decorator.js";
 import { ApiException } from "../common/errors/api.exception.js";
 import { ZodValidationPipe } from "../common/pipes/zod-validation.pipe.js";
 import { AuthService, type IssuedSession } from "./auth.service.js";
@@ -40,6 +43,7 @@ function isWebClient(header: string | undefined): boolean {
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Public()
   @Post("register")
   async register(
     @Body(new ZodValidationPipe(registerInputSchema)) input: RegisterInput,
@@ -50,6 +54,7 @@ export class AuthController {
     return this.sendSession(session, isWebClient(clientKind), response);
   }
 
+  @Public()
   @Post("login")
   @HttpCode(HttpStatus.OK)
   async login(
@@ -61,6 +66,7 @@ export class AuthController {
     return this.sendSession(session, isWebClient(clientKind), response);
   }
 
+  @Public()
   @Post("refresh")
   @HttpCode(HttpStatus.OK)
   async refresh(
@@ -77,6 +83,7 @@ export class AuthController {
     return this.sendSession(session, isWebClient(clientKind), response);
   }
 
+  @Public()
   @Post("logout")
   @HttpCode(HttpStatus.NO_CONTENT)
   async logout(
@@ -89,6 +96,11 @@ export class AuthController {
       await this.authService.logout(refreshToken);
     }
     response.clearCookie(REFRESH_COOKIE_NAME, REFRESH_COOKIE_OPTIONS);
+  }
+
+  @Get("me")
+  me(@CurrentUser() user: AuthUser): AuthUser {
+    return user;
   }
 
   /** Web: refresh token in the httpOnly cookie only. Native: in the body (SecureStore). */
