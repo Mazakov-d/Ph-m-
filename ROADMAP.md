@@ -13,7 +13,7 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 
 ## Phase 0 — Fondations du monorepo
 
-- [ ] Initialiser le monorepo pnpm (`apps/api`, `apps/mobile`, `packages/shared`) et un `tsconfig.base.json` strict (`strict`, `noUncheckedIndexedAccess`).
+- [x] Initialiser le monorepo pnpm (`apps/api`, `apps/mobile`, `packages/shared`) et un `tsconfig.base.json` strict (`strict`, `noUncheckedIndexedAccess`).
 - [ ] ESLint + Prettier communs, avec règles interdisant `any`, `@ts-ignore` et les non-null assertions.
 - [ ] `packages/shared` : package TypeScript consommable par les deux apps (export depuis `src/index.ts`), dépendance unique : Zod.
 - [ ] `apps/api` : projet NestJS minimal avec une route `GET /health` → `{ status: "ok" }`.

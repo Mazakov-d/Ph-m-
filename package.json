@@ -1,0 +1,14 @@
+{
+  "name": "fama",
+  "private": true,
+  "packageManager": "pnpm@12.9.1",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "typecheck": "pnpm -r --if-present run typecheck"
+  },
+  "devDependencies": {
+    "typescript": "~6.0.3"
+  }
+}
