@@ -33,8 +33,15 @@ export const loginInputSchema = z.object({
 });
 export type LoginInput = z.infer<typeof loginInputSchema>;
 
+// docs/DECISIONS.md: the web client keeps its refresh token in an httpOnly cookie that
+// JavaScript cannot read, so it tells the API which kind of client it is with this header.
+export const CLIENT_KIND_HEADER = "x-fama-client";
+export const ClientKind = z.enum(["web", "native"]);
+export type ClientKind = z.infer<typeof ClientKind>;
+
+// Native clients send their refresh token in the body; the web client sends it as a cookie.
 export const refreshTokenInputSchema = z.object({
-  refreshToken: z.string().min(1),
+  refreshToken: z.string().min(1).optional(),
 });
 export type RefreshTokenInput = z.infer<typeof refreshTokenInputSchema>;
 
@@ -52,7 +59,8 @@ export type AuthUser = z.infer<typeof authUserSchema>;
 
 export const authTokensSchema = z.object({
   accessToken: z.string(),
-  refreshToken: z.string(),
+  // Null for the web client, which receives it as an httpOnly cookie instead.
+  refreshToken: z.string().nullable(),
 });
 export type AuthTokens = z.infer<typeof authTokensSchema>;
 

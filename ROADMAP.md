@@ -60,7 +60,7 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 
 ## Phase 2 — Authentification et rôles
 
-- [ ] API : inscription (e-mail, mot de passe, pseudo unique), connexion, rafraîchissement de jeton, déconnexion. Mots de passe hachés avec argon2.
+- [x] API : inscription (e-mail, mot de passe, pseudo unique), connexion, rafraîchissement de jeton, déconnexion. Mots de passe hachés avec argon2.
 - [ ] `JwtAuthGuard` global, décorateurs `@Public()`, `@CurrentUser()`, `@RequirePermission()` + `PermissionGuard` basé sur `can()`.
 - [x] `ZodValidationPipe` et filtre d'erreurs au format `{ code, message }`.
 - [ ] Refus des actions d'écriture pour un compte suspendu ou banni.

@@ -39,6 +39,10 @@ export const COMMENT_MAX_LENGTH = 2000;
 export const POST_TITLE_MAX_LENGTH = 200;
 export const POST_SUMMARY_MAX_LENGTH = 500;
 
+// docs/DECISIONS.md: session lifetimes.
+export const ACCESS_TOKEN_TTL_MINUTES = 15;
+export const REFRESH_TOKEN_TTL_DAYS = 30;
+
 // Provisional limits not set by the SPEC (docs/DECISIONS.md, "Limites provisoires des schémas").
 export const PSEUDO_MIN_LENGTH = 3;
 export const PSEUDO_MAX_LENGTH = 30;

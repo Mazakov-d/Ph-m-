@@ -163,6 +163,21 @@ model User {
   assignedTickets  Ticket[]        @relation("TicketAssignedModerator")
   messages         Message[]
   auditLogs        AuditLog[]
+  refreshTokens    RefreshToken[]
+}
+
+/// docs/DECISIONS.md: a refresh token (30 days, rotated on each use). Only its SHA-256 hash is stored.
+model RefreshToken {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @db.Uuid
+  tokenHash String    @unique
+  expiresAt DateTime  @db.Timestamptz(3)
+  revokedAt DateTime? @db.Timestamptz(3)
+  createdAt DateTime  @default(now()) @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
 }
 
 /// SPEC §2.2: public side of an editor.
