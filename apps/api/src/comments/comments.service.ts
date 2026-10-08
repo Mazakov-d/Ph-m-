@@ -1,6 +1,15 @@
 import { HttpStatus, Injectable } from "@nestjs/common";
-import type { AuthUser, CommentPublic, CommentStatus, CreateCommentInput } from "@fama/shared";
+import type {
+  AuthUser,
+  CommentPublic,
+  CommentStatus,
+  CommentThreadPublic,
+  CreateCommentInput,
+  CursorQuery,
+  Paginated,
+} from "@fama/shared";
 import { ApiException } from "../common/errors/api.exception.js";
+import { decodeCursor, toPage } from "../common/pagination/cursor.js";
 import { PrismaService } from "../prisma/prisma.service.js";
 import { toCommentPublic } from "./comments.mapper.js";
 import { ToxicityChecker } from "./toxicity/toxicity-checker.js";
@@ -67,5 +76,44 @@ export class CommentsService {
       });
       return toCommentPublic(comment);
     });
+  }
+
+  /**
+   * SPEC §6: the comments of a post by ascending date, as threads (docs/DECISIONS.md): a page of
+   * root comments, each with all its replies. Hidden or deleted comments keep their place with
+   * a null content, so their replies stay readable.
+   */
+  async listForPost(postId: string, query: CursorQuery): Promise<Paginated<CommentThreadPublic>> {
+    const post = await this.prisma.post.findUnique({ where: { id: postId }, select: { id: true } });
+    if (!post) {
+      throw new ApiException(HttpStatus.NOT_FOUND, "NOT_FOUND", "No such post");
+    }
+    const after = query.cursor ? decodeCursor(query.cursor) : null;
+    const roots = await this.prisma.comment.findMany({
+      where: {
+        postId,
+        parentId: null,
+        ...(after && {
+          OR: [
+            { createdAt: { gt: after.createdAt } },
+            { createdAt: after.createdAt, id: { gt: after.id } },
+          ],
+        }),
+      },
+      orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+      take: query.limit + 1,
+      include: {
+        ...WITH_AUTHOR,
+        replies: { orderBy: [{ createdAt: "asc" }, { id: "asc" }], include: WITH_AUTHOR },
+      },
+    });
+    const page = toPage(roots, query.limit, (root) => root);
+    return {
+      items: page.rows.map((root) => ({
+        ...toCommentPublic(root),
+        replies: root.replies.map(toCommentPublic),
+      })),
+      nextCursor: page.nextCursor,
+    };
   }
 }
