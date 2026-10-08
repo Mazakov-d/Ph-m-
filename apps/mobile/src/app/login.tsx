@@ -1,28 +1,18 @@
-import { Link, Stack } from "expo-router";
+import { Stack } from "expo-router";
 import { useGoToTab } from "../components/navigation/useGoToTab";
-import { ScrollView, StyleSheet } from "react-native";
-import { LoginForm } from "../features/auth/components/LoginForm";
-import { colors } from "../components/ui/theme";
+import { CenteredBox } from "../components/ui/CenteredBox";
+import { AuthPanel } from "../features/auth/components/AuthPanel";
+import { LegalLinks } from "../features/legal/LegalLinks";
 
-const texts = {
-  title: "Se connecter",
-  toRegister: "Pas encore de compte ? En créer un",
-};
+const texts = { title: "Se connecter" };
 
+/** Opened from « Connectez-vous pour commenter » and the like: the same box as the account tab. */
 export default function LoginScreen() {
   const goToTab = useGoToTab();
   return (
-    <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+    <CenteredBox footer={<LegalLinks />}>
       <Stack.Screen options={{ title: texts.title }} />
-      <LoginForm onSuccess={() => goToTab("/")} />
-      <Link href="/register" replace style={styles.link}>
-        {texts.toRegister}
-      </Link>
-    </ScrollView>
+      <AuthPanel initialMode="login" onSuccess={() => goToTab("/")} />
+    </CenteredBox>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { padding: 24, gap: 24 },
-  link: { color: colors.brand, textAlign: "center" },
-});

@@ -438,3 +438,6 @@ qui la remplace.
     centré ; l'affichage côte à côte sur le web est abandonné.
   - **Compte** : les actions sont dans une boîte centrée à l'écran ; hors connexion, le slogan
     « La rumeur, sourcée. » est en tête de la boîte.
+  - **Connexion et inscription** : les formulaires s'ouvrent dans la même boîte centrée que le
+    compte, sous le slogan, avec un lien pour passer de l'un à l'autre. Les pages `/login` et
+    `/register` (liens « Connectez-vous pour commenter ») montrent la même boîte.
