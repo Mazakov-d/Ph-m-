@@ -6,14 +6,6 @@ import { type CSSProperties, useEffect, useRef, useState } from "react";
 import { colors } from "../../../components/ui/theme";
 import { formattedTextToHtml, richNodesToSegments } from "../richText";
 
-// The fonts of components/ui/typefaces.ts, for the web view in which this editor runs.
-const FONTS_STYLESHEET =
-  "https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,700;1,400;1,700" +
-  "&family=Merriweather:ital,wght@0,400;0,700;1,400;1,700" +
-  "&family=IBM+Plex+Mono:ital,wght@0,400;0,700;1,400;1,700" +
-  "&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700" +
-  "&family=Lora:ital,wght@0,400;0,700;1,400;1,700&display=swap";
-
 const TOOLBAR_HEIGHT = 40;
 
 const texts = { bold: "Mettre en gras", italic: "Mettre en italique" };
@@ -22,7 +14,9 @@ type Props = {
   label: string;
   /** Must not change while the editor is open: the editor owns its content. */
   initialValue: string;
+  /** The CSS `font-family` of the chosen typeface, and the @font-face rules that declare it. */
   fontFamily: string;
+  fontFaceCss: string;
   fontSize: number;
   multiline: boolean;
   /** Toolbar included. */
@@ -39,7 +33,8 @@ type Props = {
  * because a native text field cannot show bold and italic words while they are typed.
  */
 export default function RichTextEditor(props: Props) {
-  const { label, initialValue, fontFamily, fontSize, multiline, height, onChange, onBlur } = props;
+  const { label, initialValue, fontFamily, fontFaceCss, fontSize, multiline, height } = props;
+  const { onChange, onBlur } = props;
   const editorRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState({ bold: false, italic: false });
 
@@ -76,7 +71,7 @@ export default function RichTextEditor(props: Props) {
 
   return (
     <div style={{ ...styles.box, height }}>
-      <link rel="stylesheet" href={FONTS_STYLESHEET} precedence="default" />
+      <style>{fontFaceCss}</style>
       <div style={styles.toolbar}>
         {(["bold", "italic"] as const).map((command) => (
           <button

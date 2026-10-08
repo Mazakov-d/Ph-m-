@@ -106,7 +106,7 @@ describe("Publishing a post (e2e, SPEC §3)", () => {
       const response = await sendPost(app, editorToken).expect(201);
       expect(postPublicSchema.parse(response.body)).toMatchObject({
         layout: "TEXT_FIRST",
-        typefaces: { title: "SERIF", summary: "SANS", body: "SERIF" },
+        typefaces: { title: "MERRIWEATHER", summary: "INTER", body: "MERRIWEATHER" },
       });
     });
 
@@ -116,20 +116,20 @@ describe("Publishing a post (e2e, SPEC §3)", () => {
         title: "Le budget **adopté**",
         body: "Un vote *serré* hier.",
         layout: "MEDIA_FIRST",
-        typefaces: { title: "MONO", summary: "SERIF", body: "SANS" },
+        typefaces: { title: "IBM_PLEX_MONO", summary: "EB_GARAMOND", body: "OPEN_SANS" },
       }).expect(201);
       expect(postPublicSchema.parse(response.body)).toMatchObject({
         title: "Le budget **adopté**",
         body: "Un vote *serré* hier.",
         layout: "MEDIA_FIRST",
-        typefaces: { title: "MONO", summary: "SERIF", body: "SANS" },
+        typefaces: { title: "IBM_PLEX_MONO", summary: "EB_GARAMOND", body: "OPEN_SANS" },
       });
     });
 
     it("refuses an unknown typeface", async () => {
       await sendPost(app, editorToken, {
         ...ARTICLE,
-        typefaces: { title: "COMIC", summary: "SANS", body: "SANS" },
+        typefaces: { title: "COMIC_SANS", summary: "INTER", body: "INTER" },
       }).expect(400);
     });
 

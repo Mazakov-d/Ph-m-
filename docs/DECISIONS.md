@@ -412,3 +412,29 @@ qui la remplace.
   - **Post** : pleine largeur, titre centré ; sur une fenêtre large, le texte et les photos côte à
     côte (ordre choisi par l'éditeur) ; les cartes du fil grandissent avec la fenêtre.
   - **Mot de passe** : un bouton « Afficher » / « Masquer » dans chaque champ de mot de passe.
+
+## 2026-10-08 — Deuxième retour sur l'interface (sans validation pour les points marqués)
+
+- **Question** : le porteur veut une vraie liste de polices connues (au moins une trentaine), une
+  flèche de retour dessinée, le post en une seule colonne centrée et le compte dans une boîte
+  centrée.
+- **Décision** :
+  - **Polices** (liste sans validation) : 33 polices libres connues (Google Fonts, celles qu'on
+    retrouve dans WordPress), présentées dans une liste cliquable groupée par famille, chaque nom
+    écrit dans sa police : 16 sans empattement (Inter, Roboto, Open Sans, Lato, Montserrat,
+    Poppins, Raleway, Nunito, Work Sans, Source Sans 3, Noto Sans, PT Sans, Ubuntu, Fira Sans,
+    Rubik, IBM Plex Sans), 12 avec empattement (Merriweather, Playfair Display, Lora, EB Garamond,
+    Crimson Text, PT Serif, Noto Serif, Source Serif 4, Cormorant Garamond, Bitter, Alegreya, Arvo)
+    et 5 à chasse fixe (IBM Plex Mono, JetBrains Mono, Source Code Pro, Roboto Mono, Space Mono).
+    Toutes existent en normal, gras, italique et gras italique.
+  - **Téléchargement à la demande** (sans validation) : les polices ne sont plus embarquées dans
+    l'app (33 × 4 fichiers l'alourdiraient de plusieurs Mo) ; elles sont téléchargées depuis le CDN
+    Fontsource (jsDelivr) quand un texte en a besoin, puis gardées. En attendant, ou sans réseau,
+    le texte s'affiche dans la police du système. Les anciennes valeurs sont renommées en base
+    (`SANS` → `INTER`, `SERIF` → `MERRIWEATHER`, `MONO` → `IBM_PLEX_MONO`, `DISPLAY` →
+    `PLAYFAIR_DISPLAY`, `BOOK` → `LORA`) : les posts gardent leur police.
+  - **Retour** : une flèche dessinée remplace le caractère « < ».
+  - **Page d'un post** : retour à une seule colonne centrée (largeur de lecture limitée), titre
+    centré ; l'affichage côte à côte sur le web est abandonné.
+  - **Compte** : les actions sont dans une boîte centrée à l'écran ; hors connexion, le slogan
+    « La rumeur, sourcée. » est en tête de la boîte.

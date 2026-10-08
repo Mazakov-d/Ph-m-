@@ -92,7 +92,7 @@ describe("FeedScreen (SPEC §4)", () => {
     );
     await renderWithProviders(<FeedScreen />);
     expect(await screen.findByText("commence")).toHaveStyle({
-      fontFamily: "Merriweather_400Regular_Italic",
+      fontFamily: "merriweather-400-italic",
     });
   });
 });

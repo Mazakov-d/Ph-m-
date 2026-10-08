@@ -25,7 +25,7 @@ export const ARTICLE_CARD: PostSummaryPublic = {
   summary: "Les députés ont voté le budget.",
   bodyExcerpt: "Texte complet de l'article.",
   layout: "TEXT_FIRST",
-  typefaces: { title: "SERIF", summary: "SANS", body: "SERIF" },
+  typefaces: { title: "MERRIWEATHER", summary: "INTER", body: "MERRIWEATHER" },
   zone: "FRANCE",
   region: null,
   theme: "POLITICS",

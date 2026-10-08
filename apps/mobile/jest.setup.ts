@@ -33,3 +33,9 @@ jest.mock(
   "react-native-safe-area-context",
   () => jest.requireActual<{ default: object }>("react-native-safe-area-context/jest/mock").default,
 );
+
+// Fonts are downloaded from a CDN in the app; in tests they count as already there.
+jest.mock("expo-font", () => ({
+  isLoaded: () => true,
+  loadAsync: async () => undefined,
+}));

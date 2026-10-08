@@ -36,9 +36,43 @@ export type Theme = z.infer<typeof Theme>;
 export const PostLayout = z.enum(["TEXT_FIRST", "MEDIA_FIRST"]);
 export type PostLayout = z.infer<typeof PostLayout>;
 
-// docs/DECISIONS.md (interface brief): typeface chosen by the editor for each text block
-// (sizes are fixed by the app). The app bundles one font for each (docs/DECISIONS.md).
-export const Typeface = z.enum(["SANS", "SERIF", "MONO", "DISPLAY", "BOOK"]);
+// docs/DECISIONS.md (interface brief): typeface chosen by the editor for each text block, among
+// well-known fonts (sizes are fixed by the app). The app downloads them when they are needed.
+export const Typeface = z.enum([
+  "INTER",
+  "ROBOTO",
+  "OPEN_SANS",
+  "LATO",
+  "MONTSERRAT",
+  "POPPINS",
+  "RALEWAY",
+  "NUNITO",
+  "WORK_SANS",
+  "SOURCE_SANS_3",
+  "NOTO_SANS",
+  "PT_SANS",
+  "UBUNTU",
+  "FIRA_SANS",
+  "RUBIK",
+  "IBM_PLEX_SANS",
+  "MERRIWEATHER",
+  "PLAYFAIR_DISPLAY",
+  "LORA",
+  "EB_GARAMOND",
+  "CRIMSON_TEXT",
+  "PT_SERIF",
+  "NOTO_SERIF",
+  "SOURCE_SERIF_4",
+  "CORMORANT_GARAMOND",
+  "BITTER",
+  "ALEGREYA",
+  "ARVO",
+  "IBM_PLEX_MONO",
+  "JETBRAINS_MONO",
+  "SOURCE_CODE_PRO",
+  "ROBOTO_MONO",
+  "SPACE_MONO",
+]);
 export type Typeface = z.infer<typeof Typeface>;
 
 // SPEC §5.3

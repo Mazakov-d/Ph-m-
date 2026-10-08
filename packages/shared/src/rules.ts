@@ -63,7 +63,11 @@ export const REPORT_DETAILS_MAX_LENGTH = 1000;
 export const FEED_BODY_EXCERPT_LENGTH = 280;
 // docs/DECISIONS.md (interface brief): blocks order and typefaces when the editor keeps the defaults.
 export const DEFAULT_POST_LAYOUT = "TEXT_FIRST";
-export const DEFAULT_TYPEFACES = { title: "SERIF", summary: "SANS", body: "SERIF" } as const;
+export const DEFAULT_TYPEFACES = {
+  title: "MERRIWEATHER",
+  summary: "INTER",
+  body: "MERRIWEATHER",
+} as const;
 export const REVIEW_NOTE_MAX_LENGTH = 5000;
 export const EDITOR_REPLY_MAX_LENGTH = 5000;
 export const APPEAL_MAX_LENGTH = 2000;

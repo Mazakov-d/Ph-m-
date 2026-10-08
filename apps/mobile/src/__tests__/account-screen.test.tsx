@@ -25,6 +25,8 @@ describe("AccountScreen", () => {
     expect(await screen.findByText("Se connecter")).toBeTruthy();
     expect(screen.getByText("Créer un compte")).toBeTruthy();
     expect(APP_NAME).toBe("Fama");
+    // Interface brief: the slogan heads the account box of a visitor.
+    expect(screen.getByRole("header", { name: "La rumeur, sourcée." })).toBeTruthy();
     // SPEC §10: the static pages are reachable without an account.
     expect(screen.getByText("Politique de confidentialité")).toBeTruthy();
   });

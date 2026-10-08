@@ -4,6 +4,7 @@ import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuth } from "../../providers/AuthProvider";
 import { colors, radius, spacing } from "../ui/theme";
+import { BackArrow } from "./BackArrow";
 import { type TabPath, useGoToTab } from "./useGoToTab";
 
 const texts = {
@@ -18,7 +19,7 @@ const CENTERED_BRAND = Platform.OS === "web";
 
 /**
  * The header of every page (interface brief): the « Fama » brand (the feed tab), the « Publier »
- * (editors) and « Compte » tabs, the current tab greyed, and « < » on the pages opened above them.
+ * (editors) and « Compte » tabs, the current tab greyed, and a back arrow on the pages opened above them.
  */
 export function AppHeader({ canGoBack }: { canGoBack: boolean }) {
   const router = useRouter();
@@ -43,7 +44,7 @@ export function AppHeader({ canGoBack }: { canGoBack: boolean }) {
             onPress={() => (router.canGoBack() ? router.back() : goToTab("/"))}
             style={styles.back}
           >
-            <Text style={styles.backLabel}>{"<"}</Text>
+            <BackArrow />
           </Pressable>
         ) : null}
         {CENTERED_BRAND ? null : brand}
@@ -99,7 +100,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
   },
   back: { paddingHorizontal: spacing.sm, paddingVertical: spacing.xs },
-  backLabel: { fontSize: 22, fontWeight: "600", color: colors.brand },
   tabs: { flexDirection: "row", gap: spacing.xs, marginLeft: "auto" },
   tab: { paddingHorizontal: spacing.md, paddingVertical: 6, borderRadius: radius.sm },
   currentTab: { backgroundColor: colors.subtle },

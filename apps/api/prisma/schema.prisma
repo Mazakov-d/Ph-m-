@@ -57,13 +57,41 @@ enum PostLayout {
   MEDIA_FIRST
 }
 
-/// docs/DECISIONS.md (interface brief): typeface of a text block (sizes are fixed by the app).
+/// docs/DECISIONS.md (interface brief): typeface of a text block, among well-known fonts.
 enum Typeface {
-  SANS
-  SERIF
-  MONO
-  DISPLAY
-  BOOK
+  INTER
+  ROBOTO
+  OPEN_SANS
+  LATO
+  MONTSERRAT
+  POPPINS
+  RALEWAY
+  NUNITO
+  WORK_SANS
+  SOURCE_SANS_3
+  NOTO_SANS
+  PT_SANS
+  UBUNTU
+  FIRA_SANS
+  RUBIK
+  IBM_PLEX_SANS
+  MERRIWEATHER
+  PLAYFAIR_DISPLAY
+  LORA
+  EB_GARAMOND
+  CRIMSON_TEXT
+  PT_SERIF
+  NOTO_SERIF
+  SOURCE_SERIF_4
+  CORMORANT_GARAMOND
+  BITTER
+  ALEGREYA
+  ARVO
+  IBM_PLEX_MONO
+  JETBRAINS_MONO
+  SOURCE_CODE_PRO
+  ROBOTO_MONO
+  SPACE_MONO
 }
 
 enum PostReviewStatus {
@@ -240,9 +268,9 @@ model Post {
   // SPEC §3: always true for an OPINION.
   commentsEnabled Boolean          @default(true)
   layout          PostLayout       @default(TEXT_FIRST)
-  titleTypeface   Typeface         @default(SERIF)
-  summaryTypeface Typeface         @default(SANS)
-  bodyTypeface    Typeface         @default(SERIF)
+  titleTypeface   Typeface         @default(MERRIWEATHER)
+  summaryTypeface Typeface         @default(INTER)
+  bodyTypeface    Typeface         @default(MERRIWEATHER)
   reviewStatus    PostReviewStatus @default(NOT_REVIEWED)
   // SPEC §3: unique readers, kept in sync with PostView.
   viewCount       Int              @default(0)

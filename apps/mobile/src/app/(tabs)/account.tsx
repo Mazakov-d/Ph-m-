@@ -1,6 +1,7 @@
-import { can } from "@fama/shared";
+import { APP_SLOGAN, can } from "@fama/shared";
 import { Stack, useRouter } from "expo-router";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
+import { colors, radius, spacing } from "../../components/ui/theme";
 import { Button } from "../../components/ui/Button";
 import { DeleteAccount } from "../../features/auth/components/DeleteAccount";
 import { LegalLinks } from "../../features/legal/LegalLinks";
@@ -30,61 +31,98 @@ export default function AccountScreen() {
   const router = useRouter();
   const { status, user, signOut } = useAuth();
 
+  // Interface brief: the account actions sit in a box in the middle of the screen.
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.screen}>
       <Stack.Screen options={{ title: texts.title }} />
-      {status === "loading" ? <ActivityIndicator /> : null}
-      {status === "anonymous" ? (
-        <>
-          <Text style={styles.text}>{texts.anonymous}</Text>
-          <Button label={texts.signIn} onPress={() => router.push("/login")} />
-          <Button
-            label={texts.register}
-            variant="secondary"
-            onPress={() => router.push("/register")}
-          />
-        </>
-      ) : null}
-      {status === "authenticated" && user ? (
-        <>
-          <Text style={styles.text}>{texts.signedInAs(user.pseudo)}</Text>
-          {user.role === "READER" || user.role === "EDITOR" ? (
+      <View style={styles.box}>
+        {status === "loading" ? <ActivityIndicator /> : null}
+        {status === "anonymous" ? (
+          <>
+            <Text accessibilityRole="header" style={styles.slogan}>
+              {APP_SLOGAN}
+            </Text>
+            <Text style={styles.text}>{texts.anonymous}</Text>
+            <Button label={texts.signIn} onPress={() => router.push("/login")} />
             <Button
-              label={user.role === "EDITOR" ? texts.editorSpace : texts.becomeEditor}
-              onPress={() => router.push("/editor")}
+              label={texts.register}
+              variant="secondary"
+              onPress={() => router.push("/register")}
             />
-          ) : null}
-          {can(user, "editor.validateIndependent") ? (
+          </>
+        ) : null}
+        {status === "authenticated" && user ? (
+          <>
+            <Text style={styles.text}>{texts.signedInAs(user.pseudo)}</Text>
+            {user.role === "READER" || user.role === "EDITOR" ? (
+              <Button
+                label={user.role === "EDITOR" ? texts.editorSpace : texts.becomeEditor}
+                onPress={() => router.push("/editor")}
+              />
+            ) : null}
+            {can(user, "editor.validateIndependent") ? (
+              <Button
+                label={texts.editorApplications}
+                onPress={() => router.push("/moderation/editor-applications")}
+              />
+            ) : null}
             <Button
-              label={texts.editorApplications}
-              onPress={() => router.push("/moderation/editor-applications")}
+              label={texts.sanctions}
+              variant="secondary"
+              onPress={() => router.push("/sanctions")}
             />
-          ) : null}
-          <Button
-            label={texts.sanctions}
-            variant="secondary"
-            onPress={() => router.push("/sanctions")}
-          />
-          <Button label={texts.blocks} variant="secondary" onPress={() => router.push("/blocks")} />
-          {can(user, "moderation.queue.read") ? (
-            <Button label={texts.moderation} onPress={() => router.push("/moderation/comments")} />
-          ) : null}
-          {can(user, "moderation.queue.read") ? (
             <Button
-              label={texts.postReviews}
-              onPress={() => router.push("/moderation/post-reviews")}
+              label={texts.blocks}
+              variant="secondary"
+              onPress={() => router.push("/blocks")}
             />
-          ) : null}
-          <Button label={texts.signOut} variant="secondary" onPress={signOut} />
-          <DeleteAccount />
-        </>
-      ) : null}
+            {can(user, "moderation.queue.read") ? (
+              <Button
+                label={texts.moderation}
+                onPress={() => router.push("/moderation/comments")}
+              />
+            ) : null}
+            {can(user, "moderation.queue.read") ? (
+              <Button
+                label={texts.postReviews}
+                onPress={() => router.push("/moderation/post-reviews")}
+              />
+            ) : null}
+            <Button label={texts.signOut} variant="secondary" onPress={signOut} />
+            <DeleteAccount />
+          </>
+        ) : null}
+      </View>
       <LegalLinks />
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 24, gap: 12, alignSelf: "center", width: "100%", maxWidth: 480 },
-  text: { textAlign: "center" },
+  screen: {
+    flexGrow: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    gap: spacing.lg,
+    padding: spacing.xl,
+  },
+  box: {
+    width: "100%",
+    maxWidth: 420,
+    gap: spacing.md,
+    padding: spacing.xl,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    backgroundColor: colors.surface,
+    boxShadow: "0 6px 20px rgba(0, 0, 0, 0.12)",
+  },
+  slogan: {
+    fontSize: 22,
+    fontWeight: "bold",
+    fontStyle: "italic",
+    textAlign: "center",
+    color: colors.brand,
+  },
+  text: { textAlign: "center", color: colors.muted },
 });

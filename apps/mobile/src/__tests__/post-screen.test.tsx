@@ -49,7 +49,7 @@ describe("PostScreen", () => {
 
     const bold = await screen.findByText("serré");
     // The body of ARTICLE_DETAIL is in Merriweather (SERIF): its bold words use the bold font.
-    expect(bold).toHaveStyle({ fontFamily: "Merriweather_700Bold" });
+    expect(bold).toHaveStyle({ fontFamily: "merriweather-700-normal" });
     expect(screen.queryByText(/\*\*/)).toBeNull();
   });
 

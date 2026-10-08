@@ -2,7 +2,7 @@ import type { Typeface } from "@fama/shared";
 import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { colors, spacing } from "../../../components/ui/theme";
-import { TYPEFACES } from "../../../components/ui/typefaces";
+import { fontFaceCss } from "../../../components/ui/typefaces";
 import RichTextEditor from "./RichTextEditor";
 import { TypefacePicker } from "./TypefacePicker";
 
@@ -22,13 +22,14 @@ type Props = {
 };
 
 /**
- * A text block of a post (interface brief): its typeface, chosen among the bundled ones, and an
+ * A text block of a post (interface brief): its typeface, chosen in a list of known fonts, and an
  * editor that shows the bold and italic words as they are typed.
  */
 export function FormattedTextField(props: Props) {
   const { label, value, onChange, onBlur, typeface, onTypefaceChange, size, multiline } = props;
   // The editor owns its content once open: it only receives the first value.
   const [initialValue] = useState(value);
+  const font = fontFaceCss(typeface);
 
   return (
     <View style={styles.field}>
@@ -37,7 +38,8 @@ export function FormattedTextField(props: Props) {
       <RichTextEditor
         label={label}
         initialValue={initialValue}
-        fontFamily={TYPEFACES[typeface].css}
+        fontFamily={font.family}
+        fontFaceCss={font.css}
         fontSize={size}
         multiline={multiline}
         height={props.height}

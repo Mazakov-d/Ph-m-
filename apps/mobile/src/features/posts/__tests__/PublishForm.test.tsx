@@ -64,7 +64,7 @@ describe("PublishForm (SPEC §3)", () => {
       theme: "POLITICS",
       commentsEnabled: true,
       layout: "TEXT_FIRST",
-      typefaces: { title: "SERIF", summary: "SANS", body: "SERIF" },
+      typefaces: { title: "MERRIWEATHER", summary: "INTER", body: "MERRIWEATHER" },
     });
   });
 
