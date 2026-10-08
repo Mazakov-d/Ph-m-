@@ -2,6 +2,7 @@ import { Link, Stack, useRouter } from "expo-router";
 import { ScrollView, StyleSheet, Text } from "react-native";
 import { RegisterForm } from "../features/auth/components/RegisterForm";
 import { LegalLinks } from "../features/legal/LegalLinks";
+import { colors } from "../components/ui/theme";
 
 const texts = {
   title: "Créer un compte",
@@ -27,6 +28,6 @@ export default function RegisterScreen() {
 
 const styles = StyleSheet.create({
   container: { padding: 24, gap: 24 },
-  link: { color: "#1d3557", textAlign: "center" },
-  consent: { color: "#555" },
+  link: { color: colors.brand, textAlign: "center" },
+  consent: { color: colors.muted },
 });

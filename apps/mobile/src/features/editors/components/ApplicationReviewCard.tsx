@@ -11,6 +11,7 @@ import {
 import { editorErrorMessage } from "../texts";
 import { EditorBadge } from "./EditorBadge";
 import { RejectionForm } from "./RejectionForm";
+import { colors } from "../../../components/ui/theme";
 
 const texts = {
   identity: (first: string, last: string) => `Identité : ${first} ${last}`,
@@ -101,11 +102,11 @@ export function ApplicationReviewCard({ application }: { application: EditorMode
 }
 
 const styles = StyleSheet.create({
-  card: { gap: 8, padding: 16, borderRadius: 8, borderWidth: 1, borderColor: "#ddd" },
+  card: { gap: 8, padding: 16, borderRadius: 8, borderWidth: 1, borderColor: colors.border },
   header: { flexDirection: "row", alignItems: "center", gap: 8 },
   pseudo: { fontSize: 18, fontWeight: "bold" },
-  muted: { color: "#555" },
+  muted: { color: colors.muted },
   documents: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   actions: { gap: 8 },
-  error: { color: "#c1121f" },
+  error: { color: colors.danger },
 });

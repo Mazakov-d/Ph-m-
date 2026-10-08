@@ -18,6 +18,8 @@ const ENUM_PAIRS: Record<string, [Record<string, string>, readonly string[]]> = 
   SanctionType: [prisma.SanctionType, shared.SanctionType.options],
   TicketKind: [prisma.TicketKind, shared.TicketKind.options],
   TicketStatus: [prisma.TicketStatus, shared.TicketStatus.options],
+  PostLayout: [prisma.PostLayout, shared.PostLayout.options],
+  Typeface: [prisma.Typeface, shared.Typeface.options],
 };
 
 describe("Prisma enums ↔ shared Zod enums", () => {

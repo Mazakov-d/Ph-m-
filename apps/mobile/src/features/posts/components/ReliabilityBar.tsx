@@ -1,5 +1,6 @@
 import { type PostSummaryPublic, reliabilityLabel } from "@fama/shared";
 import { StyleSheet, Text, View } from "react-native";
+import { colors } from "../../../components/ui/theme";
 
 const texts = { opinion: "Opinion" };
 
@@ -15,7 +16,7 @@ export function ReliabilityBar({ post }: { post: PostSummaryPublic }) {
 
 const styles = StyleSheet.create({
   bar: { alignSelf: "flex-start", borderRadius: 4, paddingHorizontal: 8, paddingVertical: 4 },
-  reliability: { backgroundColor: "#e9ecef" },
-  opinion: { backgroundColor: "#fde2c8" },
+  reliability: { backgroundColor: colors.subtle },
+  opinion: { backgroundColor: colors.opinionTint },
   text: { fontSize: 13 },
 });

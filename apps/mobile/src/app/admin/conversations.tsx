@@ -4,6 +4,7 @@ import { ActivityIndicator, ScrollView, StyleSheet, Text } from "react-native";
 import { useAllTickets } from "../../features/tickets/api";
 import { TicketCard } from "../../features/tickets/components/TicketCard";
 import { useAuth } from "../../providers/AuthProvider";
+import { colors } from "../../components/ui/theme";
 
 const texts = {
   title: "Toutes les conversations",
@@ -37,6 +38,6 @@ export default function AllConversationsScreen() {
 
 const styles = StyleSheet.create({
   container: { padding: 16, gap: 12, width: "100%", maxWidth: 720, alignSelf: "center" },
-  notice: { color: "#555", fontStyle: "italic" },
+  notice: { color: colors.muted, fontStyle: "italic" },
   message: { padding: 24, textAlign: "center" },
 });

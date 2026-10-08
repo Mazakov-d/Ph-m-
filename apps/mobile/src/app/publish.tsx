@@ -3,6 +3,7 @@ import { Stack, useRouter } from "expo-router";
 import { ScrollView, StyleSheet, Text } from "react-native";
 import { PublishForm } from "../features/posts/components/PublishForm";
 import { useAuth } from "../providers/AuthProvider";
+import { colors } from "../components/ui/theme";
 
 const texts = {
   title: "Publier",
@@ -33,5 +34,5 @@ export default function PublishScreen() {
 
 const styles = StyleSheet.create({
   container: { padding: 20, gap: 16, width: "100%", maxWidth: 720, alignSelf: "center" },
-  notice: { color: "#555" },
+  notice: { color: colors.muted },
 });

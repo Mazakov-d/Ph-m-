@@ -9,6 +9,7 @@ import { documentsProblem, type PickedDocument } from "../documents";
 import { editorApplicationFormSchema } from "../formSchema";
 import { editorErrorMessage } from "../texts";
 import { DocumentPickerField } from "./DocumentPickerField";
+import { colors } from "../../../components/ui/theme";
 
 const TEXT_FIELDS = [
   { name: "legalFirstName", label: "Prénom (identité légale)", multiline: false },
@@ -109,5 +110,5 @@ const styles = StyleSheet.create({
   form: { gap: 16 },
   switchRow: { flexDirection: "row", alignItems: "center", gap: 12 },
   switchLabel: { flex: 1, fontWeight: "600" },
-  error: { color: "#c1121f" },
+  error: { color: colors.danger },
 });

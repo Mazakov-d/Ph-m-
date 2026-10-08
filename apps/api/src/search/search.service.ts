@@ -90,7 +90,6 @@ export class SearchService {
     const posts = await this.prisma.post.findMany({
       where: { id: { in: ids } },
       include: POST_INCLUDE,
-      omit: { body: true },
     });
     // Back in the order of relevance.
     return ids.flatMap((id) => {

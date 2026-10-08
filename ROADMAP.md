@@ -217,6 +217,13 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 
 ## Phase 10 bis — Refonte de l'interface
 
+- [x] Brief du porteur (`interface.txt`) traduit en tâches et choix consignés dans `DECISIONS.md`.
+- [x] Base visuelle : couleurs, espacements et tailles de texte dans `components/ui/theme.ts`, appliqués aux composants.
+- [x] Publication : ordre des blocs au choix de l'éditeur ; le fil montre les trois premiers (photo ou début du texte).
+- [x] Mise en forme : police au choix pour chaque champ, gras et italique, tailles fixes.
+- [x] Page d'un post : post encadré, sources repliées derrière « Sources », commentaires accrochés sous le cadre, saisie en bas avec Entrée.
+- [x] Recherche : filtres affichés au toucher de la barre, regroupés (Période, Zone, Thème), thème « Autre ».
+- [x] Web : fil et résultats en plusieurs colonnes sur grand écran.
 - [ ] Direction visuelle validée par le porteur du projet (couleurs, typographie, composants de base) et appliquée à tous les écrans.
 - [ ] Revue d'ergonomie des parcours (lecture, publication, vote, commentaires, modération) sur mobile et web.
 
@@ -234,7 +241,7 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 - [ ] Limitation de débit (rate limiting) sur l'inscription, la connexion, les commentaires et les signalements.
 - [x] Revue de sécurité : aucune donnée privée dans les réponses publiques (test automatisé qui parcourt les schémas publics).
 - [x] Configuration EAS (builds iOS / Android) et déploiement de l'API (choix consigné dans `DECISIONS.md`).
-- [ ] Aller voir le fichier interface.txt pour avoir le descriptif de l'UI pour faire la phase 10 bis.
+- [x] Aller voir le fichier interface.txt pour avoir le descriptif de l'UI pour faire la phase 10 bis.
 
 **Critères de validation**
 

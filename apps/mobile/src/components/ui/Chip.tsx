@@ -1,4 +1,5 @@
 import { Pressable, StyleSheet, Text } from "react-native";
+import { colors } from "./theme";
 
 type ChipProps = { label: string; selected: boolean; onPress: () => void };
 
@@ -19,12 +20,12 @@ export function Chip({ label, selected, onPress }: ChipProps) {
 const styles = StyleSheet.create({
   chip: {
     borderWidth: 1,
-    borderColor: "#1d3557",
+    borderColor: colors.brand,
     borderRadius: 16,
     paddingHorizontal: 12,
     paddingVertical: 6,
   },
-  selected: { backgroundColor: "#1d3557" },
-  label: { color: "#1d3557" },
-  selectedLabel: { color: "#fff", fontWeight: "600" },
+  selected: { backgroundColor: colors.brand },
+  label: { color: colors.brand },
+  selectedLabel: { color: colors.onBrand, fontWeight: "600" },
 });

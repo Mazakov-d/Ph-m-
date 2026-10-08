@@ -37,7 +37,6 @@ export class PostModerationService {
         ...POST_INCLUDE,
         reports: { where: { status: "PENDING" }, orderBy: { createdAt: "asc" } },
       },
-      omit: { body: true },
     });
     return posts
       .map((post) => {

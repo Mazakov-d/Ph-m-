@@ -1,7 +1,8 @@
-import { type AppealModeration, VERDICT_LABELS } from "@fama/shared";
+import { type AppealModeration, stripInlineFormatting, VERDICT_LABELS } from "@fama/shared";
 import { useRouter } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 import { Button } from "../../../components/ui/Button";
+import { colors } from "../../../components/ui/theme";
 
 const texts = {
   verdict: (label: string) => `Verdict contesté : ${label}`,
@@ -15,7 +16,7 @@ export function AppealCard({ appeal }: { appeal: AppealModeration }) {
   const router = useRouter();
   return (
     <View style={styles.card}>
-      <Text style={styles.title}>{appeal.post.title}</Text>
+      <Text style={styles.title}>{stripInlineFormatting(appeal.post.title)}</Text>
       <Text style={styles.muted}>{appeal.post.editor.pseudo}</Text>
       <Text style={styles.verdict}>{texts.verdict(VERDICT_LABELS[appeal.review.verdict])}</Text>
       <Text>{appeal.review.publicNote}</Text>
@@ -35,9 +36,9 @@ export function AppealCard({ appeal }: { appeal: AppealModeration }) {
 }
 
 const styles = StyleSheet.create({
-  card: { gap: 6, padding: 16, borderRadius: 8, backgroundColor: "#fff" },
+  card: { gap: 6, padding: 16, borderRadius: 8, backgroundColor: colors.surface },
   title: { fontSize: 17, fontWeight: "bold" },
-  muted: { color: "#555" },
+  muted: { color: colors.muted },
   verdict: { fontWeight: "600" },
   heading: { fontWeight: "600", marginTop: 4 },
 });

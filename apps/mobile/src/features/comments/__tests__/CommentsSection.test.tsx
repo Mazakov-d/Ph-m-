@@ -140,7 +140,8 @@ describe("CommentsSection (SPEC §6)", () => {
     const replyButtons = await screen.findAllByText("Répondre");
     await fireEvent.press(at(replyButtons, 1)); // « Répondre » under the reply « D'accord. »
     await fireEvent.changeText(screen.getByLabelText("Votre réponse"), "Moi aussi.");
-    await fireEvent.press(at(screen.getAllByText("Publier"), 1));
+    // The reply form is in the thread, above the comment form at the bottom.
+    await fireEvent.press(at(screen.getAllByText("Publier"), 0));
     await waitFor(() => expect(callsTo("POST", "/comments")).toHaveLength(1));
     const body = callsTo("POST", "/comments")[0]?.[1]?.body;
     expect(typeof body === "string" ? JSON.parse(body) : null).toMatchObject({ parentId: ROOT_ID });

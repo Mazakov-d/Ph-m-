@@ -9,6 +9,7 @@ import {
   DEFAULT_VOTE_OPTIONS,
   type PostKind,
   type Theme,
+  Typeface,
   type UserRole,
   type Zone,
 } from "@fama/shared";
@@ -361,7 +362,9 @@ async function createPosts(authorIds: string[], readerIds: string[]) {
         kind,
         title: topic.title,
         summary: topic.summary,
-        body: `${topic.summary}\n\nTexte de démonstration de l'article « ${topic.title} ».`,
+        // docs/DECISIONS.md (interface brief): bold and italic words, a typeface per block.
+        body: `${topic.summary}\n\nTexte de **démonstration** de l'article « *${topic.title}* ».`,
+        titleTypeface: Typeface.options[index % Typeface.options.length],
         zone: topic.zone,
         region: topic.region,
         theme: topic.theme,

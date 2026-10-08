@@ -18,6 +18,7 @@ export const THEME_LABELS: Record<Theme, string> = {
   TECH: "Tech",
   CULTURE: "Culture",
   SPORT: "Sport",
+  OTHER: "Autre",
 };
 
 const MINUTE = 60 * 1000;

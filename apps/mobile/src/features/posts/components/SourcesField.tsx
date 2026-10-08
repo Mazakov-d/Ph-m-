@@ -1,5 +1,6 @@
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { Button } from "../../../components/ui/Button";
+import { colors } from "../../../components/ui/theme";
 
 const texts = {
   label: "Sources (lien ou référence, au moins une)",
@@ -60,7 +61,7 @@ const styles = StyleSheet.create({
   field: { gap: 8 },
   label: { fontWeight: "600" },
   row: { flexDirection: "row", alignItems: "center", gap: 8 },
-  input: { flex: 1, borderWidth: 1, borderColor: "#ccc", borderRadius: 8, padding: 10 },
+  input: { flex: 1, borderWidth: 1, borderColor: colors.border, borderRadius: 8, padding: 10 },
   remove: { fontSize: 18, paddingHorizontal: 8 },
-  error: { color: "#c1121f" },
+  error: { color: colors.danger },
 });

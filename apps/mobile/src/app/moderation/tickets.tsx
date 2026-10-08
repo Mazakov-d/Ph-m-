@@ -8,6 +8,7 @@ import { useModeratorTickets, useTicketAction } from "../../features/tickets/api
 import { TicketCard } from "../../features/tickets/components/TicketCard";
 import { ticketErrorMessage } from "../../features/tickets/texts";
 import { useAuth } from "../../providers/AuthProvider";
+import { colors } from "../../components/ui/theme";
 
 const texts = {
   title: "Tickets",
@@ -72,5 +73,5 @@ const styles = StyleSheet.create({
   container: { padding: 16, gap: 12, width: "100%", maxWidth: 720, alignSelf: "center" },
   tabs: { flexDirection: "row", gap: 8 },
   message: { padding: 24, textAlign: "center" },
-  error: { color: "#c1121f" },
+  error: { color: colors.danger },
 });

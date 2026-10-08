@@ -16,6 +16,7 @@ jest.mock("expo-router", () => ({
 }));
 
 const feedPage = { items: [ARTICLE_CARD, OPINION_CARD], nextCursor: null };
+const SEARCH_LABEL = "Rechercher un média, un titre, un sujet…";
 
 describe("FeedScreen (SPEC §4)", () => {
   const fetchMock = jest.spyOn(globalThis, "fetch");
@@ -64,6 +65,7 @@ describe("FeedScreen (SPEC §4)", () => {
     fetchMock.mockResolvedValue(jsonResponse(200, feedPage));
     await renderWithProviders(<FeedScreen />);
     await screen.findByText("Le budget adopté");
+    await fireEvent(screen.getByLabelText(SEARCH_LABEL), "focus");
 
     await fireEvent.press(screen.getByText("Aujourd'hui"));
     await fireEvent.press(screen.getByText("Europe"));
@@ -71,5 +73,34 @@ describe("FeedScreen (SPEC §4)", () => {
     await waitFor(() =>
       expect(feedCalls().at(-1)).toMatch(/\/posts\?today=true&zone=EUROPE&theme=TECH$/),
     );
+  });
+
+  it("shows the filters only once the search bar is touched, then reminds the active ones", async () => {
+    fetchMock.mockResolvedValue(jsonResponse(200, feedPage));
+    await renderWithProviders(<FeedScreen />);
+    await screen.findByText("Le budget adopté");
+    expect(screen.queryByText("Aujourd'hui")).toBeNull();
+
+    await fireEvent(screen.getByLabelText(SEARCH_LABEL), "focus");
+    expect(screen.getByText("Période")).toBeTruthy();
+    expect(screen.getByText("Zone")).toBeTruthy();
+    expect(screen.getByText("Thème")).toBeTruthy();
+    await fireEvent.press(screen.getByText("Local"));
+    await fireEvent.press(screen.getByText("Autre"));
+    await fireEvent.press(screen.getByText("Masquer les filtres"));
+
+    expect(screen.queryByText("Période")).toBeNull();
+    expect(screen.getByText(/Filtres : Local · Autre/)).toBeTruthy();
+  });
+
+  it("shows the start of the article on a card whose third block is the text", async () => {
+    fetchMock.mockResolvedValue(
+      jsonResponse(200, {
+        items: [{ ...ARTICLE_CARD, bodyExcerpt: "Le texte *commence* ainsi…" }],
+        nextCursor: null,
+      }),
+    );
+    await renderWithProviders(<FeedScreen />);
+    expect(await screen.findByText("commence")).toHaveStyle({ fontStyle: "italic" });
   });
 });

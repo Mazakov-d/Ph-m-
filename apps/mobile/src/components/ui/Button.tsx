@@ -1,4 +1,5 @@
 import { ActivityIndicator, Pressable, StyleSheet, Text } from "react-native";
+import { colors } from "./theme";
 
 type ButtonProps = {
   label: string;
@@ -22,7 +23,7 @@ export function Button({ label, onPress, variant = "primary", loading = false }:
       ]}
     >
       {loading ? (
-        <ActivityIndicator color={isPrimary ? "#fff" : "#1d3557"} />
+        <ActivityIndicator color={isPrimary ? colors.onBrand : colors.brand} />
       ) : (
         <Text style={isPrimary ? styles.primaryLabel : styles.secondaryLabel}>{label}</Text>
       )}
@@ -32,9 +33,9 @@ export function Button({ label, onPress, variant = "primary", loading = false }:
 
 const styles = StyleSheet.create({
   button: { borderRadius: 8, paddingVertical: 12, paddingHorizontal: 16, alignItems: "center" },
-  primary: { backgroundColor: "#1d3557" },
-  secondary: { borderWidth: 1, borderColor: "#1d3557" },
+  primary: { backgroundColor: colors.brand },
+  secondary: { borderWidth: 1, borderColor: colors.brand },
   pressed: { opacity: 0.8 },
-  primaryLabel: { color: "#fff", fontWeight: "600", fontSize: 16 },
-  secondaryLabel: { color: "#1d3557", fontWeight: "600", fontSize: 16 },
+  primaryLabel: { color: colors.onBrand, fontWeight: "600", fontSize: 16 },
+  secondaryLabel: { color: colors.brand, fontWeight: "600", fontSize: 16 },
 });

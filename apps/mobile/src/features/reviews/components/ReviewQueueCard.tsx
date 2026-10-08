@@ -1,9 +1,10 @@
-import type { ReviewQueueItemModeration } from "@fama/shared";
+import { type ReviewQueueItemModeration, stripInlineFormatting } from "@fama/shared";
 import { useRouter } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 import { Button } from "../../../components/ui/Button";
 import { postReportReasonLabel } from "../../reports/texts";
 import { formatPublishedAt } from "../../posts/texts";
+import { colors } from "../../../components/ui/theme";
 
 const texts = {
   meta: (editor: string, score: number, views: number) =>
@@ -19,7 +20,7 @@ export function ReviewQueueCard({ item }: { item: ReviewQueueItemModeration }) {
   return (
     <View style={styles.card}>
       <Text style={styles.priority}>{texts.priority(item.priority)}</Text>
-      <Text style={styles.title}>{item.post.title}</Text>
+      <Text style={styles.title}>{stripInlineFormatting(item.post.title)}</Text>
       <Text style={styles.muted}>
         {texts.meta(item.post.editor.pseudo, item.score, item.viewCount)}
       </Text>
@@ -44,8 +45,8 @@ export function ReviewQueueCard({ item }: { item: ReviewQueueItemModeration }) {
 }
 
 const styles = StyleSheet.create({
-  card: { gap: 6, padding: 16, borderRadius: 8, backgroundColor: "#fff" },
-  priority: { color: "#c1121f", fontWeight: "600" },
+  card: { gap: 6, padding: 16, borderRadius: 8, backgroundColor: colors.surface },
+  priority: { color: colors.danger, fontWeight: "600" },
   title: { fontSize: 17, fontWeight: "bold" },
-  muted: { color: "#555" },
+  muted: { color: colors.muted },
 });

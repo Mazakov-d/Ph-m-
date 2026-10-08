@@ -1,15 +1,21 @@
 import { SEARCH_QUERY_MAX_LENGTH } from "@fama/shared";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { colors } from "../../../components/ui/theme";
 
 const texts = {
   placeholder: "Rechercher un média, un titre, un sujet…",
   clear: "Effacer la recherche",
 };
 
-type Props = { value: string; onChange: (value: string) => void };
+type Props = {
+  value: string;
+  onChange: (value: string) => void;
+  /** Interface brief: touching the bar shows the filters. */
+  onFocus: () => void;
+};
 
 /** SPEC §4.4: one search bar at the top of the feed. */
-export function SearchBar({ value, onChange }: Props) {
+export function SearchBar({ value, onChange, onFocus }: Props) {
   return (
     <View style={styles.bar}>
       <TextInput
@@ -17,6 +23,7 @@ export function SearchBar({ value, onChange }: Props) {
         placeholder={texts.placeholder}
         value={value}
         onChangeText={onChange}
+        onFocus={onFocus}
         maxLength={SEARCH_QUERY_MAX_LENGTH}
         returnKeyType="search"
         style={styles.input}
@@ -39,11 +46,11 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: colors.border,
     borderRadius: 20,
     paddingHorizontal: 14,
     paddingVertical: 8,
-    backgroundColor: "#fff",
+    backgroundColor: colors.surface,
   },
   clear: { fontSize: 18, paddingHorizontal: 6 },
 });

@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import { Chip } from "./Chip";
+import { colors } from "./theme";
 
 type ChoiceChipsProps<Value extends string> = {
   label: string;
@@ -39,5 +40,5 @@ const styles = StyleSheet.create({
   field: { gap: 8 },
   label: { fontWeight: "600" },
   chips: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  error: { color: "#c1121f" },
+  error: { color: colors.danger },
 });

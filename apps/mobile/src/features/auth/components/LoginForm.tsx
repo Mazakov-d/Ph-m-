@@ -6,6 +6,7 @@ import { Button } from "../../../components/ui/Button";
 import { TextField } from "../../../components/ui/TextField";
 import { useAuth } from "../../../providers/AuthProvider";
 import { apiErrorMessage, fieldErrorMessage } from "../errorMessages";
+import { colors } from "../../../components/ui/theme";
 
 const texts = {
   email: "Adresse e-mail",
@@ -80,5 +81,5 @@ export function LoginForm({ onSuccess }: { onSuccess: () => void }) {
 
 const styles = StyleSheet.create({
   form: { gap: 16 },
-  formError: { color: "#c1121f" },
+  formError: { color: colors.danger },
 });

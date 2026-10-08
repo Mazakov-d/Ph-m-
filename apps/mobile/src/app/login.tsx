@@ -1,6 +1,7 @@
 import { Link, Stack, useRouter } from "expo-router";
 import { ScrollView, StyleSheet } from "react-native";
 import { LoginForm } from "../features/auth/components/LoginForm";
+import { colors } from "../components/ui/theme";
 
 const texts = {
   title: "Se connecter",
@@ -22,5 +23,5 @@ export default function LoginScreen() {
 
 const styles = StyleSheet.create({
   container: { padding: 24, gap: 24 },
-  link: { color: "#1d3557", textAlign: "center" },
+  link: { color: colors.brand, textAlign: "center" },
 });

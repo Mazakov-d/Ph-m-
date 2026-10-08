@@ -1,7 +1,8 @@
-import type {
-  CommentModeration,
-  ReviewQueueItemModeration,
-  SanctionAppealModeration,
+import {
+  type CommentModeration,
+  type ReviewQueueItemModeration,
+  type SanctionAppealModeration,
+  stripInlineFormatting,
 } from "@fama/shared";
 import { StyleSheet, Text, View } from "react-native";
 import { Button } from "../../../components/ui/Button";
@@ -9,6 +10,7 @@ import { postReportReasonLabel } from "../../reports/texts";
 import { SANCTION_LABELS, sanctionErrorMessage } from "../../sanctions/texts";
 import { useDecideComment, useDecideOpinion, useDecideSanctionAppeal } from "../api";
 import { RemovalDecision } from "./RemovalDecision";
+import { colors } from "../../../components/ui/theme";
 
 function Reports({ reports }: { reports: CommentModeration["reports"] }) {
   return (
@@ -52,8 +54,8 @@ export function OpinionModerationCard({ item }: { item: ReviewQueueItemModeratio
       <Text
         style={styles.meta}
       >{`${item.post.editor.pseudo} · poids ${item.score.toFixed(1)}`}</Text>
-      <Text style={styles.title}>{item.post.title}</Text>
-      <Text>{item.post.summary}</Text>
+      <Text style={styles.title}>{stripInlineFormatting(item.post.title)}</Text>
+      <Text>{stripInlineFormatting(item.post.summary)}</Text>
       <Reports reports={item.reports} />
       {decide.error ? <Text style={styles.error}>{sanctionErrorMessage(decide.error)}</Text> : null}
       <RemovalDecision
@@ -93,10 +95,10 @@ export function SanctionAppealCard({ appeal }: { appeal: SanctionAppealModeratio
 }
 
 const styles = StyleSheet.create({
-  card: { gap: 6, padding: 16, borderRadius: 8, backgroundColor: "#fff" },
+  card: { gap: 6, padding: 16, borderRadius: 8, backgroundColor: colors.surface },
   meta: { fontWeight: "600" },
   title: { fontSize: 17, fontWeight: "bold" },
-  muted: { color: "#555" },
-  quote: { fontStyle: "italic", color: "#333" },
-  error: { color: "#c1121f" },
+  muted: { color: colors.muted },
+  quote: { fontStyle: "italic", color: colors.text },
+  error: { color: colors.danger },
 });

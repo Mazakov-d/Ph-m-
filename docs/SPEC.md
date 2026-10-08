@@ -101,7 +101,8 @@ Deux types (`PostKind`) : `ARTICLE` et `OPINION` (case « Opinion » au moment d
 `zone`, `theme`, `kind`. Images optionnelles (toujours rattachées au post). Vidéos : hors MVP.
 
 - `Zone` : `FRANCE`, `EUROPE`, `INTERNATIONAL`, `LOCAL` (+ champ `region` texte si `LOCAL`).
-- `Theme` : `POLITICS`, `ECONOMY`, `SOCIAL_MOVEMENTS`, `ENVIRONMENT`, `SCIENCE_HEALTH`, `TECH`, `CULTURE`, `SPORT`.
+- `Theme` : `POLITICS`, `ECONOMY`, `SOCIAL_MOVEMENTS`, `ENVIRONMENT`, `SCIENCE_HEALTH`, `TECH`, `CULTURE`, `SPORT`, `OTHER` (« Autre », voir `DECISIONS.md`).
+- Présentation (voir `DECISIONS.md`, refonte de l'interface) : ordre des blocs (`TEXT_FIRST` ou `MEDIA_FIRST`), police de chaque bloc, gras et italique ; les tailles sont fixées par l'app.
 
 |                  | `ARTICLE`                               | `OPINION`                                                               |
 | ---------------- | --------------------------------------- | ----------------------------------------------------------------------- |

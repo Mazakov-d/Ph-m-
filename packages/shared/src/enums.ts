@@ -26,8 +26,20 @@ export const Theme = z.enum([
   "TECH",
   "CULTURE",
   "SPORT",
+  // docs/DECISIONS.md (interface brief): a subject outside the list above.
+  "OTHER",
 ]);
 export type Theme = z.infer<typeof Theme>;
+
+// docs/DECISIONS.md (interface brief): order of the blocks after the title and the summary.
+// TEXT_FIRST: article, then pictures; MEDIA_FIRST: pictures, then article.
+export const PostLayout = z.enum(["TEXT_FIRST", "MEDIA_FIRST"]);
+export type PostLayout = z.infer<typeof PostLayout>;
+
+// docs/DECISIONS.md (interface brief): typeface chosen by the editor for each text block
+// (sizes are fixed by the app). System typefaces, available everywhere without a download.
+export const Typeface = z.enum(["SANS", "SERIF", "MONO"]);
+export type Typeface = z.infer<typeof Typeface>;
 
 // SPEC §5.3
 export const PostReviewStatus = z.enum(["NOT_REVIEWED", "UNDER_REVIEW", "REVIEWED"]);

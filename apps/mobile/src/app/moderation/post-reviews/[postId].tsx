@@ -1,3 +1,4 @@
+import { stripInlineFormatting } from "@fama/shared";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { ScrollView, StyleSheet, Text } from "react-native";
 import { usePost } from "../../../features/posts/api";
@@ -19,8 +20,8 @@ export default function VerdictScreen() {
       <Stack.Screen options={{ title: texts.title }} />
       {post.data ? (
         <>
-          <Text style={styles.title}>{post.data.title}</Text>
-          <Text>{post.data.summary}</Text>
+          <Text style={styles.title}>{stripInlineFormatting(post.data.title)}</Text>
+          <Text>{stripInlineFormatting(post.data.summary)}</Text>
         </>
       ) : null}
       <VerdictForm

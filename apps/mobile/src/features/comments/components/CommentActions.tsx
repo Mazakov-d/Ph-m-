@@ -6,6 +6,7 @@ import { useBlockUser } from "../../users/api";
 import { useDeleteComment } from "../api";
 import { commentErrorMessage } from "../texts";
 import { CommentReportPanel } from "./CommentReportPanel";
+import { colors } from "../../../components/ui/theme";
 
 const texts = {
   reply: "Répondre",
@@ -91,8 +92,8 @@ function Action({ label, onPress }: { label: string; onPress: () => void }) {
 const styles = StyleSheet.create({
   wrap: { gap: 4 },
   row: { flexDirection: "row", flexWrap: "wrap", gap: 16 },
-  action: { color: "#1d3557", fontWeight: "600" },
-  badge: { color: "#2d6a4f", fontWeight: "600" },
-  confirm: { gap: 4, padding: 8, borderRadius: 6, backgroundColor: "#fff3cd" },
-  error: { color: "#c1121f" },
+  action: { color: colors.brand, fontWeight: "600" },
+  badge: { color: colors.success, fontWeight: "600" },
+  confirm: { gap: 4, padding: 8, borderRadius: 6, backgroundColor: colors.notice },
+  error: { color: colors.danger },
 });

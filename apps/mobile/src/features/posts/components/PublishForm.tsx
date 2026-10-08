@@ -1,11 +1,17 @@
-import { createPostInputSchema, DEFAULT_VOTE_OPTIONS, PostKind } from "@fama/shared";
+import {
+  createPostInputSchema,
+  DEFAULT_POST_LAYOUT,
+  DEFAULT_TYPEFACES,
+  DEFAULT_VOTE_OPTIONS,
+  PostKind,
+} from "@fama/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { Controller, type FieldError, useForm, useWatch } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { StyleSheet, Text, View } from "react-native";
 import { Button } from "../../../components/ui/Button";
 import { ChoiceChips } from "../../../components/ui/ChoiceChips";
-import { TextField } from "../../../components/ui/TextField";
+import { colors, spacing } from "../../../components/ui/theme";
 import type { LocalFile } from "../../../lib/formDataFile";
 import { useCreatePost } from "../api";
 import { imagesProblem } from "../images";
@@ -13,25 +19,16 @@ import { postErrorMessage } from "../texts";
 import { ImagesField } from "./ImagesField";
 import { InteractionFields } from "./InteractionFields";
 import { PlacementFields } from "./PlacementFields";
+import { PostTextFields } from "./PostTextFields";
 import { SourcesField } from "./SourcesField";
 
 const KIND_LABELS: Record<PostKind, string> = { ARTICLE: "Article", OPINION: "Opinion" };
-const TEXT_FIELDS = [
-  { name: "title", label: "Titre", multiline: false },
-  { name: "summary", label: "Résumé", multiline: true },
-  { name: "body", label: "Texte", multiline: true },
-] as const;
 
 const texts = {
   kind: "Type de publication",
   sourcesError: "Ajoutez au moins une source (lien ou référence).",
   submit: "Publier",
 };
-
-function fieldMessage(error: FieldError | undefined): string | undefined {
-  if (!error) return undefined;
-  return error.type === "too_big" ? "Texte trop long." : "Champ obligatoire.";
-}
 
 export function PublishForm({ onPublished }: { onPublished: (postId: string) => void }) {
   const createPost = useCreatePost();
@@ -47,6 +44,8 @@ export function PublishForm({ onPublished }: { onPublished: (postId: string) => 
       sources: [""],
       region: null,
       commentsEnabled: true,
+      layout: DEFAULT_POST_LAYOUT,
+      typefaces: { ...DEFAULT_TYPEFACES },
     },
   });
   const { errors } = formState;
@@ -88,23 +87,7 @@ export function PublishForm({ onPublished }: { onPublished: (postId: string) => 
           />
         )}
       />
-      {TEXT_FIELDS.map(({ name, label, multiline }) => (
-        <Controller
-          key={name}
-          control={control}
-          name={name}
-          render={({ field }) => (
-            <TextField
-              label={label}
-              value={field.value}
-              onChangeText={field.onChange}
-              onBlur={field.onBlur}
-              multiline={multiline}
-              error={fieldMessage(errors[name])}
-            />
-          )}
-        />
-      ))}
+      <PostTextFields control={control} errors={errors} />
       <Controller
         control={control}
         name="sources"
@@ -131,6 +114,6 @@ export function PublishForm({ onPublished }: { onPublished: (postId: string) => 
 }
 
 const styles = StyleSheet.create({
-  form: { gap: 16 },
-  error: { color: "#c1121f" },
+  form: { gap: spacing.lg },
+  error: { color: colors.danger },
 });

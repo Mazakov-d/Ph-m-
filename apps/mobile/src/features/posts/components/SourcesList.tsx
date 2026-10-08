@@ -1,4 +1,5 @@
 import { Linking, StyleSheet, Text, View } from "react-native";
+import { colors } from "../../../components/ui/theme";
 
 function isWebLink(source: string): boolean {
   return /^https?:\/\//i.test(source);
@@ -28,5 +29,5 @@ export function SourcesList({ sources }: { sources: string[] }) {
 
 const styles = StyleSheet.create({
   list: { gap: 6 },
-  link: { color: "#1d3557", textDecorationLine: "underline" },
+  link: { color: colors.brand, textDecorationLine: "underline" },
 });

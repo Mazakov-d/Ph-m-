@@ -1,6 +1,16 @@
 import { z } from "zod";
-import { PostKind, PostReviewStatus, Theme, Verdict, Zone } from "../enums.js";
 import {
+  PostKind,
+  PostLayout,
+  PostReviewStatus,
+  Theme,
+  Typeface,
+  Verdict,
+  Zone,
+} from "../enums.js";
+import {
+  DEFAULT_POST_LAYOUT,
+  DEFAULT_TYPEFACES,
   POST_BODY_MAX_LENGTH,
   POST_SUMMARY_MAX_LENGTH,
   POST_TITLE_MAX_LENGTH,
@@ -12,6 +22,14 @@ import {
 import { cursorQuerySchema, idSchema, isoDateTimeSchema, sourceSchema } from "./common.js";
 import { editorSummaryPublicSchema } from "./editor.js";
 import { voteOptionLabelSchema, voteSummaryPublicSchema } from "./vote.js";
+
+// docs/DECISIONS.md (interface brief): one typeface per text block, chosen by the editor.
+export const postTypefacesSchema = z.object({
+  title: Typeface,
+  summary: Typeface,
+  body: Typeface,
+});
+export type PostTypefaces = z.infer<typeof postTypefacesSchema>;
 
 // SPEC §3: title, summary, body, sources (≥ 1 for an article), zone, theme and kind are mandatory.
 // Images are uploaded separately. For an OPINION the API forces commentsEnabled to true.
@@ -27,6 +45,10 @@ export const createPostInputSchema = z
     region: z.string().trim().min(1).max(REGION_MAX_LENGTH).nullable(),
     theme: Theme,
     commentsEnabled: z.boolean().default(true),
+    // docs/DECISIONS.md (interface brief): the editor chooses the order of the blocks and the
+    // typefaces; bold and italic are written in the texts (domain/inline-formatting.ts).
+    layout: PostLayout.default(DEFAULT_POST_LAYOUT),
+    typefaces: postTypefacesSchema.default(DEFAULT_TYPEFACES),
     // SPEC §7: answer choices of an opinion; the defaults apply when omitted.
     voteOptions: z
       .array(voteOptionLabelSchema)
@@ -91,12 +113,19 @@ export const postCorrectionPublicSchema = z.object({
 });
 export type PostCorrectionPublic = z.infer<typeof postCorrectionPublicSchema>;
 
-/** Post card of the feed (SPEC §4, ROADMAP phase 4): no body. */
+/**
+ * Post card of the feed (SPEC §4, ROADMAP phase 4): no full body. docs/DECISIONS.md (interface
+ * brief): the card shows the first three blocks; `bodyExcerpt` is set when the third one is the
+ * article (domain/post-layout.ts), null when it is the pictures.
+ */
 export const postSummaryPublicSchema = z.object({
   id: idSchema,
   kind: PostKind,
   title: z.string(),
   summary: z.string(),
+  bodyExcerpt: z.string().nullable(),
+  layout: PostLayout,
+  typefaces: postTypefacesSchema,
   zone: Zone,
   region: z.string().nullable(),
   theme: Theme,

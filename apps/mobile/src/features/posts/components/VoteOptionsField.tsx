@@ -1,6 +1,7 @@
 import { VOTE_OPTION_LABEL_MAX_LENGTH, VOTE_OPTIONS_MAX, VOTE_OPTIONS_MIN } from "@fama/shared";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { Button } from "../../../components/ui/Button";
+import { colors } from "../../../components/ui/theme";
 
 const texts = {
   label: "Choix de réponse proposés aux lecteurs",
@@ -56,9 +57,9 @@ export function VoteOptionsField({ options, onChange, error }: Props) {
 const styles = StyleSheet.create({
   field: { gap: 8 },
   label: { fontWeight: "600" },
-  hint: { color: "#555" },
+  hint: { color: colors.muted },
   row: { flexDirection: "row", alignItems: "center", gap: 8 },
-  input: { flex: 1, borderWidth: 1, borderColor: "#ccc", borderRadius: 8, padding: 10 },
+  input: { flex: 1, borderWidth: 1, borderColor: colors.border, borderRadius: 8, padding: 10 },
   remove: { fontSize: 18, paddingHorizontal: 8 },
-  error: { color: "#c1121f" },
+  error: { color: colors.danger },
 });

@@ -4,6 +4,7 @@ import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { Button } from "../../../components/ui/Button";
 import type { LocalFile } from "../../../lib/formDataFile";
 import { toLocalImage } from "../images";
+import { colors } from "../../../components/ui/theme";
 
 const texts = {
   label: "Images (facultatif)",
@@ -58,9 +59,9 @@ export function ImagesField({ images, onChange, error }: Props) {
 const styles = StyleSheet.create({
   field: { gap: 8 },
   label: { fontWeight: "600" },
-  hint: { color: "#555" },
+  hint: { color: colors.muted },
   thumbnails: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  thumbnail: { width: 72, height: 72, borderRadius: 6, backgroundColor: "#ddd" },
-  remove: { position: "absolute", top: 2, right: 6, color: "#fff", fontWeight: "bold" },
-  error: { color: "#c1121f" },
+  thumbnail: { width: 72, height: 72, borderRadius: 6, backgroundColor: colors.border },
+  remove: { position: "absolute", top: 2, right: 6, color: colors.onBrand, fontWeight: "bold" },
+  error: { color: colors.danger },
 });

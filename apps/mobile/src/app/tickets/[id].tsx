@@ -6,6 +6,7 @@ import { useTicketAction } from "../../features/tickets/api";
 import { Conversation } from "../../features/tickets/components/Conversation";
 import { ticketErrorMessage } from "../../features/tickets/texts";
 import { useAuth } from "../../providers/AuthProvider";
+import { colors } from "../../components/ui/theme";
 
 const texts = {
   title: "Conversation",
@@ -41,6 +42,6 @@ export default function TicketScreen() {
 
 const styles = StyleSheet.create({
   container: { padding: 16, gap: 12, width: "100%", maxWidth: 720, alignSelf: "center" },
-  notice: { color: "#555", fontStyle: "italic" },
-  error: { color: "#c1121f" },
+  notice: { color: colors.muted, fontStyle: "italic" },
+  error: { color: colors.danger },
 });

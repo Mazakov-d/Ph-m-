@@ -7,6 +7,7 @@ import { formatPublishedAt } from "../../posts/texts";
 import { useReview } from "../api";
 import { APPEAL_STATE_TEXTS, reviewErrorMessage } from "../texts";
 import { EditorReviewActions } from "./EditorReviewActions";
+import { colors } from "../../../components/ui/theme";
 
 const texts = {
   why: "Pourquoi ?",
@@ -62,10 +63,10 @@ export function ReviewPanel({ post }: { post: PostPublic }) {
 
 const styles = StyleSheet.create({
   panel: { gap: 8 },
-  link: { color: "#1d3557", fontWeight: "600" },
-  sheet: { gap: 8, padding: 12, borderRadius: 8, backgroundColor: "#fff" },
+  link: { color: colors.brand, fontWeight: "600" },
+  sheet: { gap: 8, padding: 12, borderRadius: 8, backgroundColor: colors.surface },
   verdict: { fontWeight: "bold" },
   heading: { fontWeight: "600", marginTop: 4 },
-  muted: { color: "#555", fontStyle: "italic" },
-  reply: { gap: 4, padding: 8, borderRadius: 6, backgroundColor: "#eef2f8" },
+  muted: { color: colors.muted, fontStyle: "italic" },
+  reply: { gap: 4, padding: 8, borderRadius: 6, backgroundColor: colors.brandTint },
 });

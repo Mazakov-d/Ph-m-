@@ -1,4 +1,10 @@
-import type { PostPublic, PostSummaryPublic, VoteSummaryPublic } from "@fama/shared";
+import {
+  bodyExcerpt,
+  feedCardThirdBlock,
+  type PostPublic,
+  type PostSummaryPublic,
+  type VoteSummaryPublic,
+} from "@fama/shared";
 import type { PostImage } from "../generated/prisma/client.js";
 import type { PostRecord } from "./post-record.js";
 
@@ -7,17 +13,26 @@ export function imagePath(image: Pick<PostImage, "id" | "postId">): string {
   return `/posts/${image.postId}/images/${image.id}`;
 }
 
-export function toPostSummaryPublic(post: Omit<PostRecord, "body">): PostSummaryPublic {
+export function toPostSummaryPublic(post: PostRecord): PostSummaryPublic {
   const editorStatus = post.author.editorProfile?.status;
   if (!editorStatus) {
     throw new Error(`Author of post ${post.id} has no editor profile`);
   }
   const cover = post.images[0];
+  // docs/DECISIONS.md (interface brief): the card shows the pictures or the start of the article.
+  const thirdBlock = feedCardThirdBlock(post.layout, post.images.length > 0);
   return {
     id: post.id,
     kind: post.kind,
     title: post.title,
     summary: post.summary,
+    bodyExcerpt: thirdBlock === "BODY" ? bodyExcerpt(post.body) : null,
+    layout: post.layout,
+    typefaces: {
+      title: post.titleTypeface,
+      summary: post.summaryTypeface,
+      body: post.bodyTypeface,
+    },
     zone: post.zone,
     region: post.region,
     theme: post.theme,

@@ -48,6 +48,20 @@ enum Theme {
   TECH
   CULTURE
   SPORT
+  OTHER
+}
+
+/// docs/DECISIONS.md (interface brief): order of the blocks after the title and the summary.
+enum PostLayout {
+  TEXT_FIRST
+  MEDIA_FIRST
+}
+
+/// docs/DECISIONS.md (interface brief): typeface of a text block (sizes are fixed by the app).
+enum Typeface {
+  SANS
+  SERIF
+  MONO
 }
 
 enum PostReviewStatus {
@@ -223,6 +237,10 @@ model Post {
   theme           Theme
   // SPEC §3: always true for an OPINION.
   commentsEnabled Boolean          @default(true)
+  layout          PostLayout       @default(TEXT_FIRST)
+  titleTypeface   Typeface         @default(SERIF)
+  summaryTypeface Typeface         @default(SANS)
+  bodyTypeface    Typeface         @default(SERIF)
   reviewStatus    PostReviewStatus @default(NOT_REVIEWED)
   // SPEC §3: unique readers, kept in sync with PostView.
   viewCount       Int              @default(0)

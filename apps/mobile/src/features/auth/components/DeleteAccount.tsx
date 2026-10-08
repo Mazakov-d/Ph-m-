@@ -6,6 +6,7 @@ import { Button } from "../../../components/ui/Button";
 import { TextField } from "../../../components/ui/TextField";
 import { apiClient } from "../../../lib/apiClient";
 import { apiErrorMessage } from "../errorMessages";
+import { colors } from "../../../components/ui/theme";
 
 const texts = {
   open: "Supprimer mon compte",
@@ -53,6 +54,6 @@ export function DeleteAccount() {
 }
 
 const styles = StyleSheet.create({
-  panel: { gap: 8, padding: 12, borderRadius: 8, backgroundColor: "#fdecea" },
-  error: { color: "#c1121f" },
+  panel: { gap: 8, padding: 12, borderRadius: 8, backgroundColor: colors.dangerTint },
+  error: { color: colors.danger },
 });

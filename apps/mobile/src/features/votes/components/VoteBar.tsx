@@ -7,6 +7,7 @@ import { voteErrorMessage } from "../texts";
 import { RevealResults } from "./RevealResults";
 import { VoteChoices } from "./VoteChoices";
 import { VoteResults } from "./VoteResults";
+import { colors } from "../../../components/ui/theme";
 
 const texts = {
   title: "Votre avis",
@@ -75,8 +76,8 @@ export function VoteBar({ post }: { post: PostPublic }) {
 }
 
 const styles = StyleSheet.create({
-  bar: { gap: 10, padding: 16, borderRadius: 8, backgroundColor: "#fff" },
+  bar: { gap: 10, padding: 16, borderRadius: 8, backgroundColor: colors.surface },
   title: { fontSize: 16, fontWeight: "bold" },
-  link: { color: "#1d3557", fontWeight: "600", textAlign: "center" },
-  error: { color: "#c1121f" },
+  link: { color: colors.brand, fontWeight: "600", textAlign: "center" },
+  error: { color: colors.danger },
 });

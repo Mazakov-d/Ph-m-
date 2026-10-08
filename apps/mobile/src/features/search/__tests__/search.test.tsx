@@ -37,6 +37,8 @@ describe("search on the feed (SPEC §4.4)", () => {
   it("shows editors and posts found, with the feed's filters", async () => {
     await renderWithProviders(<FeedScreen />);
     await screen.findByText("Le budget adopté");
+    // Interface brief: the filters show once the search bar is touched.
+    await fireEvent(screen.getByLabelText("Rechercher un média, un titre, un sujet…"), "focus");
     await fireEvent.press(screen.getByText("Europe"));
     await fireEvent.changeText(
       screen.getByLabelText("Rechercher un média, un titre, un sujet…"),

@@ -1,6 +1,7 @@
 import { StyleSheet, Switch, Text, View } from "react-native";
 import { useUpdateEditorProfile } from "../api";
 import { editorErrorMessage } from "../texts";
+import { colors } from "../../../components/ui/theme";
 
 const texts = {
   label: "Afficher mon identité sur mon profil public",
@@ -34,6 +35,6 @@ const styles = StyleSheet.create({
   container: { gap: 4 },
   row: { flexDirection: "row", alignItems: "center", gap: 12 },
   label: { flex: 1, fontWeight: "600" },
-  hint: { color: "#555" },
-  error: { color: "#c1121f" },
+  hint: { color: colors.muted },
+  error: { color: colors.danger },
 });

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Button } from "./Button";
 import { TextField } from "./TextField";
+import { colors } from "./theme";
 
 type Props = {
   label: string;
@@ -52,5 +53,5 @@ export function TextActionForm({ label, submitLabel, maxLength, loading, error, 
 
 const styles = StyleSheet.create({
   form: { gap: 8 },
-  error: { color: "#c1121f" },
+  error: { color: colors.danger },
 });

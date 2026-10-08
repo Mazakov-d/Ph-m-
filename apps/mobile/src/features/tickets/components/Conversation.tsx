@@ -5,6 +5,7 @@ import { Button } from "../../../components/ui/Button";
 import { formatPublishedAt } from "../../posts/texts";
 import { useMessages, useSendMessage } from "../api";
 import { ticketErrorMessage } from "../texts";
+import { colors } from "../../../components/ui/theme";
 
 const texts = {
   placeholder: "Votre message",
@@ -59,9 +60,15 @@ export function Conversation({ ticketId }: { ticketId: string }) {
 const styles = StyleSheet.create({
   conversation: { gap: 10 },
   bubble: { gap: 2, padding: 10, borderRadius: 8, maxWidth: "90%" },
-  team: { backgroundColor: "#eef2f8", alignSelf: "flex-start" },
-  user: { backgroundColor: "#fff", alignSelf: "flex-end" },
-  author: { color: "#555", fontSize: 12 },
-  input: { borderWidth: 1, borderColor: "#ccc", borderRadius: 8, padding: 10, minHeight: 60 },
-  error: { color: "#c1121f" },
+  team: { backgroundColor: colors.brandTint, alignSelf: "flex-start" },
+  user: { backgroundColor: colors.surface, alignSelf: "flex-end" },
+  author: { color: colors.muted, fontSize: 12 },
+  input: {
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 8,
+    padding: 10,
+    minHeight: 60,
+  },
+  error: { color: colors.danger },
 });

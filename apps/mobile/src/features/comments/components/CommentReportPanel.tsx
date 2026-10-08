@@ -9,6 +9,7 @@ import {
   reportErrorMessage,
 } from "../../reports/texts";
 import { useReportComment } from "../api";
+import { colors } from "../../../components/ui/theme";
 
 const texts = {
   reason: "Pourquoi signalez-vous ce commentaire ?",
@@ -66,6 +67,6 @@ export function CommentReportPanel({ commentId, postId, onClose }: Props) {
 }
 
 const styles = StyleSheet.create({
-  panel: { gap: 8, padding: 8, borderRadius: 6, backgroundColor: "#f8f9fa" },
-  error: { color: "#c1121f" },
+  panel: { gap: 8, padding: 8, borderRadius: 6, backgroundColor: colors.background },
+  error: { color: colors.danger },
 });

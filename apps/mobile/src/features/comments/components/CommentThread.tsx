@@ -3,6 +3,7 @@ import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { CommentForm } from "./CommentForm";
 import { CommentItem } from "./CommentItem";
+import { colors } from "../../../components/ui/theme";
 
 type Props = { thread: CommentThreadPublic; canComment: boolean };
 
@@ -32,5 +33,5 @@ export function CommentThread({ thread, canComment }: Props) {
 
 const styles = StyleSheet.create({
   thread: { gap: 8 },
-  replies: { gap: 8, paddingLeft: 16, borderLeftWidth: 2, borderLeftColor: "#ddd" },
+  replies: { gap: 8, paddingLeft: 16, borderLeftWidth: 2, borderLeftColor: colors.border },
 });

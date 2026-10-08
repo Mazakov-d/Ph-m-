@@ -69,6 +69,10 @@ export class PostsService {
           theme: input.theme,
           // SPEC §3: comments are always enabled on an opinion.
           commentsEnabled: input.kind === "OPINION" || input.commentsEnabled,
+          layout: input.layout,
+          titleTypeface: input.typefaces.title,
+          summaryTypeface: input.typefaces.summary,
+          bodyTypeface: input.typefaces.body,
           sources: { create: input.sources.map((value, position) => ({ value, position })) },
           images: { create: imageKeys.map((storageKey, position) => ({ storageKey, position })) },
           // SPEC §7: an opinion gets its editor's answer choices, or the default ones.
@@ -121,9 +125,8 @@ export class PostsService {
       },
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
       take: query.limit + 1,
+      // The body is read for the excerpt of the card (docs/DECISIONS.md, interface brief).
       include: POST_INCLUDE,
-      // The feed shows cards: the body is only sent with the full post.
-      omit: { body: true },
     });
     const page = toPage(rows, query.limit, (row) => row);
     return { items: page.rows.map(toPostSummaryPublic), nextCursor: page.nextCursor };
@@ -176,7 +179,6 @@ export class PostsService {
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
       take: query.limit + 1,
       include: POST_INCLUDE,
-      omit: { body: true },
     });
     const page = toPage(rows, query.limit, (row) => row);
     return { items: page.rows.map(toPostSummaryPublic), nextCursor: page.nextCursor };

@@ -1,4 +1,5 @@
 import { Pressable, StyleSheet, Text } from "react-native";
+import { colors } from "./theme";
 
 type HeaderButtonProps = { label: string; onPress: () => void };
 
@@ -12,5 +13,5 @@ export function HeaderButton({ label, onPress }: HeaderButtonProps) {
 
 const styles = StyleSheet.create({
   button: { paddingHorizontal: 12, paddingVertical: 6 },
-  label: { color: "#1d3557", fontWeight: "600", fontSize: 16 },
+  label: { color: colors.brand, fontWeight: "600", fontSize: 16 },
 });

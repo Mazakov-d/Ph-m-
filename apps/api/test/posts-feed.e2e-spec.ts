@@ -1,11 +1,11 @@
 import type { INestApplication } from "@nestjs/common";
-import { paginated, postSummaryPublicSchema } from "@fama/shared";
+import { FEED_BODY_EXCERPT_LENGTH, paginated, postSummaryPublicSchema } from "@fama/shared";
 import request from "supertest";
 import type { App } from "supertest/types.js";
 import type { PrismaService } from "../src/prisma/prisma.service.js";
 import { createTestApp } from "./support/app.js";
 import { truncateAllTables } from "./support/database.js";
-import { ARTICLE, publishPost } from "./support/posts.js";
+import { ARTICLE, publishPost, sendPost, smallPng } from "./support/posts.js";
 import { signUp } from "./support/users.js";
 
 const feedPage = paginated(postSummaryPublicSchema);
@@ -60,6 +60,23 @@ describe("Public feed (e2e, SPEC §4)", () => {
     const page = feedPage.parse(response.body);
     expect(page.items.map((post) => post.title)).toEqual(["Récent", "Ancien"]);
     expect(response.body.items[0]).not.toHaveProperty("body");
+  });
+
+  it("shows the start of the article, or nothing when the pictures come first (interface brief)", async () => {
+    await publishPost(app, editor.accessToken, { ...ARTICLE, title: "Texte" });
+    const longBody = `${"mot ".repeat(100)}fin`;
+    await publishPost(app, editor.accessToken, { ...ARTICLE, title: "Long", body: longBody });
+    await sendPost(app, editor.accessToken, { ...ARTICLE, title: "Photo", layout: "MEDIA_FIRST" }, [
+      await smallPng(),
+    ]).expect(201);
+    const response = await request(app.getHttpServer()).get("/posts").expect(200);
+    const cards = feedPage.parse(response.body).items;
+    const byTitle = (title: string) => cards.find((card) => card.title === title);
+
+    expect(byTitle("Texte")?.bodyExcerpt).toBe(ARTICLE.body);
+    expect(byTitle("Long")?.bodyExcerpt).toMatch(/^mot .*…$/);
+    expect(byTitle("Long")?.bodyExcerpt?.length).toBeLessThanOrEqual(FEED_BODY_EXCERPT_LENGTH + 1);
+    expect(byTitle("Photo")?.bodyExcerpt).toBeNull();
   });
 
   it("keeps posts of the last 48 hours only (ROADMAP: 49 h is out)", async () => {

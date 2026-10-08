@@ -19,6 +19,8 @@ describe("enums (SPEC)", () => {
       SanctionType: enums.SanctionType.options,
       TicketKind: enums.TicketKind.options,
       TicketStatus: enums.TicketStatus.options,
+      PostLayout: enums.PostLayout.options,
+      Typeface: enums.Typeface.options,
     }).toEqual({
       UserRole: ["READER", "EDITOR", "MODERATOR", "ADMIN"],
       EditorStatus: ["PENDING", "INDEPENDENT", "CERTIFIED", "REJECTED"],
@@ -33,6 +35,7 @@ describe("enums (SPEC)", () => {
         "TECH",
         "CULTURE",
         "SPORT",
+        "OTHER",
       ],
       PostReviewStatus: ["NOT_REVIEWED", "UNDER_REVIEW", "REVIEWED"],
       Verdict: ["ACCURATE", "MISSING_CONTEXT", "MISLEADING", "FALSE", "UNVERIFIABLE"],
@@ -50,6 +53,8 @@ describe("enums (SPEC)", () => {
       SanctionType: ["WARNING", "SUSPENSION_24H", "SUSPENSION_7D", "PERMANENT_BAN"],
       TicketKind: ["SUPPORT", "EDITOR_CHAT"],
       TicketStatus: ["NEW", "ASSIGNED", "CLOSED"],
+      PostLayout: ["TEXT_FIRST", "MEDIA_FIRST"],
+      Typeface: ["SANS", "SERIF", "MONO"],
     });
   });
 

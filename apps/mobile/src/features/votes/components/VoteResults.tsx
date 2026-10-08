@@ -2,6 +2,7 @@ import { computeVotePercentages, type VoteSummaryPublic } from "@fama/shared";
 import { StyleSheet, Text, View } from "react-native";
 import { formatVoteCount } from "../texts";
 import { VoteResultRow } from "./VoteResultRow";
+import { colors } from "../../../components/ui/theme";
 
 const texts = {
   myChoice: (label: string) => ` · votre choix : ${label}`,
@@ -38,5 +39,5 @@ export function VoteResults({ votes }: Props) {
 
 const styles = StyleSheet.create({
   results: { gap: 10 },
-  total: { color: "#555" },
+  total: { color: colors.muted },
 });

@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react-native";
+import { fireEvent, screen } from "@testing-library/react-native";
 import PostScreen from "../app/posts/[id]";
 import { apiClient } from "../lib/apiClient";
 import { ARTICLE_DETAIL } from "../test/fixtures";
@@ -29,9 +29,27 @@ describe("PostScreen", () => {
 
     expect(await screen.findByText("Texte complet de l'article.")).toBeTruthy();
     expect(screen.getByText("Local · Bretagne · Politique")).toBeTruthy();
+    expect(screen.getByText("Non examiné")).toBeTruthy();
+    // Interface brief: the sources stay folded until « Sources » is pressed.
+    expect(screen.queryByText("https://www.insee.fr")).toBeNull();
+    await fireEvent.press(screen.getByText("Sources (2)"));
     expect(screen.getByText("https://www.insee.fr")).toBeTruthy();
     expect(screen.getByText("Compte rendu de séance")).toBeTruthy();
-    expect(screen.getByText("Non examiné")).toBeTruthy();
+  });
+
+  it("shows the pictures before the article when the editor chose so, with bold words", async () => {
+    fetchMock.mockResolvedValueOnce(
+      jsonResponse(200, {
+        ...ARTICLE_DETAIL,
+        body: "Un vote **serré** hier.",
+        layout: "MEDIA_FIRST",
+      }),
+    );
+    await renderWithProviders(<PostScreen />);
+
+    const bold = await screen.findByText("serré");
+    expect(bold).toHaveStyle({ fontWeight: "bold" });
+    expect(screen.queryByText(/\*\*/)).toBeNull();
   });
 
   it("says when the post does not exist", async () => {

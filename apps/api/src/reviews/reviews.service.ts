@@ -35,7 +35,6 @@ export class ReviewsService {
         ...POST_INCLUDE,
         reports: { where: { status: "PENDING" }, orderBy: { createdAt: "asc" } },
       },
-      omit: { body: true },
     });
     return posts
       .map((post) => {
@@ -111,7 +110,7 @@ export class ReviewsService {
       orderBy: { createdAt: "asc" },
       include: {
         review: {
-          include: { editorReply: true, post: { include: POST_INCLUDE, omit: { body: true } } },
+          include: { editorReply: true, post: { include: POST_INCLUDE } },
         },
       },
     });

@@ -10,6 +10,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { type EditorReviewAction, useEditorReviewAction } from "../api";
 import { reviewErrorMessage } from "../texts";
 import { TextActionForm } from "../../../components/ui/TextActionForm";
+import { colors } from "../../../components/ui/theme";
 
 const texts = {
   intro:
@@ -89,5 +90,5 @@ function Action({ postId, action, label, submit, max }: ActionProps) {
 
 const styles = StyleSheet.create({
   actions: { gap: 8, marginTop: 8 },
-  intro: { color: "#555" },
+  intro: { color: colors.muted },
 });

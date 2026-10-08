@@ -1,6 +1,7 @@
 import { Link } from "expo-router";
 import { StyleSheet, View } from "react-native";
 import { type LegalPage, LEGAL_PAGES } from "./texts";
+import { colors } from "../../components/ui/theme";
 
 const PAGES: LegalPage[] = ["rules", "privacy", "legal-notice"];
 
@@ -19,5 +20,5 @@ export function LegalLinks() {
 
 const styles = StyleSheet.create({
   links: { gap: 8, marginTop: 16, alignItems: "center" },
-  link: { color: "#1d3557" },
+  link: { color: colors.brand },
 });

@@ -8,6 +8,7 @@ import { EditorApplicationForm } from "../features/editors/components/EditorAppl
 import { IdentityVisibilitySwitch } from "../features/editors/components/IdentityVisibilitySwitch";
 import { editorErrorMessage } from "../features/editors/texts";
 import { useAuth } from "../providers/AuthProvider";
+import { colors } from "../components/ui/theme";
 
 const texts = {
   title: "Espace éditeur",
@@ -70,6 +71,6 @@ export default function EditorSpaceScreen() {
 
 const styles = StyleSheet.create({
   container: { padding: 24, gap: 24 },
-  error: { color: "#c1121f" },
-  link: { color: "#1d3557" },
+  error: { color: colors.danger },
+  link: { color: colors.brand },
 });

@@ -1,4 +1,5 @@
 import { StyleSheet, Text, TextInput, type TextInputProps, View } from "react-native";
+import { colors } from "./theme";
 
 type TextFieldProps = Omit<TextInputProps, "style"> & {
   label: string;
@@ -26,7 +27,7 @@ export function TextField({ label, error, ...inputProps }: TextFieldProps) {
 const styles = StyleSheet.create({
   field: { gap: 4 },
   label: { fontWeight: "600" },
-  input: { borderWidth: 1, borderColor: "#ccc", borderRadius: 8, padding: 10, fontSize: 16 },
-  inputError: { borderColor: "#c1121f" },
-  error: { color: "#c1121f" },
+  input: { borderWidth: 1, borderColor: colors.border, borderRadius: 8, padding: 10, fontSize: 16 },
+  inputError: { borderColor: colors.danger },
+  error: { color: colors.danger },
 });

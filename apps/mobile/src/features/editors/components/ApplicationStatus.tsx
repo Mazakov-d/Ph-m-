@@ -1,6 +1,7 @@
 import type { EditorApplicationPublic } from "@fama/shared";
 import { StyleSheet, Text, View } from "react-native";
 import { APPLICATION_STATUS_TEXTS } from "../texts";
+import { colors } from "../../../components/ui/theme";
 
 export function ApplicationStatus({ application }: { application: EditorApplicationPublic }) {
   return (
@@ -12,6 +13,6 @@ export function ApplicationStatus({ application }: { application: EditorApplicat
 }
 
 const styles = StyleSheet.create({
-  card: { gap: 4, padding: 16, borderRadius: 8, backgroundColor: "#e9ecef" },
+  card: { gap: 4, padding: 16, borderRadius: 8, backgroundColor: colors.subtle },
   status: { fontWeight: "600" },
 });

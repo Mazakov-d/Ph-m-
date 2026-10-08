@@ -1,6 +1,7 @@
 import { useRouter } from "expo-router";
 import type { ReactElement } from "react";
 import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import { colors, radius, spacing } from "../../../components/ui/theme";
 import { EditorBadge } from "../../editors/components/EditorBadge";
 import type { FeedFilters } from "../../posts/api";
 import { PostCard } from "../../posts/components/PostCard";
@@ -13,10 +14,10 @@ const texts = {
   empty: "Aucun résultat pour cette recherche et ces filtres.",
 };
 
-type Props = { q: string; filters: FeedFilters; header: ReactElement };
+type Props = { q: string; filters: FeedFilters; header: ReactElement; columns: number };
 
 /** SPEC §4.4: results split between editors and posts. */
-export function SearchResults({ q, filters, header }: Props) {
+export function SearchResults({ q, filters, header, columns }: Props) {
   const router = useRouter();
   const search = useSearch(q, filters);
   const editors = search.data?.editors ?? [];
@@ -24,6 +25,10 @@ export function SearchResults({ q, filters, header }: Props) {
 
   return (
     <FlatList
+      // Interface brief: several columns on a wide screen (a new list when the count changes).
+      key={columns}
+      numColumns={columns}
+      columnWrapperStyle={columns > 1 ? styles.row : undefined}
       data={posts}
       keyExtractor={(post) => post.id}
       renderItem={({ item }) => <PostCard post={item} />}
@@ -58,18 +63,27 @@ export function SearchResults({ q, filters, header }: Props) {
 }
 
 const styles = StyleSheet.create({
-  list: { gap: 12, paddingBottom: 24, width: "100%", maxWidth: 720, alignSelf: "center" },
-  header: { gap: 8 },
-  heading: { fontSize: 16, fontWeight: "bold", marginHorizontal: 16, marginTop: 8 },
+  list: {
+    gap: spacing.md,
+    padding: spacing.lg,
+    paddingBottom: spacing.xl,
+    width: "100%",
+    maxWidth: 1200,
+    alignSelf: "center",
+  },
+  row: { gap: spacing.md },
+  header: { gap: spacing.sm },
+  heading: { fontSize: 16, fontWeight: "bold", marginTop: spacing.sm },
   editor: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
-    marginHorizontal: 16,
-    padding: 12,
-    borderRadius: 8,
-    backgroundColor: "#fff",
+    gap: spacing.sm,
+    padding: spacing.md,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
   },
   pseudo: { fontWeight: "600" },
-  message: { textAlign: "center", padding: 24 },
+  message: { textAlign: "center", padding: spacing.xl },
 });

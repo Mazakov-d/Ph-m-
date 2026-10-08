@@ -3,6 +3,7 @@ import { getDocumentAsync } from "expo-document-picker";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Button } from "../../../components/ui/Button";
 import { type PickedDocument, toPickedDocument } from "../documents";
+import { colors } from "../../../components/ui/theme";
 
 const texts = {
   label: "Documents d'identité",
@@ -60,9 +61,9 @@ export function DocumentPickerField({ documents, onChange, error }: Props) {
 const styles = StyleSheet.create({
   field: { gap: 8 },
   label: { fontWeight: "600" },
-  hint: { color: "#555" },
+  hint: { color: colors.muted },
   document: { flexDirection: "row", alignItems: "center", gap: 8 },
   name: { flex: 1 },
   remove: { fontSize: 18, paddingHorizontal: 8 },
-  error: { color: "#c1121f" },
+  error: { color: colors.danger },
 });

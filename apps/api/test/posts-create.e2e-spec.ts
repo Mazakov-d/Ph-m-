@@ -101,6 +101,45 @@ describe("Publishing a post (e2e, SPEC §3)", () => {
     });
   });
 
+  describe("layout and typefaces (docs/DECISIONS.md, interface brief)", () => {
+    it("gives the default order and typefaces when the editor keeps them", async () => {
+      const response = await sendPost(app, editorToken).expect(201);
+      expect(postPublicSchema.parse(response.body)).toMatchObject({
+        layout: "TEXT_FIRST",
+        typefaces: { title: "SERIF", summary: "SANS", body: "SERIF" },
+      });
+    });
+
+    it("keeps the editor's order, typefaces and bold or italic words", async () => {
+      const response = await sendPost(app, editorToken, {
+        ...ARTICLE,
+        title: "Le budget **adopté**",
+        body: "Un vote *serré* hier.",
+        layout: "MEDIA_FIRST",
+        typefaces: { title: "MONO", summary: "SERIF", body: "SANS" },
+      }).expect(201);
+      expect(postPublicSchema.parse(response.body)).toMatchObject({
+        title: "Le budget **adopté**",
+        body: "Un vote *serré* hier.",
+        layout: "MEDIA_FIRST",
+        typefaces: { title: "MONO", summary: "SERIF", body: "SANS" },
+      });
+    });
+
+    it("refuses an unknown typeface", async () => {
+      await sendPost(app, editorToken, {
+        ...ARTICLE,
+        typefaces: { title: "COMIC", summary: "SANS", body: "SANS" },
+      }).expect(400);
+    });
+
+    it("accepts the « Autre » theme", async () => {
+      const response = await sendPost(app, editorToken, { ...ARTICLE, theme: "OTHER" });
+      expect(response.status).toBe(201);
+      expect(response.body).toMatchObject({ theme: "OTHER" });
+    });
+  });
+
   describe("answer choices of an opinion (SPEC §7)", () => {
     const OPINION = { ...ARTICLE, kind: "OPINION" };
 

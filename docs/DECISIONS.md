@@ -354,3 +354,33 @@ qui la remplace.
     limitation de débit garde ses compteurs en mémoire (sinon ajouter Redis).
 - **Pourquoi** : rester libre de l'hébergeur tant qu'il n'est pas choisi ; l'image a été construite
   et démarrée localement (migrations appliquées, `/health` répond).
+
+## 2026-10-08 — Refonte de l'interface d'après `interface.txt` (sans validation)
+
+- **Question** : la phase 10 bis attendait la direction visuelle du porteur du projet ; il l'a
+  décrite dans `interface.txt`. Plusieurs points demandaient un choix technique.
+- **Décision** (prise sans validation, à relire) :
+  - **Ordre des blocs** : l'éditeur choisit « titre, résumé, texte, photos » (`TEXT_FIRST`, par
+    défaut) ou « titre, résumé, photos, texte » (`MEDIA_FIRST`). La carte du fil montre les trois
+    premiers blocs : la photo de couverture, ou le début du texte (280 caractères, coupé sur un
+    mot). Un post `MEDIA_FIRST` sans photo montre son texte. Les vidéos restent hors MVP (phase 12).
+  - **Mise en forme** : une police par champ (titre, résumé, texte) parmi trois polices système
+    (sans empattement, avec empattement, machine à écrire), sans téléchargement ; les tailles sont
+    fixées par l'app. Gras et italique s'écrivent `**gras**` et `*italique*` (boutons B et I qui
+    entourent la sélection, aperçu sous le champ). Les écrans de modération montrent le texte sans
+    mise en forme. Les marques comptent dans les longueurs maximales.
+  - **Thème « Autre »** (`OTHER`) ajouté, pour les sujets hors de la liste. (Autre lecture
+    possible du brief : pouvoir choisir plusieurs thèmes à la fois ; non retenue.)
+  - **Page d'un post** : le post est dans un cadre ; l'espace commentaires sort de dessous le
+    cadre, un peu plus étroit ; les sources sont repliées derrière un bouton « Sources (n) » qui
+    ouvre une fenêtre ; la zone de saisie d'un commentaire est en bas, la touche Entrée publie.
+  - **Filtres** : affichés quand on touche la barre de recherche, regroupés (Période, Zone, Thème)
+    avec la phrase « Combinez une période, une zone et un thème. » ; une fois masqués, un rappel
+    « Filtres : … · Modifier » reste visible s'il y en a d'actifs.
+  - **Web et tablettes** : le fil et les résultats de recherche passent à 2 colonnes à partir de
+    760 px de large, 3 à partir de 1140 px.
+  - **Base visuelle** : couleurs, espacements et tailles de texte regroupés dans
+    `apps/mobile/src/components/ui/theme.ts` (bleu marine `#1d3557` conservé comme couleur
+    principale, fond gris clair, cartes blanches bordées).
+- **Pourquoi** : suivre le brief au plus près sans ajouter de dépendance (éditeur de texte riche,
+  polices téléchargées) ; tout reste réglable dans `theme.ts`.

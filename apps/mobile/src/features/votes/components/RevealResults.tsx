@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Button } from "../../../components/ui/Button";
+import { colors } from "../../../components/ui/theme";
 
 const texts = {
   reveal: "Voir sans voter",
@@ -29,6 +30,6 @@ export function RevealResults({ onConfirm, loading }: { onConfirm: () => void; l
 }
 
 const styles = StyleSheet.create({
-  link: { color: "#1d3557", fontWeight: "600", textAlign: "center" },
-  confirm: { gap: 8, padding: 12, borderRadius: 8, backgroundColor: "#fff3cd" },
+  link: { color: colors.brand, fontWeight: "600", textAlign: "center" },
+  confirm: { gap: 8, padding: 12, borderRadius: 8, backgroundColor: colors.notice },
 });

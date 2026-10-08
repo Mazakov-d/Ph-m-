@@ -1,4 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
+import { colors } from "../../../components/ui/theme";
 
 type Props = { label: string; percentage: number; isMine: boolean };
 
@@ -25,7 +26,7 @@ const styles = StyleSheet.create({
   row: { gap: 4 },
   labels: { flexDirection: "row", justifyContent: "space-between", gap: 8 },
   mine: { fontWeight: "bold" },
-  track: { height: 8, borderRadius: 4, backgroundColor: "#e9ecef", overflow: "hidden" },
-  fill: { height: "100%", backgroundColor: "#a8b8d0" },
-  mineFill: { backgroundColor: "#1d3557" },
+  track: { height: 8, borderRadius: 4, backgroundColor: colors.subtle, overflow: "hidden" },
+  fill: { height: "100%", backgroundColor: colors.brandMuted },
+  mineFill: { backgroundColor: colors.brand },
 });

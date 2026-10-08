@@ -2,6 +2,7 @@ import { can, type PostPublic } from "@fama/shared";
 import { Link } from "expo-router";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { Button } from "../../../components/ui/Button";
+import { colors, textSizes, spacing } from "../../../components/ui/theme";
 import { useAuth } from "../../../providers/AuthProvider";
 import { formatCommentCount } from "../../posts/texts";
 import { useComments } from "../api";
@@ -41,7 +42,6 @@ export function CommentsSection({ post }: { post: PostPublic }) {
       <Text
         style={styles.title}
       >{`${texts.title} · ${formatCommentCount(post.commentCount)}`}</Text>
-      {formOrNotice()}
       {comments.isPending ? <ActivityIndicator /> : null}
       {comments.error ? <Text>{commentErrorMessage(comments.error)}</Text> : null}
       {threads.map((thread) => (
@@ -55,13 +55,15 @@ export function CommentsSection({ post }: { post: PostPublic }) {
           onPress={() => void comments.fetchNextPage()}
         />
       ) : null}
+      {/* Interface brief: the text zone comes at the bottom of the comments. */}
+      {formOrNotice()}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  section: { gap: 16, marginTop: 16 },
-  title: { fontSize: 18, fontWeight: "bold" },
-  notice: { color: "#555" },
-  link: { color: "#1d3557", fontWeight: "600" },
+  section: { gap: spacing.lg },
+  title: { fontSize: textSizes.cardTitle, fontWeight: "bold", color: colors.text },
+  notice: { color: colors.muted },
+  link: { color: colors.brand, fontWeight: "600" },
 });

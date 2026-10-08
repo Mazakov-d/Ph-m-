@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { formatPublishedAt } from "../../posts/texts";
 import { TICKET_KIND_LABELS, TICKET_STATUS_LABELS } from "../texts";
+import { colors } from "../../../components/ui/theme";
 
 type Props = {
   ticket: TicketPublic | TicketModeration;
@@ -28,8 +29,8 @@ export function TicketCard({ ticket, onPress, action }: Props) {
 }
 
 const styles = StyleSheet.create({
-  card: { gap: 8, padding: 16, borderRadius: 8, backgroundColor: "#fff" },
+  card: { gap: 8, padding: 16, borderRadius: 8, backgroundColor: colors.surface },
   body: { gap: 4 },
-  meta: { color: "#555" },
+  meta: { color: colors.muted },
   who: { fontWeight: "600" },
 });

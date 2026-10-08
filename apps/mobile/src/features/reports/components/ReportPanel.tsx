@@ -6,6 +6,7 @@ import { ChoiceChips } from "../../../components/ui/ChoiceChips";
 import { TextField } from "../../../components/ui/TextField";
 import { useReportPost } from "../api";
 import { POST_REPORT_REASON_LABELS, reportErrorMessage } from "../texts";
+import { colors } from "../../../components/ui/theme";
 
 const texts = {
   reason: "Pourquoi signalez-vous cette publication ?",
@@ -65,6 +66,6 @@ export function ReportPanel({ postId, onClose }: Props) {
 }
 
 const styles = StyleSheet.create({
-  panel: { gap: 12, padding: 12, borderRadius: 8, backgroundColor: "#fff" },
-  error: { color: "#c1121f" },
+  panel: { gap: 12, padding: 12, borderRadius: 8, backgroundColor: colors.surface },
+  error: { color: colors.danger },
 });

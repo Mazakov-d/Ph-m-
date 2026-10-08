@@ -4,6 +4,7 @@ import { TextActionForm } from "../../../components/ui/TextActionForm";
 import { formatPublishedAt } from "../../posts/texts";
 import { useAppealSanction } from "../api";
 import { SANCTION_APPEAL_TEXTS, SANCTION_LABELS, sanctionErrorMessage } from "../texts";
+import { colors } from "../../../components/ui/theme";
 
 const texts = {
   cause: (sanction: SanctionPublic) =>
@@ -44,8 +45,8 @@ export function SanctionCard({ sanction }: { sanction: SanctionPublic }) {
 }
 
 const styles = StyleSheet.create({
-  card: { gap: 6, padding: 16, borderRadius: 8, backgroundColor: "#fff" },
+  card: { gap: 6, padding: 16, borderRadius: 8, backgroundColor: colors.surface },
   type: { fontSize: 17, fontWeight: "bold" },
-  muted: { color: "#555" },
+  muted: { color: colors.muted },
   appeal: { fontStyle: "italic" },
 });

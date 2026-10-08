@@ -63,6 +63,8 @@ describe("PublishForm (SPEC §3)", () => {
       region: null,
       theme: "POLITICS",
       commentsEnabled: true,
+      layout: "TEXT_FIRST",
+      typefaces: { title: "SERIF", summary: "SANS", body: "SERIF" },
     });
   });
 

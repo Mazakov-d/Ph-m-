@@ -7,6 +7,7 @@ import { ApplicationReviewCard } from "../../features/editors/components/Applica
 import { useEditorApplications } from "../../features/editors/moderationApi";
 import { editorErrorMessage } from "../../features/editors/texts";
 import { useAuth } from "../../providers/AuthProvider";
+import { colors } from "../../components/ui/theme";
 
 const texts = {
   title: "Demandes éditeurs",
@@ -76,5 +77,5 @@ const styles = StyleSheet.create({
   container: { padding: 24 },
   filters: { padding: 16, gap: 8 },
   list: { padding: 16, gap: 16 },
-  error: { color: "#c1121f", paddingHorizontal: 16 },
+  error: { color: colors.danger, paddingHorizontal: 16 },
 });

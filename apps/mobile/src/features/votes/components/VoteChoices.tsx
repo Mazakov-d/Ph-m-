@@ -2,6 +2,7 @@ import type { VoteOptionPublic } from "@fama/shared";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Button } from "../../../components/ui/Button";
+import { colors } from "../../../components/ui/theme";
 
 const texts = {
   validate: "Valider mon vote",
@@ -53,12 +54,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 10,
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: colors.border,
     borderRadius: 8,
     padding: 12,
   },
-  selected: { borderColor: "#1d3557", backgroundColor: "#eef2f8" },
-  radio: { fontSize: 16, color: "#666" },
-  selectedText: { color: "#1d3557", fontWeight: "600" },
-  final: { color: "#555" },
+  selected: { borderColor: colors.brand, backgroundColor: colors.brandTint },
+  radio: { fontSize: 16, color: colors.muted },
+  selectedText: { color: colors.brand, fontWeight: "600" },
+  final: { color: colors.muted },
 });

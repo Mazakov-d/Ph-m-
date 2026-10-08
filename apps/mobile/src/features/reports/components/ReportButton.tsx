@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Pressable, StyleSheet, Text } from "react-native";
 import { useAuth } from "../../../providers/AuthProvider";
 import { ReportPanel } from "./ReportPanel";
+import { colors } from "../../../components/ui/theme";
 
 const texts = {
   report: "Signaler",
@@ -34,6 +35,6 @@ export function ReportButton({ post }: { post: PostPublic }) {
 }
 
 const styles = StyleSheet.create({
-  link: { color: "#c1121f", fontWeight: "600" },
-  reported: { color: "#666", fontStyle: "italic" },
+  link: { color: colors.danger, fontWeight: "600" },
+  reported: { color: colors.muted, fontStyle: "italic" },
 });

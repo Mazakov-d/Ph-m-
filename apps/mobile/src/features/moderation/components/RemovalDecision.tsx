@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { StyleSheet, Switch, Text, View } from "react-native";
 import { Button } from "../../../components/ui/Button";
+import { colors } from "../../../components/ui/theme";
 
 export type RemovalChoice = { isDiscrimination: boolean; reportToPharos: boolean };
 
@@ -77,7 +78,7 @@ function Toggle({
 
 const styles = StyleSheet.create({
   actions: { gap: 8 },
-  panel: { gap: 8, padding: 12, borderRadius: 8, backgroundColor: "#fff3cd" },
+  panel: { gap: 8, padding: 12, borderRadius: 8, backgroundColor: colors.notice },
   toggle: { flexDirection: "row", alignItems: "center", gap: 12 },
   toggleLabel: { flex: 1 },
 });

@@ -1,6 +1,7 @@
 import type { EditorStatus } from "@fama/shared";
 import { StyleSheet, Text } from "react-native";
 import { EDITOR_BADGES } from "../texts";
+import { colors } from "../../../components/ui/theme";
 
 export function EditorBadge({ status }: { status: EditorStatus }) {
   const label = EDITOR_BADGES[status];
@@ -23,6 +24,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     overflow: "hidden",
   },
-  certified: { backgroundColor: "#1d3557", color: "#fff" },
-  independent: { backgroundColor: "#e9ecef", color: "#1d3557" },
+  certified: { backgroundColor: colors.brand, color: colors.onBrand },
+  independent: { backgroundColor: colors.subtle, color: colors.brand },
 });

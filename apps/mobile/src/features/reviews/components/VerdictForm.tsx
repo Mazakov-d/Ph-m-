@@ -12,6 +12,7 @@ import { Button } from "../../../components/ui/Button";
 import { ChoiceChips } from "../../../components/ui/ChoiceChips";
 import { TextField } from "../../../components/ui/TextField";
 import { SourcesField } from "../../posts/components/SourcesField";
+import { colors } from "../../../components/ui/theme";
 
 // « faux » → « Faux » for the choice buttons.
 const capitalize = (label: string) => label.charAt(0).toUpperCase() + label.slice(1);
@@ -95,5 +96,5 @@ export function VerdictForm({ onSubmit, loading, error }: Props) {
 
 const styles = StyleSheet.create({
   form: { gap: 16 },
-  error: { color: "#c1121f" },
+  error: { color: colors.danger },
 });
