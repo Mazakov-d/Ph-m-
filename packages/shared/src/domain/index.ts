@@ -12,3 +12,4 @@ export * from "./editor-window.js";
 export * from "./sanction-effects.js";
 export * from "./inline-formatting.js";
 export * from "./post-layout.js";
+export * from "./weighted-feed.js";

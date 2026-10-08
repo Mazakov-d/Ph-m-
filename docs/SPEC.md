@@ -131,6 +131,7 @@ Deux types (`PostKind`) : `ARTICLE` et `OPINION` (case « Opinion » au moment d
 - Tirage pondéré : poids = f(fraîcheur, statut de fiabilité).
 - Division par √n : `poids_article = poids / sqrt(n)` où n = posts de l'éditeur dans la fenêtre.
 - Espacement : un même éditeur n'apparaît pas deux fois dans `FEED_SPACING` (4) posts consécutifs.
+- Choix « À la une » dans les filtres ; le fil reste chronologique par défaut. Fonction de poids, tirage et pagination : voir `DECISIONS.md`.
 
 ### 4.3 Filtres (combinables entre eux)
 

@@ -73,6 +73,17 @@ describe("FeedScreen (SPEC §4)", () => {
     expect(screen.getByText(/Filtres : Local · Autre/)).toBeTruthy();
   });
 
+  it("asks for the weighted draw « À la une », with the reader's seed (SPEC §4.2)", async () => {
+    fetchMock.mockResolvedValue(jsonResponse(200, feedPage));
+    await renderWithProviders(<FeedScreen />);
+    await screen.findByText("Le budget adopté");
+    await fireEvent(screen.getByLabelText(SEARCH_LABEL), "focus");
+    await fireEvent.press(screen.getByText("À la une"));
+    await waitFor(() => expect(feedCalls().at(-1)).toMatch(/\/posts\?sort=WEIGHTED&seed=[\w-]+$/));
+    await fireEvent.press(screen.getByText("Masquer les filtres"));
+    expect(screen.getByText(/Filtres : À la une/)).toBeTruthy();
+  });
+
   it("closes the filters with a press outside them (interface brief)", async () => {
     fetchMock.mockResolvedValue(jsonResponse(200, feedPage));
     await renderWithProviders(<FeedScreen />);

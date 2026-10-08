@@ -3,11 +3,14 @@ import type { ReactNode } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Chip } from "../../../components/ui/Chip";
 import { colors, radius, spacing, textSizes } from "../../../components/ui/theme";
-import type { FeedFilters } from "../api";
+import { type FeedFilters, NO_FILTERS } from "../api";
 import { THEME_LABELS, ZONE_LABELS } from "../texts";
 
 const texts = {
   hint: "Combinez une période, une zone et un thème.",
+  order: "Ordre",
+  recent: "Plus récents",
+  weighted: "À la une",
   period: "Période",
   today: "Aujourd'hui",
   zone: "Zone",
@@ -30,6 +33,19 @@ export function FeedFiltersPanel({ filters, onChange, onClose }: Props) {
   return (
     <View style={styles.panel}>
       <Text style={styles.hint}>{texts.hint}</Text>
+      {/* docs/DECISIONS.md (SPEC §4.2): newest first by default, or the weighted feed. */}
+      <FilterGroup title={texts.order}>
+        <Chip
+          label={texts.recent}
+          selected={filters.sort === "RECENT"}
+          onPress={() => onChange({ ...filters, sort: "RECENT" })}
+        />
+        <Chip
+          label={texts.weighted}
+          selected={filters.sort === "WEIGHTED"}
+          onPress={() => onChange({ ...filters, sort: "WEIGHTED" })}
+        />
+      </FilterGroup>
       <FilterGroup title={texts.period}>
         <Chip
           label={texts.today}
@@ -58,10 +74,7 @@ export function FeedFiltersPanel({ filters, onChange, onClose }: Props) {
         ))}
       </FilterGroup>
       <View style={styles.footer}>
-        <Pressable
-          accessibilityRole="button"
-          onPress={() => onChange({ today: false, zone: null, theme: null })}
-        >
+        <Pressable accessibilityRole="button" onPress={() => onChange(NO_FILTERS)}>
           <Text style={styles.link}>{texts.reset}</Text>
         </Pressable>
         <Pressable accessibilityRole="button" onPress={onClose}>

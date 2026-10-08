@@ -256,7 +256,7 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 
 ## Après le MVP (ne pas commencer sans validation)
 
-- [ ] Fil pondéré : tirage, division par √n, règle d'espacement (§4.2).
+- [x] Fil pondéré : tirage, division par √n, règle d'espacement (§4.2).
 - [ ] Jauge de fiabilité des comptes éditeurs (§5.7).
 - [ ] « Voir les similaires » et « X autres médias en parlent » (§9).
 - [ ] Notifications push. Choix des notifications par filtre ("je veux etre informe des nouveaux post sur la politique") possibilite de creer plusieurs alerte ("je veux etre informe des nouveaux post de sport en France")

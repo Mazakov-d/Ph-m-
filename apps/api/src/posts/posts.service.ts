@@ -21,6 +21,7 @@ import { VotesService } from "../votes/votes.service.js";
 import { type PostImageType, sanitizeImage } from "./post-images.js";
 import { POST_INCLUDE, type PostRecord } from "./post-record.js";
 import { toPostPublic, toPostSummaryPublic } from "./posts.mapper.js";
+import { WeightedFeedService } from "./weighted-feed.service.js";
 
 export type UploadedImage = { bytes: Uint8Array; type: PostImageType };
 
@@ -30,6 +31,7 @@ export class PostsService {
     private readonly prisma: PrismaService,
     private readonly storage: StorageService,
     private readonly votesService: VotesService,
+    private readonly weightedFeed: WeightedFeedService,
   ) {}
 
   /** A full post as seen by `viewerId` (their vote, and the totals if they may see them). */
@@ -99,7 +101,7 @@ export class PostsService {
   /**
    * SPEC §4.1 and §4.3: posts of the last 48 hours (or 24 with `today`), newest first, with the
    * zone and theme filters, without the authors the reader blocked (SPEC §10).
-   * Votes never play a part in the order (SPEC §7).
+   * Votes never play a part in the order (SPEC §7). « À la une » is the weighted feed (§4.2).
    */
   async feed(
     viewer: AuthUser | null,
@@ -107,6 +109,9 @@ export class PostsService {
     now: Date = new Date(),
   ): Promise<Paginated<PostSummaryPublic>> {
     const blockedIds = viewer ? await this.blockedAuthorIds(viewer.id) : [];
+    if (query.sort === "WEIGHTED") {
+      return this.weightedFeed.page(query, blockedIds, now);
+    }
     const after = query.cursor ? decodeCursor(query.cursor) : null;
     const rows = await this.prisma.post.findMany({
       where: {

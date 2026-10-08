@@ -11,6 +11,7 @@ import {
 import {
   DEFAULT_POST_LAYOUT,
   DEFAULT_TYPEFACES,
+  FEED_SEED_MAX_LENGTH,
   POST_BODY_MAX_LENGTH,
   POST_SUMMARY_MAX_LENGTH,
   POST_TITLE_MAX_LENGTH,
@@ -91,11 +92,19 @@ export type UpdatePostCommentsInput = z.infer<typeof updatePostCommentsInputSche
 // a post twice is counted once (SPEC §3: unique readers).
 export const VIEWER_SESSION_HEADER = "x-fama-session";
 
+// docs/DECISIONS.md (SPEC §4.2): the feed is chronological (RECENT) by default; « À la une »
+// (WEIGHTED) is the weighted draw.
+export const FeedSort = z.enum(["RECENT", "WEIGHTED"]);
+export type FeedSort = z.infer<typeof FeedSort>;
+
 // SPEC §4.3: combinable filters of the feed. `today` comes from the query string ("true"/"false").
+// `seed` fixes the weighted draw of a reader while they scroll (a new one gives a new draw).
 export const postQuerySchema = cursorQuerySchema.extend({
   today: z.stringbool().default(false),
   zone: Zone.optional(),
   theme: Theme.optional(),
+  sort: FeedSort.default("RECENT"),
+  seed: z.string().min(1).max(FEED_SEED_MAX_LENGTH).optional(),
 });
 export type PostQuery = z.infer<typeof postQuerySchema>;
 

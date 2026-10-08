@@ -102,8 +102,18 @@ describe("createPostInputSchema — answer choices (SPEC §7)", () => {
 });
 
 describe("postQuerySchema (SPEC §4.3)", () => {
-  it("has no filter by default", () => {
-    expect(postQuerySchema.parse({})).toEqual({ limit: 20, today: false });
+  it("has no filter by default and is chronological", () => {
+    expect(postQuerySchema.parse({})).toEqual({ limit: 20, today: false, sort: "RECENT" });
+  });
+
+  it("accepts the weighted feed with a seed of at most 64 characters (SPEC §4.2)", () => {
+    expect(postQuerySchema.parse({ sort: "WEIGHTED", seed: "abc" })).toMatchObject({
+      sort: "WEIGHTED",
+      seed: "abc",
+    });
+    expect(postQuerySchema.safeParse({ sort: "WEIGHTED", seed: "x".repeat(65) }).success).toBe(
+      false,
+    );
   });
 
   it("combines today, zone and theme from the query string", () => {
@@ -112,6 +122,7 @@ describe("postQuerySchema (SPEC §4.3)", () => {
       today: true,
       zone: "EUROPE",
       theme: "TECH",
+      sort: "RECENT",
     });
   });
 

@@ -444,3 +444,21 @@ qui la remplace.
   - **Pages du compte** : toutes les pages ouvertes depuis le compte (espace éditeur, sanctions,
     comptes bloqués, support et tickets, modération, administration, pages légales) s'affichent
     dans la même boîte centrée, plus ou moins large selon le contenu (420, 560 ou 760 points).
+
+## 2026-10-08 — Fil pondéré « À la une » (SPEC §4.2)
+
+- **Question** : la SPEC §4.2 dit « poids = f(fraîcheur, statut de fiabilité) » sans fixer f, ni
+  la façon de garder un tirage stable pendant le défilement, ni la place de ce fil.
+- **Décision** (validée par le porteur du projet) :
+  - fraîcheur : demi-vie de 12 h (1 à la publication, 0,5 à 12 h, 0,25 à 24 h) ;
+  - fiabilité : non examiné 1 · en examen 0,5 · exact 1,2 · contexte manquant 0,7 ·
+    invérifiable 0,6 · trompeur 0,3 · faux 0,1 · opinion 1 ;
+  - poids = fraîcheur × fiabilité / √n (n = posts du même éditeur parmi ceux du fil filtré) ;
+  - tirage pondéré sans remise, fixé par une graine tirée par le lecteur à chaque ouverture ou
+    rafraîchissement du fil : l'ordre reste stable pendant le défilement ; les pages suivantes
+    portent la graine et l'instant de la première page (les posts publiés entre-temps
+    n'apparaissent qu'au rafraîchissement) ;
+  - espacement : un éditeur au plus une fois sur 4 posts consécutifs quand c'est possible (un
+    éditeur dont les posts ne tiendraient plus avec l'espacement passe en priorité) ;
+  - le fil reste chronologique par défaut ; « À la une » se choisit dans les filtres (groupe
+    « Ordre »), combinable avec les autres filtres. La recherche n'est pas concernée.

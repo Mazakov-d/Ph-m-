@@ -3,7 +3,8 @@ import { useState } from "react";
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from "react-native";
 import { colors, spacing } from "../../components/ui/theme";
 import { useGridColumns } from "../../components/ui/useGridColumns";
-import { type FeedFilters, useFeed } from "../../features/posts/api";
+import { randomUUID } from "expo-crypto";
+import { type FeedFilters, NO_FILTERS, useFeed } from "../../features/posts/api";
 import { ActiveFilters } from "../../features/posts/components/ActiveFilters";
 import { FiltersOverlay } from "../../features/posts/components/FiltersOverlay";
 import { PostCard } from "../../features/posts/components/PostCard";
@@ -17,7 +18,6 @@ const texts = {
   empty: "Aucune publication ces dernières 48 heures pour ces filtres.",
 };
 
-const NO_FILTERS: FeedFilters = { today: false, zone: null, theme: null };
 const SEARCH_DELAY_MS = 300;
 
 /** SPEC §4: the feed (readable without an account, SPEC §2), with the search bar (SPEC §4.4). */
@@ -28,7 +28,9 @@ export default function FeedScreen() {
   const columns = useGridColumns();
   const debouncedQuery = useDebouncedValue(query, SEARCH_DELAY_MS);
   const searching = isSearchActive(debouncedQuery);
-  const feed = useFeed(filters);
+  // A new draw of « À la une » each time the reader opens or refreshes the feed (SPEC §4.2).
+  const [seed, setSeed] = useState(() => randomUUID());
+  const feed = useFeed(filters, seed);
   const posts = feed.data?.pages.flatMap((page) => page.items) ?? [];
   const slogan = <Text style={styles.slogan}>{APP_SLOGAN}</Text>;
 
@@ -68,7 +70,9 @@ export default function FeedScreen() {
               }
             }}
             ListFooterComponent={feed.isFetchingNextPage ? <ActivityIndicator /> : null}
-            onRefresh={() => void feed.refetch()}
+            onRefresh={() =>
+              filters.sort === "WEIGHTED" ? setSeed(randomUUID()) : void feed.refetch()
+            }
             refreshing={feed.isRefetching && !feed.isFetchingNextPage}
           />
         )}

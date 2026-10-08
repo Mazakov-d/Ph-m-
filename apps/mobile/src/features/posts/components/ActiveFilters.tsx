@@ -3,11 +3,17 @@ import { colors, spacing, textSizes } from "../../../components/ui/theme";
 import type { FeedFilters } from "../api";
 import { THEME_LABELS, ZONE_LABELS } from "../texts";
 
-const texts = { prefix: "Filtres : ", today: "Aujourd'hui", edit: "Modifier" };
+const texts = {
+  prefix: "Filtres : ",
+  weighted: "À la une",
+  today: "Aujourd'hui",
+  edit: "Modifier",
+};
 
 /** While the filters are hidden, reminds the reader which ones are on (nothing when none is). */
 export function ActiveFilters({ filters, onEdit }: { filters: FeedFilters; onEdit: () => void }) {
   const labels = [
+    filters.sort === "WEIGHTED" ? texts.weighted : null,
     filters.today ? texts.today : null,
     filters.zone ? ZONE_LABELS[filters.zone] : null,
     filters.theme ? THEME_LABELS[filters.theme] : null,

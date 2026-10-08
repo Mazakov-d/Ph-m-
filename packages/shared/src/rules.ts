@@ -6,6 +6,20 @@ export const FEED_WINDOW_HOURS = 48;
 export const TODAY_WINDOW_HOURS = 24;
 // SPEC §4.2 (post-MVP): an editor never appears twice within this many consecutive posts.
 export const FEED_SPACING = 4;
+// docs/DECISIONS.md (SPEC §4.2): weight of a post in the weighted feed (« À la une »). Freshness
+// halves every FEED_FRESHNESS_HALF_LIFE_HOURS; reliability multiplies it by the factor below.
+export const FEED_FRESHNESS_HALF_LIFE_HOURS = 12;
+export const FEED_RELIABILITY_FACTORS = {
+  NOT_REVIEWED: 1,
+  UNDER_REVIEW: 0.5,
+  ACCURATE: 1.2,
+  MISSING_CONTEXT: 0.7,
+  UNVERIFIABLE: 0.6,
+  MISLEADING: 0.3,
+  FALSE: 0.1,
+  OPINION: 1,
+} as const;
+export const FEED_SEED_MAX_LENGTH = 64;
 
 // SPEC §6.2: a comment goes UNDER_REVIEW when the sum of report weights reaches this value.
 export const COMMENT_REPORT_THRESHOLD = 3;
