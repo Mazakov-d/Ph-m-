@@ -11,6 +11,10 @@ export function formatVoteCount(count: number): string {
 export function voteErrorMessage(error: unknown): string {
   if (error instanceof ApiRequestError) {
     switch (error.code) {
+      case "VOTE_ALREADY_CAST":
+        return "Vous avez déjà voté : votre vote est définitif.";
+      case "VOTE_LOCKED_AFTER_REVEAL":
+        return "Vous avez vu les résultats : vous ne pouvez plus voter.";
       case "ACCOUNT_RESTRICTED":
         return "Votre compte est suspendu : vous ne pouvez pas voter.";
       case "NETWORK_ERROR":

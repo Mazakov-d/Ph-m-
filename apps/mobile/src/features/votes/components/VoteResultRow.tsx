@@ -1,21 +1,13 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
-type Props = {
-  label: string;
-  percentage: number;
-  isMine: boolean;
-  onPress?: () => void;
-};
+type Props = { label: string; percentage: number; isMine: boolean };
 
 /** One choice with its share of the votes (SPEC §7, docs/DECISIONS.md). */
-export function VoteResultRow({ label, percentage, isMine, onPress }: Props) {
+export function VoteResultRow({ label, percentage, isMine }: Props) {
   return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityState={{ selected: isMine, disabled: !onPress }}
+    <View
+      accessible
       accessibilityLabel={`${label} : ${percentage} %${isMine ? ", votre choix" : ""}`}
-      disabled={!onPress}
-      onPress={onPress}
       style={styles.row}
     >
       <View style={styles.labels}>
@@ -25,7 +17,7 @@ export function VoteResultRow({ label, percentage, isMine, onPress }: Props) {
       <View style={styles.track}>
         <View style={[styles.fill, isMine && styles.mineFill, { width: `${percentage}%` }]} />
       </View>
-    </Pressable>
+    </View>
   );
 }
 

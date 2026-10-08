@@ -5,7 +5,7 @@ import { idSchema } from "./common.js";
 // SPEC §7: an answer choice written by the editor of an opinion.
 export const voteOptionLabelSchema = z.string().trim().min(1).max(VOTE_OPTION_LABEL_MAX_LENGTH);
 
-// SPEC §7: one vote per account and opinion (one of its choices), which can be changed.
+// SPEC §7: one final vote per account and opinion (one of its choices).
 export const castVoteInputSchema = z.object({
   optionId: idSchema,
 });

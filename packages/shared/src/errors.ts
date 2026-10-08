@@ -36,8 +36,10 @@ export const ErrorCode = z.enum([
   "ALREADY_REPORTED",
   "CANNOT_REPORT_OWN_CONTENT",
   "COMMENT_ALREADY_VERIFIED",
-  // Votes (SPEC §7)
+  // Votes (SPEC §7): one final action per opinion, vote or « Voir sans voter ».
   "NOT_AN_OPINION",
+  "VOTE_ALREADY_CAST",
+  "VOTE_LOCKED_AFTER_REVEAL",
   // Reviews, sanctions and appeals (SPEC §2.3, §5.5, §6.3)
   "CONFLICT_OF_INTEREST",
   "ALREADY_REVIEWED",

@@ -68,12 +68,22 @@ describe("Votes on opinions (e2e, SPEC §7)", () => {
       });
     });
 
-    it("lets the voter change their vote, still one vote per account", async () => {
+    it("makes the vote final: no second vote (SPEC §7)", async () => {
       const reader = await signUp(app, prisma, "lea");
       await vote(reader.accessToken, "Oui").expect(200);
-      const response = await vote(reader.accessToken, "Non").expect(200);
-      expect(response.body.results.totalVotes).toBe(1);
-      expect(response.body.myOptionId).toBe(optionId("Non"));
+      const response = await vote(reader.accessToken, "Non").expect(409);
+      expect(response.body).toMatchObject({ code: "VOTE_ALREADY_CAST" });
+      const stored = await prisma.vote.findFirstOrThrow();
+      expect(stored.optionId).toBe(optionId("Oui"));
+    });
+
+    it("keeps a single vote when two votes arrive at the same moment", async () => {
+      const reader = await signUp(app, prisma, "lea");
+      const statuses = await Promise.all([
+        vote(reader.accessToken, "Oui"),
+        vote(reader.accessToken, "Non"),
+      ]).then((responses) => responses.map((response) => response.status).sort());
+      expect(statuses).toEqual([200, 409]);
       expect(await prisma.vote.count()).toBe(1);
     });
 
@@ -151,6 +161,13 @@ describe("Votes on opinions (e2e, SPEC §7)", () => {
       await vote(reader.accessToken, "Non").expect(200);
       const { post } = await read(reader.accessToken);
       expect(post.votes).toMatchObject({ myOptionId: optionId("Non"), results: { totalVotes: 1 } });
+    });
+
+    it("« Voir sans voter » is final: no vote afterwards (SPEC §7)", async () => {
+      const reader = await signUp(app, prisma, "hugo");
+      await reveal(reader.accessToken).expect(200);
+      const response = await vote(reader.accessToken, "Oui").expect(409);
+      expect(response.body).toMatchObject({ code: "VOTE_LOCKED_AFTER_REVEAL" });
     });
 
     it("« Voir sans voter » shows the totals without voting, and is remembered", async () => {

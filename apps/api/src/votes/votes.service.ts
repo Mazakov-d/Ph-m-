@@ -1,7 +1,7 @@
 import { HttpStatus, Injectable } from "@nestjs/common";
 import { type AuthUser, canSeeVoteResults, type VoteSummaryPublic } from "@fama/shared";
 import { ApiException } from "../common/errors/api.exception.js";
-import type { VoteOption } from "../generated/prisma/client.js";
+import { Prisma, type VoteOption } from "../generated/prisma/client.js";
 import { PrismaService } from "../prisma/prisma.service.js";
 
 @Injectable()
@@ -46,7 +46,11 @@ export class VotesService {
     };
   }
 
-  /** SPEC §7: votes for one of the choices, or changes the vote (one row per account). */
+  /**
+   * SPEC §7: a final vote for one of the choices. One row per account and opinion: the unique
+   * key makes the database refuse a second vote, or a vote after « Voir sans voter », even when
+   * two requests arrive at the same moment.
+   */
   async cast(voter: AuthUser, postId: string, optionId: string): Promise<VoteSummaryPublic> {
     const options = await this.opinionOptions(postId);
     if (!options.some((option) => option.id === optionId)) {
@@ -56,23 +60,40 @@ export class VotesService {
         "Not a choice of this opinion",
       );
     }
-    await this.prisma.vote.upsert({
-      where: { postId_userId: { postId, userId: voter.id } },
-      create: { postId, userId: voter.id, optionId },
-      update: { optionId },
-    });
+    await this.recordFinalAction(postId, voter.id, { optionId });
     return this.summaryFor(postId, options, voter.id);
   }
 
-  /** SPEC §7: « Voir sans voter », remembered for the account (docs/DECISIONS.md). */
+  /** SPEC §7: « Voir sans voter », final too: the reader can no longer vote afterwards. */
   async reveal(viewer: AuthUser, postId: string): Promise<VoteSummaryPublic> {
     const options = await this.opinionOptions(postId);
-    await this.prisma.vote.upsert({
-      where: { postId_userId: { postId, userId: viewer.id } },
-      create: { postId, userId: viewer.id, revealedResults: true },
-      update: { revealedResults: true },
-    });
+    await this.recordFinalAction(postId, viewer.id, { revealedResults: true });
     return this.summaryFor(postId, options, viewer.id);
+  }
+
+  /** Creates the reader's only row for this opinion, or explains why it already exists. */
+  private async recordFinalAction(
+    postId: string,
+    userId: string,
+    action: { optionId: string } | { revealedResults: true },
+  ): Promise<void> {
+    try {
+      await this.prisma.vote.create({ data: { postId, userId, ...action } });
+    } catch (error) {
+      if (!(error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002")) {
+        throw error;
+      }
+      const existing = await this.prisma.vote.findUniqueOrThrow({
+        where: { postId_userId: { postId, userId } },
+      });
+      throw existing.optionId
+        ? new ApiException(HttpStatus.CONFLICT, "VOTE_ALREADY_CAST", "The vote is final")
+        : new ApiException(
+            HttpStatus.CONFLICT,
+            "VOTE_LOCKED_AFTER_REVEAL",
+            "The results were seen: voting is no longer possible",
+          );
+    }
   }
 
   private async opinionOptions(postId: string): Promise<VoteOption[]> {

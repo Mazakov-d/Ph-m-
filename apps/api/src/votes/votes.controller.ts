@@ -15,7 +15,7 @@ import { VotesService } from "./votes.service.js";
 export class VotesController {
   constructor(private readonly votesService: VotesService) {}
 
-  /** SPEC §7: vote, or change one's vote. */
+  /** SPEC §7: a final vote (confirmed by the reader in the app). */
   @Put()
   @RequirePermission("vote.cast")
   cast(
@@ -26,7 +26,10 @@ export class VotesController {
     return this.votesService.cast(voter, postId, input.optionId);
   }
 
-  /** SPEC §7: « Voir sans voter ». Reading only: allowed to a suspended account too. */
+  /**
+   * SPEC §7: « Voir sans voter », final: no vote afterwards. Reading only: allowed to a
+   * suspended account too (docs/DECISIONS.md).
+   */
   @Post("reveal")
   @HttpCode(HttpStatus.OK)
   reveal(

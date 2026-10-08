@@ -12,7 +12,7 @@ function useStoreVoteSummary(postId: string) {
     );
 }
 
-/** SPEC §7: vote, or change one's vote. */
+/** SPEC §7: a final vote. */
 export function useCastVote(postId: string) {
   const storeVoteSummary = useStoreVoteSummary(postId);
   return useMutation({
@@ -22,7 +22,7 @@ export function useCastVote(postId: string) {
   });
 }
 
-/** SPEC §7: « Voir sans voter ». */
+/** SPEC §7: « Voir sans voter », final too. */
 export function useRevealResults(postId: string) {
   const storeVoteSummary = useStoreVoteSummary(postId);
   return useMutation({
