@@ -94,6 +94,28 @@ describe("FeedScreen (SPEC §4)", () => {
     expect(screen.queryByText("Période")).toBeNull();
   });
 
+  it("shows the still image of the video, with its duration, on a card (docs/DECISIONS.md)", async () => {
+    fetchMock.mockResolvedValue(
+      jsonResponse(200, {
+        items: [
+          {
+            ...ARTICLE_CARD,
+            layout: "MEDIA_FIRST",
+            bodyExcerpt: null,
+            video: {
+              path: "/posts/1/video",
+              posterPath: "/posts/1/video/poster",
+              durationSeconds: 65,
+            },
+          },
+        ],
+        nextCursor: null,
+      }),
+    );
+    await renderWithProviders(<FeedScreen />);
+    expect(await screen.findByLabelText("Vidéo de 1:05")).toBeTruthy();
+  });
+
   it("shows the start of the article on a card whose third block is the text", async () => {
     fetchMock.mockResolvedValue(
       jsonResponse(200, {

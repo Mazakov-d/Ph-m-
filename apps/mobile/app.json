@@ -9,7 +9,7 @@
     "web": {
       "output": "single"
     },
-    "plugins": ["expo-router", "expo-status-bar", "expo-font", "expo-notifications"],
+    "plugins": ["expo-router", "expo-status-bar", "expo-font", "expo-notifications", "expo-video"],
     "ios": {
       "bundleIdentifier": "app.pheme.mobile",
       "supportsTablet": true

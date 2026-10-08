@@ -80,3 +80,10 @@ export function postErrorMessage(error: unknown): string {
   }
   return "Une erreur est survenue. Réessayez.";
 }
+
+/** « 1:05 » for a video of 65 seconds. */
+export function formatDuration(totalSeconds: number): string {
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${minutes}:${String(seconds).padStart(2, "0")}`;
+}

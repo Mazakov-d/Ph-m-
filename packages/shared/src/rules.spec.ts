@@ -106,6 +106,10 @@ describe("rules (SPEC §11)", () => {
       ALERTS_MAX: 10,
       ALERT_NOTIFICATIONS_PER_DAY: 10,
       PUSH_TOKEN_MAX_LENGTH: 200,
+      POST_VIDEO_MAX_BYTES: 200 * 1024 * 1024,
+      POST_VIDEO_MAX_SECONDS: 180,
+      POST_VIDEO_TYPES: ["video/mp4", "video/quicktime"],
+      POST_VIDEO_MAX_WIDTH: 1280,
     });
   });
 });

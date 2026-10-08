@@ -6,10 +6,19 @@ import {
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
+import { Readable } from "node:stream";
 import { Injectable, type OnModuleInit } from "@nestjs/common";
 import { requireEnv } from "../config/env.js";
 
 export type StoredObject = { bytes: Uint8Array; contentType: string };
+
+/** Part of a large object (a video), read as a stream; `contentRange` is set for a part. */
+export type StoredStream = {
+  body: Readable;
+  contentType: string;
+  contentLength: number;
+  contentRange: string | null;
+};
 
 /**
  * Private S3-compatible storage (SPEC §2.2: identity documents never get a public URL).
@@ -55,6 +64,25 @@ export class StorageService implements OnModuleInit {
       throw new Error(`Stored object ${key} has no content`);
     }
     return { bytes: await object.Body.transformToByteArray(), contentType: object.ContentType };
+  }
+
+  /**
+   * Streams an object, or the part of it asked by an HTTP `Range` header (a video player reads a
+   * video in parts, and iOS refuses a video served otherwise).
+   */
+  async getStream(key: string, range: string | undefined): Promise<StoredStream> {
+    const object = await this.s3.send(
+      new GetObjectCommand({ Bucket: this.bucket, Key: key, Range: range }),
+    );
+    if (!(object.Body instanceof Readable) || !object.ContentType) {
+      throw new Error(`Stored object ${key} has no content`);
+    }
+    return {
+      body: object.Body,
+      contentType: object.ContentType,
+      contentLength: object.ContentLength ?? 0,
+      contentRange: object.ContentRange ?? null,
+    };
   }
 
   async delete(keys: string[]): Promise<void> {

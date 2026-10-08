@@ -90,11 +90,20 @@ export function useEditorPosts(editorId: string) {
 export function useCreatePost() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ post, images }: { post: CreatePostInput; images: LocalFile[] }) => {
-      // Images travel with the post (it cannot be modified afterwards): multipart request.
+    mutationFn: ({
+      post,
+      images,
+      video,
+    }: {
+      post: CreatePostInput;
+      images: LocalFile[];
+      video: LocalFile | null;
+    }) => {
+      // Images and video travel with the post (it cannot be modified afterwards): multipart.
       const form = new FormData();
       form.append("post", JSON.stringify(post));
       images.forEach((image) => form.append("images", toFormDataFile(image)));
+      if (video) form.append("video", toFormDataFile(video));
       return apiClient.postForm("/posts", form, postPublicSchema);
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: postKeys.all }),

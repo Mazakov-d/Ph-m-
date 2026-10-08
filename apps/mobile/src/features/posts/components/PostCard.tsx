@@ -7,10 +7,11 @@ import { apiClient } from "../../../lib/apiClient";
 import { EditorBadge } from "../../editors/components/EditorBadge";
 import { formatCommentCount, formatPublishedAt } from "../texts";
 import { ReliabilityBar } from "./ReliabilityBar";
+import { VideoPreview } from "./VideoPreview";
 
 /**
  * A post in the feed: editor and badge, date, then the first three blocks chosen by the editor
- * (interface brief): title, summary, and the cover picture or the start of the article.
+ * (interface brief): title, summary, and the video, the cover picture or the start of the article.
  */
 export function PostCard({ post }: { post: PostSummaryPublic }) {
   const router = useRouter();
@@ -46,6 +47,8 @@ export function PostCard({ post }: { post: PostSummaryPublic }) {
           size={textSizes.body}
           style={styles.excerpt}
         />
+      ) : post.video ? (
+        <VideoPreview video={post.video} />
       ) : post.coverImage ? (
         <Image
           source={{ uri: apiClient.url(post.coverImage.path) }}

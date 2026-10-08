@@ -7,6 +7,7 @@ const DISPLAYED_COMMENT_STATUSES = ["VISIBLE", "VERIFIED"] as const;
 export const POST_INCLUDE = {
   author: { select: { id: true, pseudo: true, editorProfile: { select: { status: true } } } },
   images: { orderBy: { position: "asc" } },
+  video: true,
   sources: { orderBy: { position: "asc" } },
   corrections: { orderBy: { createdAt: "asc" } },
   // SPEC §7: answer choices of an opinion, in the editor's order.

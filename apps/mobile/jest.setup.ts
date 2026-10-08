@@ -50,3 +50,14 @@ jest.mock("expo-notifications", () => ({
   getExpoPushTokenAsync: jest.fn(async () => ({ data: "" })),
   addNotificationResponseReceivedListener: jest.fn(() => ({ remove: jest.fn() })),
 }));
+
+// No native video player under Jest: a plain view stands for it.
+jest.mock("expo-video", () => {
+  const { createElement } = jest.requireActual<typeof import("react")>("react");
+  const { View } = jest.requireActual<typeof import("react-native")>("react-native");
+  return {
+    useVideoPlayer: () => ({}),
+    VideoView: (props: { accessibilityLabel?: string }) =>
+      createElement(View, { accessibilityLabel: props.accessibilityLabel }),
+  };
+});

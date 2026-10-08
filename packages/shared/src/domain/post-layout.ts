@@ -4,11 +4,11 @@ import { formatSegments, parseInlineFormatting, type TextSegment } from "./inlin
 
 /**
  * docs/DECISIONS.md (interface brief): a feed card shows the first three blocks of the post:
- * title, summary, then the pictures (MEDIA_FIRST) or the article (TEXT_FIRST). A post without
- * pictures always shows its article.
+ * title, summary, then the pictures or video (MEDIA_FIRST) or the article (TEXT_FIRST). A post
+ * without picture nor video always shows its article.
  */
-export function feedCardThirdBlock(layout: PostLayout, hasImages: boolean): "MEDIA" | "BODY" {
-  return layout === "MEDIA_FIRST" && hasImages ? "MEDIA" : "BODY";
+export function feedCardThirdBlock(layout: PostLayout, hasMedia: boolean): "MEDIA" | "BODY" {
+  return layout === "MEDIA_FIRST" && hasMedia ? "MEDIA" : "BODY";
 }
 
 /**

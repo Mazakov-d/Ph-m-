@@ -3,6 +3,7 @@ import { Image, StyleSheet, View } from "react-native";
 import { FormattedText } from "../../../components/ui/FormattedText";
 import { colors, radius, spacing, textSizes } from "../../../components/ui/theme";
 import { apiClient } from "../../../lib/apiClient";
+import { PostVideoPlayer } from "./PostVideoPlayer";
 
 /**
  * Interface brief: one centred column: the title, the summary, then the article and the
@@ -18,7 +19,7 @@ export function PostBlocks({ post }: { post: PostPublic }) {
       style={styles.body}
     />
   );
-  const pictures = post.images.map((image) => (
+  const images = post.images.map((image) => (
     <Image
       key={image.id}
       source={{ uri: apiClient.url(image.path) }}
@@ -26,6 +27,10 @@ export function PostBlocks({ post }: { post: PostPublic }) {
       accessibilityIgnoresInvertColors
     />
   ));
+  // docs/DECISIONS.md (videos): the video comes first among the media.
+  const pictures = post.video
+    ? [<PostVideoPlayer key="video" video={post.video} />, ...images]
+    : images;
 
   return (
     <View style={styles.blocks}>

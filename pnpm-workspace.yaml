@@ -3,7 +3,7 @@ packages:
   - "packages/*"
 
 # Build steps allowed to run on install (file watcher, module resolver, Prisma engines,
-# argon2 native binding, esbuild binary used by tsx).
+# argon2 native binding, esbuild binary used by tsx, ffmpeg binary).
 allowBuilds:
   argon2: true
   esbuild: true
@@ -11,6 +11,8 @@ allowBuilds:
   prisma: true
   "@parcel/watcher": true
   unrs-resolver: true
+  # Downloads the ffmpeg binary used to clean and convert videos (docs/DECISIONS.md).
+  ffmpeg-static: true
 
 # Auto-installed peers must match the versions bundled with Expo SDK 57 / React Native 0.86.
 overrides:

@@ -35,6 +35,7 @@ export const ARTICLE_CARD: PostSummaryPublic = {
     editorStatus: "CERTIFIED",
   },
   coverImage: null,
+  video: null,
   commentCount: 2,
   reviewStatus: "NOT_REVIEWED",
   reportCount: 0,

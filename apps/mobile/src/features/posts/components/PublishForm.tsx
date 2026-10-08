@@ -14,7 +14,7 @@ import { ChoiceChips } from "../../../components/ui/ChoiceChips";
 import { colors, spacing } from "../../../components/ui/theme";
 import type { LocalFile } from "../../../lib/formDataFile";
 import { useCreatePost } from "../api";
-import { imagesProblem } from "../images";
+import { imagesProblem, type LocalVideo, videoProblem } from "../images";
 import { postErrorMessage } from "../texts";
 import { ImagesField } from "./ImagesField";
 import { InteractionFields } from "./InteractionFields";
@@ -22,6 +22,7 @@ import { LayoutField } from "./LayoutField";
 import { PlacementFields } from "./PlacementFields";
 import { PostTextFields } from "./PostTextFields";
 import { SourcesField } from "./SourcesField";
+import { VideoField } from "./VideoField";
 
 const KIND_LABELS: Record<PostKind, string> = { ARTICLE: "Article", OPINION: "Opinion" };
 
@@ -35,6 +36,8 @@ export function PublishForm({ onPublished }: { onPublished: (postId: string) => 
   const createPost = useCreatePost();
   const [images, setImages] = useState<LocalFile[]>([]);
   const [imagesError, setImagesError] = useState<string | undefined>();
+  const [video, setVideo] = useState<LocalVideo | null>(null);
+  const [videoError, setVideoError] = useState<string | undefined>();
   const { control, handleSubmit, formState, setValue, getValues } = useForm({
     resolver: zodResolver(createPostInputSchema),
     defaultValues: {
@@ -55,9 +58,14 @@ export function PublishForm({ onPublished }: { onPublished: (postId: string) => 
 
   const onSubmit = handleSubmit((post) => {
     const problem = imagesProblem(images);
+    const videoIssue = videoProblem(video);
     setImagesError(problem ?? undefined);
-    if (!problem) {
-      createPost.mutate({ post, images }, { onSuccess: (created) => onPublished(created.id) });
+    setVideoError(videoIssue ?? undefined);
+    if (!problem && !videoIssue) {
+      createPost.mutate(
+        { post, images, video: video?.file ?? null },
+        { onSuccess: (created) => onPublished(created.id) },
+      );
     }
   });
 
@@ -91,6 +99,7 @@ export function PublishForm({ onPublished }: { onPublished: (postId: string) => 
       {/* Interface brief: title, summary, article, pictures, sources, zone, theme… order last. */}
       <PostTextFields control={control} errors={errors} />
       <ImagesField images={images} onChange={setImages} error={imagesError} />
+      <VideoField video={video} onChange={setVideo} error={videoError} />
       <Controller
         control={control}
         name="sources"

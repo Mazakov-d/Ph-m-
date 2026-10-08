@@ -98,7 +98,7 @@ N'importe quel compte peut demander le statut éditeur.
 Deux types (`PostKind`) : `ARTICLE` et `OPINION` (case « Opinion » au moment de publier).
 
 **Champs obligatoires** : `title`, `summary`, `body`, `sources` (≥ 1 URL ou référence texte ; facultatives pour une `OPINION`),
-`zone`, `theme`, `kind`. Images optionnelles (toujours rattachées au post). Vidéos : hors MVP.
+`zone`, `theme`, `kind`. Images optionnelles (toujours rattachées au post). Une vidéo optionnelle (voir `DECISIONS.md`).
 
 - `Zone` : `FRANCE`, `EUROPE`, `INTERNATIONAL`, `LOCAL` (+ champ `region` texte si `LOCAL`).
 - `Theme` : `POLITICS`, `ECONOMY`, `SOCIAL_MOVEMENTS`, `ENVIRONMENT`, `SCIENCE_HEALTH`, `TECH`, `CULTURE`, `SPORT`, `OTHER` (« Autre », voir `DECISIONS.md`).

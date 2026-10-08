@@ -76,6 +76,18 @@ describe("PostScreen", () => {
     expect(screen.getByText("Faut-il rouvrir le débat ?")).toBeTruthy();
   });
 
+  it("plays the video before the pictures (docs/DECISIONS.md: videos)", async () => {
+    fetchMock.mockResolvedValueOnce(
+      jsonResponse(200, {
+        ...ARTICLE_DETAIL,
+        layout: "MEDIA_FIRST",
+        video: { path: "/posts/1/video", posterPath: "/posts/1/video/poster", durationSeconds: 65 },
+      }),
+    );
+    await renderWithProviders(<PostScreen />);
+    expect(await screen.findByLabelText("Vidéo de la publication")).toBeTruthy();
+  });
+
   it("says when the post does not exist", async () => {
     fetchMock.mockResolvedValueOnce(
       jsonResponse(404, { code: "NOT_FOUND", message: "No such post" }),

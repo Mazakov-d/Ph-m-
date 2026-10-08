@@ -4,14 +4,25 @@ import {
   feedCardThirdBlock,
   type PostPublic,
   type PostSummaryPublic,
+  type PostVideoPublic,
   type VoteSummaryPublic,
 } from "@fama/shared";
-import type { PostImage } from "../generated/prisma/client.js";
+import type { PostImage, PostVideo } from "../generated/prisma/client.js";
 import type { PostRecord } from "./post-record.js";
 
 /** docs/DECISIONS.md: images are served by the API, at a path relative to its address. */
 export function imagePath(image: Pick<PostImage, "id" | "postId">): string {
   return `/posts/${image.postId}/images/${image.id}`;
+}
+
+/** docs/DECISIONS.md (videos): the video and its still image, served by the API. */
+function toVideoPublic(video: PostVideo | null): PostVideoPublic | null {
+  if (!video) return null;
+  return {
+    path: `/posts/${video.postId}/video`,
+    posterPath: `/posts/${video.postId}/video/poster`,
+    durationSeconds: video.durationSeconds,
+  };
 }
 
 export function toPostSummaryPublic(post: PostRecord): PostSummaryPublic {
@@ -21,7 +32,7 @@ export function toPostSummaryPublic(post: PostRecord): PostSummaryPublic {
   }
   const cover = post.images[0];
   // docs/DECISIONS.md (interface brief): the card shows the pictures or the start of the article.
-  const thirdBlock = feedCardThirdBlock(post.layout, post.images.length > 0);
+  const thirdBlock = feedCardThirdBlock(post.layout, post.images.length > 0 || post.video !== null);
   return {
     id: post.id,
     kind: post.kind,
@@ -39,6 +50,7 @@ export function toPostSummaryPublic(post: PostRecord): PostSummaryPublic {
     theme: post.theme,
     editor: { id: post.author.id, pseudo: post.author.pseudo, editorStatus },
     coverImage: cover ? { id: cover.id, path: imagePath(cover) } : null,
+    video: toVideoPublic(post.video),
     commentCount: post._count.comments,
     reviewStatus: post.reviewStatus,
     reportCount: post._count.reports,

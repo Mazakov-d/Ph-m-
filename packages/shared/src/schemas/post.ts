@@ -116,6 +116,14 @@ export const postImagePublicSchema = z.object({
 });
 export type PostImagePublic = z.infer<typeof postImagePublicSchema>;
 
+// docs/DECISIONS.md (videos): served by the API, read in parts (`path`), with a still image.
+export const postVideoPublicSchema = z.object({
+  path: z.string().startsWith("/"),
+  posterPath: z.string().startsWith("/"),
+  durationSeconds: z.number().int().nonnegative(),
+});
+export type PostVideoPublic = z.infer<typeof postVideoPublicSchema>;
+
 export const postCorrectionPublicSchema = z.object({
   id: idSchema,
   content: z.string(),
@@ -141,6 +149,7 @@ export const postSummaryPublicSchema = z.object({
   theme: Theme,
   editor: editorSummaryPublicSchema,
   coverImage: postImagePublicSchema.nullable(),
+  video: postVideoPublicSchema.nullable(),
   commentCount: z.number().int().nonnegative(),
   // SPEC §5.6: what the reliability bar needs (count shown publicly, never the weights).
   reviewStatus: PostReviewStatus,

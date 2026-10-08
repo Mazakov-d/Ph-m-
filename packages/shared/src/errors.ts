@@ -26,6 +26,9 @@ export const ErrorCode = z.enum([
   "INVALID_STATUS_TRANSITION",
   // Posts and comments (SPEC §3, §6)
   "INVALID_IMAGE",
+  // docs/DECISIONS.md (videos): not a readable MP4 or MOV video, or longer than 3 minutes.
+  "INVALID_VIDEO",
+  "VIDEO_TOO_LONG",
   // SPEC §3: comments cannot be turned off on an opinion.
   "COMMENTS_REQUIRED_FOR_OPINION",
   "COMMENTS_DISABLED",

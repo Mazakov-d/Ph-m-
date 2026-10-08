@@ -30,18 +30,20 @@ export function smallPng(): Promise<Buffer> {
     .toBuffer();
 }
 
-/** Sends the multipart creation request (field `post` + files `images`). */
+/** Sends the multipart creation request (field `post` + files `images` and `video`). */
 export function sendPost(
   app: INestApplication<App>,
   token: string,
   post: object = ARTICLE,
   images: Buffer[] = [],
+  video: Buffer | null = null,
 ) {
   const call = request(app.getHttpServer())
     .post("/posts")
     .set("Authorization", `Bearer ${token}`)
     .field("post", JSON.stringify(post));
   images.forEach((image, index) => call.attach("images", image, `image-${index}`));
+  if (video) call.attach("video", video, "video.mov");
   return call;
 }
 

@@ -529,3 +529,18 @@ qui la remplace.
     développement).
   - **À faire avant la mise en service** : créer le projet EAS (`eas init`) — sans son
     identifiant, l'app ne demande pas de jeton push — et tester sur de vrais téléphones.
+
+## 2026-10-08 — Vidéos dans les posts
+
+- **Question** : la ROADMAP prévoit les vidéos après le MVP, sans limites ni traitement.
+- **Décision** (validée par le porteur du projet, sauf les points marqués) :
+  - une vidéo par post en plus des images, MP4 ou MOV, 3 minutes et 200 Mo au plus ;
+  - l'API la convertit avec ffmpeg en MP4 H.264 + AAC (1280 px de large au plus), sans aucune
+    métadonnée (position GPS, appareil), prête à démarrer avant la fin du téléchargement, et en
+    tire une image d'aperçu ; ffmpeg vient des paquets `ffmpeg-static` et `ffprobe-static` (rien à
+    installer sur la machine ni dans l'image Docker) ;
+  - la conversion se fait pendant l'envoi : la publication attend la fin du traitement (**sans
+    validation** ; une file de traitement en arrière-plan sera utile si les envois s'allongent) ;
+  - la vidéo est servie par l'API, par morceaux (`Range`), comme l'exigent les lecteurs (iOS) ;
+  - sur la carte du fil (ordre « photos d'abord »), l'image d'aperçu avec ▶ et la durée ; la vidéo
+    passe avant les images (**sans validation**) ; elle se lit sur la page du post (`expo-video`).

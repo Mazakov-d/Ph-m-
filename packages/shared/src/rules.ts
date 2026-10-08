@@ -160,3 +160,10 @@ export const ALERTS_MAX = 10;
 // Alert notifications per account over a sliding 24 hours (other notifications are not capped).
 export const ALERT_NOTIFICATIONS_PER_DAY = 10;
 export const PUSH_TOKEN_MAX_LENGTH = 200;
+
+// docs/DECISIONS.md (videos): one video per post, MP4 or MOV (the formats of phones), cleaned
+// of its metadata and converted to MP4 (H.264, at most POST_VIDEO_MAX_WIDTH wide) by the API.
+export const POST_VIDEO_MAX_BYTES = 200 * 1024 * 1024;
+export const POST_VIDEO_MAX_SECONDS = 180;
+export const POST_VIDEO_TYPES = ["video/mp4", "video/quicktime"] as const;
+export const POST_VIDEO_MAX_WIDTH = 1280;

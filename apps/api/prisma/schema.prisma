@@ -283,6 +283,7 @@ model Post {
 
   author      User             @relation(fields: [authorId], references: [id])
   images      PostImage[]
+  video       PostVideo?
   sources     PostSource[]
   views       PostView[]
   corrections PostCorrection[]
@@ -650,4 +651,19 @@ model Notification {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, kind, createdAt])
+}
+
+/// docs/DECISIONS.md (videos): one video per post, converted to MP4 without its metadata, with a
+/// still image; both in private storage, served by the API.
+model PostVideo {
+  id              String   @id @default(uuid()) @db.Uuid
+  postId          String   @unique @db.Uuid
+  storageKey      String
+  posterKey       String
+  durationSeconds Int
+  width           Int
+  height          Int
+  createdAt       DateTime @default(now()) @db.Timestamptz(3)
+
+  post Post @relation(fields: [postId], references: [id])
 }

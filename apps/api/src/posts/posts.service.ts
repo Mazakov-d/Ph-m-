@@ -23,6 +23,7 @@ import { VotesService } from "../votes/votes.service.js";
 import { type PostImageType, sanitizeImage } from "./post-images.js";
 import { POST_INCLUDE, type PostRecord } from "./post-record.js";
 import { toPostPublic, toPostSummaryPublic } from "./posts.mapper.js";
+import { PostVideosService } from "./post-videos.service.js";
 import { SimilarPostsService } from "./similar-posts.service.js";
 import { WeightedFeedService } from "./weighted-feed.service.js";
 import { EditorReliabilityService } from "../reliability/editor-reliability.service.js";
@@ -39,6 +40,7 @@ export class PostsService {
     private readonly reliability: EditorReliabilityService,
     private readonly similarPosts: SimilarPostsService,
     private readonly notifications: NotificationsService,
+    private readonly videos: PostVideosService,
   ) {}
 
   /** SPEC §9: « X autres médias en parlent » and the similar posts, for the reader. */
@@ -63,15 +65,21 @@ export class PostsService {
     return toPostPublic(post, votes, ownReport !== null, editorReliability);
   }
 
-  /** SPEC §3: publishes a post with its sources and images (it cannot be modified afterwards). */
+  /**
+   * SPEC §3: publishes a post with its sources, images and video (docs/DECISIONS.md: one at
+   * most, given as the path of the uploaded file); it cannot be modified afterwards.
+   */
   async create(
     author: AuthUser,
     input: CreatePostInput,
     images: UploadedImage[],
+    videoPath: string | null = null,
   ): Promise<PostPublic> {
     const postId = randomUUID();
-    const imageKeys = await this.storeImages(postId, images);
+    const video = videoPath ? await this.videos.store(postId, videoPath) : null;
+    let imageKeys: string[] = [];
     try {
+      imageKeys = await this.storeImages(postId, images);
       const post = await this.prisma.post.create({
         data: {
           id: postId,
@@ -91,6 +99,7 @@ export class PostsService {
           bodyTypeface: input.typefaces.body,
           sources: { create: input.sources.map((value, position) => ({ value, position })) },
           images: { create: imageKeys.map((storageKey, position) => ({ storageKey, position })) },
+          video: video ? { create: video } : undefined,
           // SPEC §7: an opinion gets its editor's answer choices, or the default ones.
           voteOptions:
             input.kind === "OPINION"
@@ -108,8 +117,9 @@ export class PostsService {
       this.notifications.fireAndForget(this.notifications.notifyNewPost(post));
       return await this.toPublic(post, author.id);
     } catch (error) {
-      // The post was not saved: its images must not stay in storage.
+      // The post was not saved: its images and video must not stay in storage.
       await this.storage.delete(imageKeys);
+      await this.videos.remove(video);
       throw error;
     }
   }
