@@ -9,10 +9,14 @@ import {
 import { ApiException } from "../common/errors/api.exception.js";
 import { Prisma } from "../generated/prisma/client.js";
 import { PrismaService } from "../prisma/prisma.service.js";
+import { NotificationsService } from "../notifications/notifications.service.js";
 
 @Injectable()
 export class PostReportsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly notifications: NotificationsService,
+  ) {}
 
   /**
    * SPEC §5.1–§5.3: reports a post with a weight computed now and stored (§5.2), then opens the
@@ -25,7 +29,7 @@ export class PostReportsService {
     now: Date = new Date(),
   ): Promise<ReportPublic> {
     try {
-      return await this.prisma.$transaction(async (tx) => {
+      const { report, openedReview } = await this.prisma.$transaction(async (tx) => {
         // Locks the post: concurrent reports are counted one after the other, so that the
         // threshold is never missed because two transactions did not see each other.
         await tx.$queryRaw`SELECT "id" FROM "Post" WHERE "id" = ${postId}::uuid FOR UPDATE`;
@@ -61,6 +65,7 @@ export class PostReportsService {
           },
         });
 
+        let reviewedPost: { id: string; authorId: string; title: string } | null = null;
         // docs/DECISIONS.md: an opinion never gets a reliability review.
         if (post.kind === "ARTICLE" && post.reviewStatus === "NOT_REVIEWED") {
           const pending = await tx.postReport.aggregate({
@@ -69,10 +74,23 @@ export class PostReportsService {
           });
           if (shouldOpenPostReview(pending._sum.weight ?? 0, post.viewCount)) {
             await tx.post.update({ where: { id: postId }, data: { reviewStatus: "UNDER_REVIEW" } });
+            reviewedPost = post;
           }
         }
-        return { id: report.id, reason: report.reason, createdAt: report.createdAt.toISOString() };
+        return {
+          report: {
+            id: report.id,
+            reason: report.reason,
+            createdAt: report.createdAt.toISOString(),
+          },
+          openedReview: reviewedPost,
+        };
       });
+      // docs/DECISIONS.md (push notifications): the editor hears that the article is examined.
+      if (openedReview) {
+        this.notifications.fireAndForget(this.notifications.notifyPostUnderReview(openedReview));
+      }
+      return report;
     } catch (error) {
       // SPEC §5.1: one report per account and post (unique key).
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {

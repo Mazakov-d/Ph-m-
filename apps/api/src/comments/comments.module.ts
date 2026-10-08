@@ -1,3 +1,4 @@
+import { NotificationsModule } from "../notifications/notifications.module.js";
 import { Module } from "@nestjs/common";
 import { CommentsController } from "./comments.controller.js";
 import { CommentsService } from "./comments.service.js";
@@ -5,6 +6,7 @@ import { ToxicityChecker } from "./toxicity/toxicity-checker.js";
 import { WordListToxicityChecker } from "./toxicity/word-list-toxicity-checker.js";
 
 @Module({
+  imports: [NotificationsModule],
   controllers: [CommentsController],
   providers: [
     CommentsService,

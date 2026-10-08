@@ -103,6 +103,9 @@ describe("rules (SPEC §11)", () => {
       SIMILAR_POSTS_WINDOW_DAYS: 7,
       SIMILAR_POSTS_MIN_SHARED_WORDS: 2,
       SIMILAR_POSTS_MAX: 5,
+      ALERTS_MAX: 10,
+      ALERT_NOTIFICATIONS_PER_DAY: 10,
+      PUSH_TOKEN_MAX_LENGTH: 200,
     });
   });
 });

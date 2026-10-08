@@ -204,6 +204,9 @@ model User {
   editorTickets    Ticket[]        @relation("TicketEditor")
   assignedTickets  Ticket[]        @relation("TicketAssignedModerator")
   messages         Message[]
+  pushTokens       PushToken[]
+  alerts           Alert[]
+  notifications    Notification[]
   auditLogs        AuditLog[]
   refreshTokens    RefreshToken[]
 }
@@ -591,4 +594,60 @@ model AuditLog {
   actor User @relation(fields: [actorId], references: [id])
 
   @@index([createdAt])
+}
+
+/// docs/DECISIONS.md (push notifications): what a notification is about.
+enum NotificationKind {
+  ALERT
+  COMMENT_REPLY
+  POST_UNDER_REVIEW
+  POST_VERDICT
+  TICKET_MESSAGE
+}
+
+/// docs/DECISIONS.md: push notifications reach the iOS and Android apps only.
+enum PushPlatform {
+  IOS
+  ANDROID
+}
+
+/// docs/DECISIONS.md: the Expo push token of a phone; it moves to whoever signs in on it.
+model PushToken {
+  id        String       @id @default(uuid()) @db.Uuid
+  userId    String       @db.Uuid
+  token     String       @unique
+  platform  PushPlatform
+  createdAt DateTime     @default(now()) @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+/// docs/DECISIONS.md: an alert on new posts, by theme and/or zone (ALERTS_MAX per account).
+model Alert {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  theme     Theme?
+  zone      Zone?
+  region    String?
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([theme, zone])
+}
+
+/// docs/DECISIONS.md: the notifications sent, for the daily cap of alerts and one alert per post.
+model Notification {
+  id        String           @id @default(uuid()) @db.Uuid
+  userId    String           @db.Uuid
+  kind      NotificationKind
+  postId    String?          @db.Uuid
+  createdAt DateTime         @default(now()) @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, kind, createdAt])
 }

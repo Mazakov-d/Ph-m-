@@ -11,6 +11,7 @@ import {
   useState,
 } from "react";
 import { authApi } from "../features/auth/api";
+import { unregisterThisPhone } from "../features/notifications/api";
 import { apiClient } from "../lib/apiClient";
 
 type AuthStatus = "loading" | "authenticated" | "anonymous";
@@ -68,6 +69,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signOut = useCallback(async () => {
     try {
+      // docs/DECISIONS.md: the phone stops receiving this account's push notifications.
+      await unregisterThisPhone().catch(() => undefined);
       await authApi.logout();
     } finally {
       // Even if the API is unreachable, the device forgets the session.

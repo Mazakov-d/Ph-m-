@@ -154,3 +154,9 @@ export const EDITOR_RELIABILITY_RELIABLE_MIN = 45;
 export const SIMILAR_POSTS_WINDOW_DAYS = 7;
 export const SIMILAR_POSTS_MIN_SHARED_WORDS = 2;
 export const SIMILAR_POSTS_MAX = 5;
+
+// docs/DECISIONS.md (push notifications): alerts on new posts by theme and/or zone.
+export const ALERTS_MAX = 10;
+// Alert notifications per account over a sliding 24 hours (other notifications are not capped).
+export const ALERT_NOTIFICATIONS_PER_DAY = 10;
+export const PUSH_TOKEN_MAX_LENGTH = 200;

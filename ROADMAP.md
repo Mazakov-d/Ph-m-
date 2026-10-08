@@ -259,7 +259,7 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 - [x] Fil pondéré : tirage, division par √n, règle d'espacement (§4.2).
 - [x] Jauge de fiabilité des comptes éditeurs (§5.7).
 - [x] « Voir les similaires » et « X autres médias en parlent » (§9).
-- [ ] Notifications push. Choix des notifications par filtre ("je veux etre informe des nouveaux post sur la politique") possibilite de creer plusieurs alerte ("je veux etre informe des nouveaux post de sport en France")
+- [x] Notifications push. Choix des notifications par filtre ("je veux etre informe des nouveaux post sur la politique") possibilite de creer plusieurs alerte ("je veux etre informe des nouveaux post de sport en France")
 - [ ] Vidéos dans les posts.
 - [ ] Corrections d'articles publiées par l'éditeur (`PostCorrection`) si non faites avant.
 - [ ] Revue communautaire par jury tiré au sort (§5.8).

@@ -15,3 +15,4 @@ export * from "./post-layout.js";
 export * from "./weighted-feed.js";
 export * from "./editor-reliability.js";
 export * from "./similar-posts.js";
+export * from "./alerts.js";

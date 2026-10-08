@@ -140,3 +140,17 @@ export const EditorReliabilityLevel = z.enum([
   "INSUFFICIENT_HISTORY",
 ]);
 export type EditorReliabilityLevel = z.infer<typeof EditorReliabilityLevel>;
+
+// docs/DECISIONS.md (push notifications): what a notification is about.
+export const NotificationKind = z.enum([
+  "ALERT",
+  "COMMENT_REPLY",
+  "POST_UNDER_REVIEW",
+  "POST_VERDICT",
+  "TICKET_MESSAGE",
+]);
+export type NotificationKind = z.infer<typeof NotificationKind>;
+
+// docs/DECISIONS.md: push notifications reach the iOS and Android apps (not the web).
+export const PushPlatform = z.enum(["IOS", "ANDROID"]);
+export type PushPlatform = z.infer<typeof PushPlatform>;

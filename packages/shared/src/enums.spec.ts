@@ -22,6 +22,8 @@ describe("enums (SPEC)", () => {
       PostLayout: enums.PostLayout.options,
       Typeface: enums.Typeface.options,
       EditorReliabilityLevel: enums.EditorReliabilityLevel.options,
+      NotificationKind: enums.NotificationKind.options,
+      PushPlatform: enums.PushPlatform.options,
     }).toEqual({
       UserRole: ["READER", "EDITOR", "MODERATOR", "ADMIN"],
       EditorStatus: ["PENDING", "INDEPENDENT", "CERTIFIED", "REJECTED"],
@@ -91,6 +93,14 @@ describe("enums (SPEC)", () => {
         "SPACE_MONO",
       ],
       EditorReliabilityLevel: ["VERY_RELIABLE", "RELIABLE", "VIGILANCE", "INSUFFICIENT_HISTORY"],
+      NotificationKind: [
+        "ALERT",
+        "COMMENT_REPLY",
+        "POST_UNDER_REVIEW",
+        "POST_VERDICT",
+        "TICKET_MESSAGE",
+      ],
+      PushPlatform: ["IOS", "ANDROID"],
     });
   });
 

@@ -39,3 +39,14 @@ jest.mock("expo-font", () => ({
   isLoaded: () => true,
   loadAsync: async () => undefined,
 }));
+
+// No native notification module under Jest: the phone has no push token in tests.
+jest.mock("expo-notifications", () => ({
+  AndroidImportance: { DEFAULT: 3 },
+  setNotificationHandler: jest.fn(),
+  setNotificationChannelAsync: jest.fn(async () => null),
+  getPermissionsAsync: jest.fn(async () => ({ granted: false })),
+  requestPermissionsAsync: jest.fn(async () => ({ granted: false })),
+  getExpoPushTokenAsync: jest.fn(async () => ({ data: "" })),
+  addNotificationResponseReceivedListener: jest.fn(() => ({ remove: jest.fn() })),
+}));

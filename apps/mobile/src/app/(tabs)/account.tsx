@@ -21,6 +21,7 @@ const texts = {
   moderation: "Commentaires et opinions signalés",
   sanctions: "Mes sanctions",
   blocks: "Comptes bloqués",
+  alerts: "Mes alertes",
   support: "Parler à l'équipe",
   tickets: "Tickets",
   conversations: "Toutes les conversations",
@@ -60,6 +61,7 @@ export default function AccountScreen() {
             variant="secondary"
             onPress={() => router.push("/sanctions")}
           />
+          <Button label={texts.alerts} variant="secondary" onPress={() => router.push("/alerts")} />
           <Button label={texts.blocks} variant="secondary" onPress={() => router.push("/blocks")} />
           {can(user, "moderation.queue.read") ? (
             <Button label={texts.moderation} onPress={() => router.push("/moderation/comments")} />

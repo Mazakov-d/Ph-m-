@@ -11,6 +11,7 @@ import type {
 import { ApiException } from "../common/errors/api.exception.js";
 import { decodeCursor, toPage } from "../common/pagination/cursor.js";
 import { PrismaService } from "../prisma/prisma.service.js";
+import { NotificationsService } from "../notifications/notifications.service.js";
 import { toCommentPublic } from "./comments.mapper.js";
 import { ToxicityChecker } from "./toxicity/toxicity-checker.js";
 
@@ -26,6 +27,7 @@ export class CommentsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly toxicityChecker: ToxicityChecker,
+    private readonly notifications: NotificationsService,
   ) {}
 
   /** SPEC §6: a comment, or a reply to a root comment (one level). */
@@ -40,7 +42,7 @@ export class CommentsService {
         "The comment contains a term forbidden by the community rules",
       );
     }
-    return this.prisma.$transaction(async (tx) => {
+    const { created, rootAuthorId } = await this.prisma.$transaction(async (tx) => {
       const post = await tx.post.findUnique({ where: { id: input.postId } });
       if (!post) {
         throw new ApiException(HttpStatus.NOT_FOUND, "NOT_FOUND", "No such post");
@@ -56,6 +58,7 @@ export class CommentsService {
           "Comments are disabled on this post",
         );
       }
+      let threadAuthorId: string | null = null;
       if (input.parentId) {
         const parent = await tx.comment.findUnique({ where: { id: input.parentId } });
         const isValidParent =
@@ -70,6 +73,7 @@ export class CommentsService {
             "A reply must answer a visible root comment of the same post",
           );
         }
+        threadAuthorId = parent.authorId;
       }
       const comment = await tx.comment.create({
         data: {
@@ -80,8 +84,20 @@ export class CommentsService {
         },
         include: WITH_AUTHOR,
       });
-      return toCommentPublic(comment);
+      return { created: toCommentPublic(comment), rootAuthorId: threadAuthorId };
     });
+    // docs/DECISIONS.md (push notifications): the author of the thread hears about the reply.
+    if (rootAuthorId) {
+      this.notifications.fireAndForget(
+        this.notifications.notifyCommentReply(rootAuthorId, {
+          authorId: author.id,
+          authorPseudo: created.authorPseudo,
+          content: created.content ?? "",
+          postId: input.postId,
+        }),
+      );
+    }
+    return created;
   }
 
   /**

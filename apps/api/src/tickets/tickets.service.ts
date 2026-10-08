@@ -10,6 +10,7 @@ import {
 import { ApiException } from "../common/errors/api.exception.js";
 import type { Ticket } from "../generated/prisma/client.js";
 import { PrismaService } from "../prisma/prisma.service.js";
+import { NotificationsService } from "../notifications/notifications.service.js";
 import {
   TICKET_INCLUDE,
   toMessagePublic,
@@ -22,7 +23,10 @@ const WITH_AUTHOR = { author: { select: { pseudo: true, role: true } } } as cons
 /** SPEC §8: support tickets and editor chats. */
 @Injectable()
 export class TicketsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly notifications: NotificationsService,
+  ) {}
 
   /** « Parler à l'équipe »: a SUPPORT ticket with its first message. */
   async openSupport(user: AuthUser, content: string): Promise<TicketPublic> {
@@ -188,6 +192,15 @@ export class TicketsService {
         data: { lastMessageAt: now, ...(isAssignedModerator && { lastModeratorMessageAt: now }) },
       }),
     ]);
+    // docs/DECISIONS.md (push notifications): the other participants hear about the message.
+    const participants = [ticket.openedById, ticket.editorId, ticket.assignedModeratorId];
+    this.notifications.fireAndForget(
+      this.notifications.notifyTicketMessage(
+        ticketId,
+        participants.filter((id) => id !== null),
+        user.id,
+      ),
+    );
     return toMessagePublic(message);
   }
 

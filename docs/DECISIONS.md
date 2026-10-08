@@ -505,3 +505,27 @@ qui la remplace.
   - « X autres médias en parlent » compte les éditeurs distincts (**sans validation**) ;
   - affichage sur la page d'un post, sous l'article : le compteur et « Voir les similaires », qui
     déplie la liste ; rien sur les cartes du fil, rien quand personne d'autre n'en parle.
+
+## 2026-10-08 — Notifications push
+
+- **Question** : la ROADMAP demande des notifications push et des alertes par filtre, plusieurs
+  par compte (« sport en France »), sans fixer les critères, la fréquence ni les autres cas.
+- **Décision** (validée par le porteur du projet, sauf les points marqués) :
+  - **Alertes** : un thème, une zone, ou les deux ; une région facultative avec la zone Locale ;
+    10 alertes au plus par compte (écran « Mes alertes » depuis le compte).
+  - **Envoi immédiat** quand un post correspond, une seule notification par post même s'il
+    correspond à plusieurs alertes, 10 notifications d'alerte au plus par compte sur 24 h
+    glissantes ; jamais à l'auteur, jamais à un lecteur qui a bloqué l'éditeur. Titre : le pseudo
+    de l'éditeur ; texte : le titre du post (**sans validation**).
+  - **Autres notifications** : réponse dans un fil de commentaires que l'on a lancé ; article mis
+    en examen, verdict et verdict en appel (pour l'éditeur) ; message dans une conversation de
+    support (pour les autres participants, sans le contenu du message, **sans validation**).
+    Elles ne sont pas plafonnées (**sans validation**).
+  - **iOS et Android seulement** (pas de push web) ; les alertes se règlent aussi sur le web.
+  - **Technique** : service de push d'Expo (aucune dépendance côté API, appel HTTP) ;
+    `expo-notifications` dans l'app ; un téléphone appartient au dernier compte connecté dessus et
+    s'en détache à la déconnexion ; les téléphones désinstallés sont oubliés ; la suppression de
+    compte efface ses téléphones et ses alertes. `PUSH_DELIVERY=disabled` coupe l'envoi (tests,
+    développement).
+  - **À faire avant la mise en service** : créer le projet EAS (`eas init`) — sans son
+    identifiant, l'app ne demande pas de jeton push — et tester sur de vrais téléphones.

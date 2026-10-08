@@ -17,6 +17,7 @@ import { ApiException } from "../common/errors/api.exception.js";
 import { FILE_EXTENSIONS } from "../common/files/file-type.js";
 import { decodeCursor, toPage } from "../common/pagination/cursor.js";
 import { PrismaService } from "../prisma/prisma.service.js";
+import { NotificationsService } from "../notifications/notifications.service.js";
 import { type StoredObject, StorageService } from "../storage/storage.service.js";
 import { VotesService } from "../votes/votes.service.js";
 import { type PostImageType, sanitizeImage } from "./post-images.js";
@@ -37,6 +38,7 @@ export class PostsService {
     private readonly weightedFeed: WeightedFeedService,
     private readonly reliability: EditorReliabilityService,
     private readonly similarPosts: SimilarPostsService,
+    private readonly notifications: NotificationsService,
   ) {}
 
   /** SPEC §9: « X autres médias en parlent » and the similar posts, for the reader. */
@@ -102,6 +104,8 @@ export class PostsService {
         },
         include: POST_INCLUDE,
       });
+      // docs/DECISIONS.md (push notifications): the readers with a matching alert.
+      this.notifications.fireAndForget(this.notifications.notifyNewPost(post));
       return await this.toPublic(post, author.id);
     } catch (error) {
       // The post was not saved: its images must not stay in storage.

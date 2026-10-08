@@ -53,6 +53,8 @@ export const ErrorCode = z.enum([
   // Tickets (SPEC §8)
   "TICKET_ALREADY_ASSIGNED",
   "TICKET_CLOSED",
+  // docs/DECISIONS.md (push notifications): ALERTS_MAX alerts per account.
+  "ALERTS_LIMIT_REACHED",
 ]);
 export type ErrorCode = z.infer<typeof ErrorCode>;
 

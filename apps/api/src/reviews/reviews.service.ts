@@ -14,6 +14,7 @@ import type { Prisma } from "../generated/prisma/client.js";
 import { POST_INCLUDE } from "../posts/post-record.js";
 import { toPostSummaryPublic } from "../posts/posts.mapper.js";
 import { PrismaService } from "../prisma/prisma.service.js";
+import { NotificationsService } from "../notifications/notifications.service.js";
 import { toReportModeration, toReviewPublic } from "./reviews.mapper.js";
 
 type Tx = Prisma.TransactionClient;
@@ -24,7 +25,10 @@ const isAccurate = (verdict: Verdict) => verdict === "ACCURATE";
 /** Moderation side of article reviews (SPEC §5.4, §5.5). */
 @Injectable()
 export class ReviewsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly notifications: NotificationsService,
+  ) {}
 
   /** SPEC §5.4: articles under review by decreasing priority, without conflicts (§2.3). */
   async queue(moderator: AuthUser): Promise<ReviewQueueItemModeration[]> {
@@ -57,7 +61,7 @@ export class ReviewsService {
     input: CreateReviewInput,
   ): Promise<ReviewPublic> {
     const excluded = await excludedAuthorIds(this.prisma, moderator.id);
-    return this.prisma.$transaction(async (tx) => {
+    const { review, post } = await this.prisma.$transaction(async (tx) => {
       const post = await tx.post.findUnique({ where: { id: postId } });
       if (!post) {
         throw new ApiException(HttpStatus.NOT_FOUND, "NOT_FOUND", "No such post");
@@ -95,8 +99,11 @@ export class ReviewsService {
           metadata: { reviewId: review.id, verdict: input.verdict },
         },
       });
-      return toReviewPublic(review, "NONE");
+      return { review: toReviewPublic(review, "NONE"), post };
     });
+    // docs/DECISIONS.md (push notifications): the editor hears about the verdict.
+    this.notifications.fireAndForget(this.notifications.notifyVerdict(post, input.verdict));
+    return review;
   }
 
   /** docs/DECISIONS.md: pending appeals, never to the author of the verdict nor in conflict. */
@@ -141,7 +148,7 @@ export class ReviewsService {
     input: CreateReviewInput,
   ): Promise<ReviewPublic> {
     const excluded = await excludedAuthorIds(this.prisma, moderator.id);
-    return this.prisma.$transaction(async (tx) => {
+    const { review, post } = await this.prisma.$transaction(async (tx) => {
       const appeal = await tx.appeal.findUnique({
         where: { id: appealId },
         include: { review: { include: { post: true } } },
@@ -193,8 +200,10 @@ export class ReviewsService {
           metadata: { appealId, from: original.verdict, to: input.verdict },
         },
       });
-      return toReviewPublic(review, "DECIDED");
+      return { review: toReviewPublic(review, "DECIDED"), post: original.post };
     });
+    this.notifications.fireAndForget(this.notifications.notifyVerdict(post, input.verdict));
+    return review;
   }
 
   private async closePendingReports(tx: Tx, postId: string, verdict: Verdict): Promise<void> {

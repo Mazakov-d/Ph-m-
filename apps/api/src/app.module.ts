@@ -9,6 +9,7 @@ import { ApiExceptionFilter } from "./common/filters/api-exception.filter.js";
 import { RateLimitModule } from "./common/rate-limit/rate-limit.module.js";
 import { HealthModule } from "./health/health.module.js";
 import { ModerationModule } from "./moderation/moderation.module.js";
+import { NotificationsModule } from "./notifications/notifications.module.js";
 import { PostsModule } from "./posts/posts.module.js";
 import { PrismaModule } from "./prisma/prisma.module.js";
 import { ReportsModule } from "./reports/reports.module.js";
@@ -40,6 +41,7 @@ import { VotesModule } from "./votes/votes.module.js";
     AuditModule,
     SearchModule,
     RetentionModule,
+    NotificationsModule,
     // Scheduled jobs (CLAUDE.md §5.3): ticket timeouts, later the retention purge.
     ScheduleModule.forRoot(),
     RateLimitModule,

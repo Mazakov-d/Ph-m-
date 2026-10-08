@@ -1,3 +1,4 @@
+import { NotificationsModule } from "../notifications/notifications.module.js";
 import { Module } from "@nestjs/common";
 import { EditorReliabilityModule } from "../reliability/editor-reliability.module.js";
 import { VotesModule } from "../votes/votes.module.js";
@@ -8,7 +9,7 @@ import { SimilarPostsService } from "./similar-posts.service.js";
 import { WeightedFeedService } from "./weighted-feed.service.js";
 
 @Module({
-  imports: [VotesModule, EditorReliabilityModule],
+  imports: [NotificationsModule, VotesModule, EditorReliabilityModule],
   controllers: [PostsController, EditorPostsController],
   providers: [PostsService, WeightedFeedService, SimilarPostsService],
 })

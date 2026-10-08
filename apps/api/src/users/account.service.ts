@@ -39,6 +39,9 @@ export class AccountService {
         where: { userId: user.id, revokedAt: null },
         data: { revokedAt: now },
       }),
+      // docs/DECISIONS.md (push notifications): no phone nor alert stays tied to the account.
+      this.prisma.pushToken.deleteMany({ where: { userId: user.id } }),
+      this.prisma.alert.deleteMany({ where: { userId: user.id } }),
     ]);
   }
 }
