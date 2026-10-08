@@ -18,6 +18,8 @@ const WITH_AUTHOR = { author: { select: { pseudo: true } } } as const;
 
 // docs/DECISIONS.md: one can reply to a comment shown to everyone.
 const REPLYABLE_STATUSES: CommentStatus[] = ["VISIBLE", "VERIFIED"];
+// docs/DECISIONS.md: the author deletes a comment shown to everyone, never one under review.
+const DELETABLE_STATUSES: CommentStatus[] = ["VISIBLE", "VERIFIED"];
 
 @Injectable()
 export class CommentsService {
@@ -115,5 +117,44 @@ export class CommentsService {
       })),
       nextCursor: page.nextCursor,
     };
+  }
+
+  /**
+   * SPEC §6: the author deletes their comment, always logically (deletedAt, deletedBy), never
+   * while it is under review. The status check and the deletion are one conditional update, so
+   * a comment going UNDER_REVIEW at the same moment can never end up deleted (CLAUDE.md §5.3).
+   * docs/DECISIONS.md: allowed to a suspended account too.
+   */
+  async deleteByAuthor(author: AuthUser, commentId: string): Promise<CommentPublic> {
+    const deleted = await this.prisma.comment.updateMany({
+      where: { id: commentId, authorId: author.id, status: { in: DELETABLE_STATUSES } },
+      data: { status: "DELETED", deletedAt: new Date(), deletedBy: "AUTHOR" },
+    });
+    const comment = await this.prisma.comment.findUnique({
+      where: { id: commentId },
+      include: WITH_AUTHOR,
+    });
+    if (deleted.count === 1 && comment) {
+      return toCommentPublic(comment);
+    }
+    // Nothing was deleted: explain why.
+    if (!comment) {
+      throw new ApiException(HttpStatus.NOT_FOUND, "NOT_FOUND", "No such comment");
+    }
+    if (comment.authorId !== author.id) {
+      throw new ApiException(HttpStatus.FORBIDDEN, "FORBIDDEN", "Not your comment");
+    }
+    if (comment.status === "UNDER_REVIEW") {
+      throw new ApiException(
+        HttpStatus.CONFLICT,
+        "COMMENT_UNDER_REVIEW",
+        "A comment under review cannot be deleted",
+      );
+    }
+    throw new ApiException(
+      HttpStatus.CONFLICT,
+      "INVALID_STATUS_TRANSITION",
+      `A ${comment.status} comment cannot be deleted`,
+    );
   }
 }

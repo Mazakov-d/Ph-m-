@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Query } from "@nestjs/common";
 import {
   type AuthUser,
   type CommentPublic,
@@ -38,5 +38,14 @@ export class CommentsController {
     @Query(new ZodValidationPipe(cursorQuerySchema)) query: CursorQuery,
   ): Promise<Paginated<CommentThreadPublic>> {
     return this.commentsService.listForPost(postId, query);
+  }
+
+  // No permission required: a suspended account may delete its own comments (docs/DECISIONS.md).
+  @Delete("comments/:id")
+  delete(
+    @Param("id", new ZodValidationPipe(idSchema)) id: string,
+    @CurrentUser() author: AuthUser,
+  ): Promise<CommentPublic> {
+    return this.commentsService.deleteByAuthor(author, id);
   }
 }

@@ -120,7 +120,7 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 - [x] API : créer un commentaire (connecté, non suspendu, post avec commentaires activés), réponses sur un niveau (§6).
 - [x] API : interface `ToxicityChecker` + implémentation MVP (liste de mots + normalisation) appelée avant enregistrement.
 - [x] API : liste des commentaires d'un post, tri par date croissante, contenu masqué (`content: null`) si `UNDER_REVIEW`, `REMOVED` ou `DELETED`.
-- [ ] API : suppression par l'auteur — **logique** et **refusée si `UNDER_REVIEW`**, en une transaction (test de concurrence).
+- [x] API : suppression par l'auteur — **logique** et **refusée si `UNDER_REVIEW`**, en une transaction (test de concurrence).
 - [ ] Aucune route de modification de commentaire n'existe.
 - [ ] App : section commentaires (fils de réponses), formulaire, suppression avec confirmation, affichage « Commentaire supprimé ».
 
