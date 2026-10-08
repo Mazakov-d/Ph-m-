@@ -2,13 +2,20 @@
   "expo": {
     "name": "Fama",
     "slug": "fama",
-    "version": "0.0.0",
+    "version": "0.1.0",
     "orientation": "portrait",
     "scheme": "fama",
     "userInterfaceStyle": "automatic",
     "web": {
       "output": "single"
     },
-    "plugins": ["expo-router", "expo-status-bar"]
+    "plugins": ["expo-router", "expo-status-bar"],
+    "ios": {
+      "bundleIdentifier": "app.fama.mobile",
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "app.fama.mobile"
+    }
   }
 }

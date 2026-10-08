@@ -233,7 +233,7 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 - [x] Pages : règles de la communauté, politique de confidentialité, mentions légales (textes fournis par le porteur du projet ; prévoir l'emplacement).
 - [ ] Limitation de débit (rate limiting) sur l'inscription, la connexion, les commentaires et les signalements.
 - [x] Revue de sécurité : aucune donnée privée dans les réponses publiques (test automatisé qui parcourt les schémas publics).
-- [ ] Configuration EAS (builds iOS / Android) et déploiement de l'API (choix consigné dans `DECISIONS.md`).
+- [x] Configuration EAS (builds iOS / Android) et déploiement de l'API (choix consigné dans `DECISIONS.md`).
 - [ ] Aller voir le fichier interface.txt pour avoir le descriptif de l'UI pour faire la phase 10 bis.
 
 **Critères de validation**

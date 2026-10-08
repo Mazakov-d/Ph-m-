@@ -333,3 +333,24 @@ qui la remplace.
   réponse 429 `RATE_LIMITED`. Compteurs en mémoire : suffisant pour une seule instance de l'API ; un
   stockage partagé (Redis) sera nécessaire avec plusieurs instances.
 - **Pourquoi** : limiter la création de comptes en masse, les essais de mots de passe et le spam.
+
+## 2026-10-08 — Builds mobiles et déploiement de l'API (sans validation)
+
+- **Question** : la ROADMAP (phase 11) demande la configuration EAS et le déploiement de l'API ;
+  l'hébergeur n'est pas choisi.
+- **Décision** (prise sans validation, à relire) :
+  - **Builds** : EAS Build, profils `development` (client de dev, distribution interne), `preview`
+    (distribution interne, API de préproduction) et `production` (numéro de build incrémenté par
+    EAS). L'adresse de l'API passe par `EXPO_PUBLIC_API_URL` dans `apps/mobile/eas.json`.
+    Identifiants provisoires `app.fama.mobile` (iOS et Android) et adresses `*.fama.example` :
+    **à remplacer** par le nom de domaine et les identifiants réels avant le premier build.
+  - **API** : une image Docker indépendante de l'hébergeur (`apps/api/Dockerfile`) qui applique les
+    migrations puis démarre l'API. Elle peut tourner chez n'importe quel hébergeur de conteneurs
+    (Scaleway, Fly.io, Render, Railway…) ; recommandation : un hébergeur en Europe (RGPD) avec
+    PostgreSQL managé et un stockage S3 privé dans la même région.
+  - **Exigences de production** : `JWT_ACCESS_SECRET` long et aléatoire ; `CORS_ORIGINS` limité au
+    site web ; l'API et le site web sur le même domaine racine (ex. `api.fama.fr` et `fama.fr`),
+    car le cookie de session web est `SameSite` ; HTTPS obligatoire ; une seule instance tant que la
+    limitation de débit garde ses compteurs en mémoire (sinon ajouter Redis).
+- **Pourquoi** : rester libre de l'hébergeur tant qu'il n'est pas choisi ; l'image a été construite
+  et démarrée localement (migrations appliquées, `/health` répond).

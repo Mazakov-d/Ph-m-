@@ -373,6 +373,8 @@ pnpm --filter api prisma db seed     # données de démo (efface la base ; mot d
 pnpm dev                             # shared (watch) + api (:3000) + mobile (Expo, :8081)
 pnpm check                           # generate + lint + typecheck + tests (tout le monorepo)
 pnpm format                          # formate tout le dépôt avec Prettier
+docker build -f apps/api/Dockerfile -t fama-api .     # image de production de l'API
+cd apps/mobile && npx eas-cli build --profile preview # build iOS / Android (compte Expo requis)
 ```
 
 Sous Linux, si Expo échoue avec `ENOSPC: System limit for number of file watchers reached`, augmenter
