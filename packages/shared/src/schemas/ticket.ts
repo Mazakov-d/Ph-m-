@@ -11,10 +11,17 @@ export const createTicketInputSchema = z.discriminatedUnion("kind", [
 ]);
 export type CreateTicketInput = z.infer<typeof createTicketInputSchema>;
 
+// docs/DECISIONS.md: moderators list the unassigned tickets or their own.
 export const ticketQuerySchema = cursorQuerySchema.extend({
-  status: TicketStatus.optional(),
+  scope: z.enum(["unassigned", "mine"]).default("unassigned"),
 });
 export type TicketQuery = z.infer<typeof ticketQuerySchema>;
+
+/** SPEC §8: a moderator opens a chat with an editor (about a report, for example). */
+export const createEditorChatInputSchema = createMessageInputSchema.extend({
+  editorId: idSchema,
+});
+export type CreateEditorChatInput = z.infer<typeof createEditorChatInputSchema>;
 
 /** A ticket as seen by the account that opened it (or the editor of an EDITOR_CHAT). */
 export const ticketPublicSchema = z.object({
@@ -30,7 +37,11 @@ export type TicketPublic = z.infer<typeof ticketPublicSchema>;
 export const ticketModerationSchema = ticketPublicSchema.extend({
   openedById: idSchema,
   openedByPseudo: z.string(),
+  editorPseudo: z.string().nullable(),
   assignedModeratorId: idSchema.nullable(),
+  assignedModeratorPseudo: z.string().nullable(),
   assignedAt: isoDateTimeSchema.nullable(),
+  // The first message, so that moderators know what a NEW ticket is about.
+  firstMessage: z.string(),
 });
 export type TicketModeration = z.infer<typeof ticketModerationSchema>;

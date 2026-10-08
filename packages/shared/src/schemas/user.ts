@@ -30,3 +30,16 @@ export const blockPublicSchema = z.object({
   createdAt: isoDateTimeSchema,
 });
 export type BlockPublic = z.infer<typeof blockPublicSchema>;
+
+/** SPEC §2.4: an entry of the audit log, for admins. */
+export const auditLogModerationSchema = z.object({
+  id: idSchema,
+  actorId: idSchema,
+  actorPseudo: z.string(),
+  action: z.string(),
+  targetType: z.string(),
+  targetId: z.string().nullable(),
+  metadata: z.record(z.string(), z.unknown()).nullable(),
+  createdAt: isoDateTimeSchema,
+});
+export type AuditLogModeration = z.infer<typeof auditLogModerationSchema>;

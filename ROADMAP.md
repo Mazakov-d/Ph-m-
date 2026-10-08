@@ -187,11 +187,11 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 
 ## Phase 9 — Support et chats
 
-- [ ] API : ouvrir un ticket `SUPPORT` (tout compte) ; ouvrir un ticket `EDITOR_CHAT` (modérateur vers éditeur).
-- [ ] API : liste des tickets `NEW` pour les modérateurs ; attribution atomique (`UPDATE ... WHERE status = 'NEW'`) ; clôture.
-- [ ] API : messages en ajout seul (aucune route de modification ou de suppression).
-- [ ] API : job planifié de retour à `NEW` après 24 h sans message du modérateur (§8).
-- [ ] API : un `ADMIN` lit tous les tickets ; chaque lecture → `AuditLog`.
+- [x] API : ouvrir un ticket `SUPPORT` (tout compte) ; ouvrir un ticket `EDITOR_CHAT` (modérateur vers éditeur).
+- [x] API : liste des tickets `NEW` pour les modérateurs ; attribution atomique (`UPDATE ... WHERE status = 'NEW'`) ; clôture.
+- [x] API : messages en ajout seul (aucune route de modification ou de suppression).
+- [x] API : job planifié de retour à `NEW` après 24 h sans message du modérateur (§8).
+- [x] API : un `ADMIN` lit tous les tickets ; chaque lecture → `AuditLog`.
 - [ ] App : écran « Parler à l'équipe », écran de conversation (rafraîchi par `refetchInterval`).
 - [ ] App : écrans modérateur « Tickets » (non attribués / les miens) ; écran admin « Toutes les conversations » et « Journal d'audit ».
 

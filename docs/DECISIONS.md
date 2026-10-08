@@ -276,3 +276,21 @@ qui la remplace.
     bloqueur (le fil, les commentaires) ; un post reste accessible par lien direct ;
   - toutes les décisions de modération (commentaire, opinion, appel de sanction) écrivent un `AuditLog`.
 - **Pourquoi** : déduit de la SPEC ; à confirmer par le porteur du projet.
+
+## 2026-10-08 — Support et chats (sans validation)
+
+- **Question** : la SPEC (§8) ne précise pas qui voit quoi dans un ticket ni le détail des états.
+- **Décision** (prise sans validation, à relire) :
+  - un ticket `SUPPORT` est ouvert par un lecteur ou un éditeur (`support.open`, y compris suspendu ou
+    banni, pour contester) avec un premier message ; un `EDITOR_CHAT` est ouvert par un modérateur ou
+    un dirigeant avec un éditeur validé et lui est directement attribué (`ASSIGNED`) ;
+  - participants : l'auteur d'un ticket `SUPPORT` (ou l'éditeur d'un `EDITOR_CHAT`) et le modérateur
+    attribué ; les modérateurs voient la liste des tickets `NEW` (avec le premier message) et les leurs ;
+    un dirigeant voit tout, et **chaque lecture d'une conversation à laquelle il ne participe pas
+    crée une entrée `AuditLog`** ;
+  - attribution atomique (update conditionnel `WHERE status = 'NEW'`) ; seul le modérateur attribué
+    (ou un dirigeant) ferme un ticket ; un ticket fermé ne reçoit plus de message ;
+  - retour à `NEW` (et retrait du modérateur) quand le dernier message du modérateur — ou à défaut
+    l'attribution — date de 24 h (`TICKET_ASSIGN_TIMEOUT_HOURS`) : tâche planifiée toutes les 10 min ;
+  - messages : texte seul, ajout uniquement ; rafraîchissement de la conversation toutes les 10 s.
+- **Pourquoi** : déduit de la SPEC ; à confirmer par le porteur du projet.
