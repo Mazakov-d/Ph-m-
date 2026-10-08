@@ -15,6 +15,8 @@ export function PostVideoPlayer({ video }: { video: PostVideoPublic }) {
       accessibilityLabel={texts.label}
       player={player}
       nativeControls
+      // Interface brief: the video can be enlarged to the whole screen.
+      fullscreenOptions={{ enable: true }}
       contentFit="contain"
       style={styles.video}
     />

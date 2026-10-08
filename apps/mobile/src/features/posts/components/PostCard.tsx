@@ -13,13 +13,14 @@ import { VideoPreview } from "./VideoPreview";
  * A post in the feed: editor and badge, date, then the first three blocks chosen by the editor
  * (interface brief): title, summary, and the video, the cover picture or the start of the article.
  */
-export function PostCard({ post }: { post: PostSummaryPublic }) {
+export function PostCard({ post, fill = false }: { post: PostSummaryPublic; fill?: boolean }) {
   const router = useRouter();
   return (
     <Pressable
       accessibilityRole="link"
       onPress={() => router.push(`/posts/${post.id}`)}
-      style={({ pressed }) => [styles.card, pressed && styles.pressed]}
+      // In a grid row, the cards of a row share its width and height (`fill`).
+      style={({ pressed }) => [styles.card, fill && styles.fill, pressed && styles.pressed]}
     >
       <View style={styles.header}>
         <Text style={styles.editor}>{post.editor.pseudo}</Text>
@@ -66,7 +67,6 @@ export function PostCard({ post }: { post: PostSummaryPublic }) {
 
 const styles = StyleSheet.create({
   card: {
-    flex: 1,
     gap: spacing.sm,
     padding: spacing.lg,
     backgroundColor: colors.surface,
@@ -75,6 +75,7 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
   },
   pressed: { opacity: 0.9 },
+  fill: { flex: 1 },
   header: { flexDirection: "row", alignItems: "center", flexWrap: "wrap", gap: spacing.sm },
   editor: { fontWeight: "600", color: colors.text },
   date: { color: colors.muted, fontSize: textSizes.meta, marginLeft: "auto" },

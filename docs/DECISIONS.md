@@ -635,3 +635,22 @@ qui la remplace.
   refusée) est supprimée avec le compte, identité et pièces justificatives comprises ; elle
   disparaît de la file de modération. Un éditeur validé garde son profil (ses publications
   restent) jusqu'à la purge de rétention, comme avant.
+
+## 2026-10-09 — Page d'un éditeur et conversations de la modération
+
+- **Question** : retours du porteur sur la page d'un éditeur et le suivi des chats.
+- **Décision** (demandée par le porteur du projet, sauf les points marqués) :
+  - page d'un éditeur : ses informations dans une boîte — centrée pour les lecteurs, à gauche
+    pour la modération et l'admin, avec à droite le bouton « Envoyer un message à l'éditeur »
+    (de la largeur de son texte) ou le chat en cours ; ses publications en grille (1 à 3
+    colonnes selon la fenêtre), comme le fil ;
+  - le chat en cours avec un éditeur est visible sur sa page par l'admin (lecture journalisée)
+    et par le modérateur qui l'a en main ;
+  - dans le compte : l'admin liste toutes les conversations ouvertes ; un modérateur voit
+    « À prendre en charge » (la conversation quitte cette liste quand il la prend) et « Mes
+    conversations », marquées « Nouvelle réponse » quand on attend l'équipe ; un chat avec un
+    éditeur s'ouvre sur la page de l'éditeur, une demande de support sur sa conversation ;
+  - les messages sont signés « Modo » (modérateur), « Admin » (admin) ou du nom de l'auteur
+    (éditeur, lecteur) ;
+  - les photos d'un post s'agrandissent en plein écran au toucher ; la vidéo a son bouton plein
+    écran ; la barre de recherche du fil est plus petite et centrée.

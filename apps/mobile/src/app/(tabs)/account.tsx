@@ -8,6 +8,7 @@ import { Button } from "../../components/ui/Button";
 import { AuthPanel } from "../../features/auth/components/AuthPanel";
 import { DeleteAccount } from "../../features/auth/components/DeleteAccount";
 import { JurySection } from "../../features/jury/components/JurySection";
+import { ConversationsSection } from "../../features/tickets/components/ConversationsSection";
 import { LegalLinks } from "../../features/legal/LegalLinks";
 import { useAuth } from "../../providers/AuthProvider";
 
@@ -74,6 +75,7 @@ export default function AccountScreen() {
               onPress={() => router.push("/moderation/post-reviews")}
             />
           ) : null}
+          <ConversationsSection />
           <Button label={texts.signOut} variant="secondary" onPress={signOut} />
           <DeleteAccount />
         </>

@@ -42,14 +42,25 @@ export function SearchBar({ value, onChange, onFocus }: Props) {
 }
 
 const styles = StyleSheet.create({
-  bar: { flexDirection: "row", alignItems: "center", gap: 8, marginHorizontal: 16, marginTop: 8 },
+  // Interface brief: a compact bar, centred above the feed.
+  bar: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    width: "100%",
+    maxWidth: 480,
+    alignSelf: "center",
+    paddingHorizontal: 16,
+    marginTop: 8,
+  },
   input: {
     flex: 1,
     borderWidth: 1,
     borderColor: colors.border,
     borderRadius: 20,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    fontSize: 14,
     backgroundColor: colors.surface,
   },
   clear: { fontSize: 18, paddingHorizontal: 6 },

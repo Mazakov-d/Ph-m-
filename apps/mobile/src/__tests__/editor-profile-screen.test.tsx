@@ -1,4 +1,6 @@
 import { screen } from "@testing-library/react-native";
+import { tokenStorage } from "../lib/tokenStorage";
+import { sessionFor } from "../test/fixtures";
 import EditorProfileScreen from "../app/editors/[id]";
 import { apiClient } from "../lib/apiClient";
 import { jsonResponse, renderWithProviders } from "../test/renderWithProviders";
@@ -56,5 +58,53 @@ describe("EditorProfileScreen (SPEC §2.2)", () => {
     );
     await renderWithProviders(<EditorProfileScreen />);
     expect(await screen.findByText("Cet éditeur n'existe pas.")).toBeTruthy();
+  });
+
+  it("shows the open chat beside the details to the moderator in charge (docs/DECISIONS.md)", async () => {
+    const TICKET = "7c1e4a3c-6f1d-4d6b-9a52-3c2f0e7d8a11";
+    const now = new Date().toISOString();
+    await tokenStorage.save({ accessToken: "access", refreshToken: "refresh" });
+    fetchMock.mockImplementation(async (url) => {
+      const path = String(url);
+      if (path.endsWith("/auth/refresh")) return jsonResponse(200, sessionFor("MODERATOR"));
+      if (path.endsWith("/chat")) {
+        return jsonResponse(200, {
+          ticket: {
+            id: TICKET,
+            kind: "EDITOR_CHAT",
+            status: "ASSIGNED",
+            createdAt: now,
+            lastMessageAt: now,
+            openedById: profile.id,
+            openedByPseudo: "Testeur",
+            editorId: profile.id,
+            editorPseudo: "Le Monde",
+            assignedModeratorId: sessionFor("MODERATOR").user.id,
+            assignedModeratorPseudo: "Testeur",
+            assignedAt: now,
+            firstMessage: "Bonjour",
+            awaitingTeam: true,
+          },
+        });
+      }
+      if (path.endsWith(`/tickets/${TICKET}/messages`)) {
+        return jsonResponse(200, [
+          {
+            id: "8c1e4a3c-6f1d-4d6b-9a52-3c2f0e7d8a11",
+            ticketId: TICKET,
+            authorPseudo: "Testeur",
+            fromTeam: true,
+            authorRole: "MODERATOR",
+            content: "Bonjour",
+            createdAt: now,
+          },
+        ]);
+      }
+      if (path.includes("/posts")) return jsonResponse(200, { items: [], nextCursor: null });
+      return jsonResponse(200, profile);
+    });
+    await renderWithProviders(<EditorProfileScreen />);
+    expect(await screen.findByText("Conversation avec Le Monde")).toBeTruthy();
+    expect(await screen.findByText(/^Modo · /)).toBeTruthy();
   });
 });

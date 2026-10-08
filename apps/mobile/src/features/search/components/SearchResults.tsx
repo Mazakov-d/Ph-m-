@@ -31,7 +31,7 @@ export function SearchResults({ q, filters, header, columns }: Props) {
       columnWrapperStyle={columns > 1 ? styles.row : undefined}
       data={posts}
       keyExtractor={(post) => post.id}
-      renderItem={({ item }) => <PostCard post={item} />}
+      renderItem={({ item }) => <PostCard post={item} fill={columns > 1} />}
       contentContainerStyle={styles.list}
       ListHeaderComponent={
         <View style={styles.header}>

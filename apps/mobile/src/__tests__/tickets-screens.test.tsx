@@ -25,11 +25,13 @@ const ticket: TicketModeration = {
   lastMessageAt: now,
   openedById: ID(2),
   openedByPseudo: "lecteur",
+  editorId: null,
   editorPseudo: null,
   assignedModeratorId: null,
   assignedModeratorPseudo: null,
   assignedAt: null,
   firstMessage: "Mon compte a été suspendu à tort.",
+  awaitingTeam: true,
 };
 const messages: MessagePublic[] = [
   {
@@ -37,6 +39,7 @@ const messages: MessagePublic[] = [
     ticketId: ID(1),
     authorPseudo: "lecteur",
     fromTeam: false,
+    authorRole: "READER",
     content: "Bonjour",
     createdAt: now,
   },
@@ -45,6 +48,7 @@ const messages: MessagePublic[] = [
     ticketId: ID(1),
     authorPseudo: "modo",
     fromTeam: true,
+    authorRole: "MODERATOR",
     content: "Je regarde.",
     createdAt: now,
   },
@@ -89,7 +93,7 @@ describe("support and chat screens (SPEC §8)", () => {
     await signIn("READER", (path) => (path.endsWith("/messages") ? messages : messages[0]));
     await renderWithProviders(<Conversation ticketId={ID(1)} />);
     expect(await screen.findByText("Je regarde.")).toBeTruthy();
-    expect(screen.getByText(/^Équipe · modo/)).toBeTruthy();
+    expect(screen.getByText(/^Modo · /)).toBeTruthy();
     await fireEvent.changeText(screen.getByLabelText("Votre message"), "Merci");
     await fireEvent.press(screen.getByText("Envoyer"));
     await waitFor(() => expect(posted(`/tickets/${ID(1)}/messages`)).toBeTruthy());

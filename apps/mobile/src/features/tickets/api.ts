@@ -1,5 +1,6 @@
 import {
   auditLogModerationSchema,
+  editorChatModerationSchema,
   type MessagePublic,
   messagePublicSchema,
   paginated,
@@ -20,6 +21,7 @@ export const ticketKeys = {
   moderator: (scope: "unassigned" | "mine") => [...ticketKeys.all, "moderator", scope] as const,
   admin: () => [...ticketKeys.all, "admin"] as const,
   messages: (ticketId: string) => [...ticketKeys.all, "messages", ticketId] as const,
+  editorChat: (editorId: string) => [...ticketKeys.all, "editor-chat", editorId] as const,
   audit: () => ["audit-logs"] as const,
 };
 
@@ -106,6 +108,16 @@ export function useOpenEditorChat() {
     mutationFn: ({ editorId, content }: { editorId: string; content: string }) =>
       apiClient.post("/moderation/editor-chats", { editorId, content }, ticketModerationSchema),
     onSuccess: refresh,
+  });
+}
+
+/** docs/DECISIONS.md (chats): the open chat with an editor shown on the editor's page. */
+export function useEditorChat(editorId: string, enabled: boolean) {
+  return useQuery({
+    queryKey: ticketKeys.editorChat(editorId),
+    queryFn: () =>
+      apiClient.get(`/moderation/editors/${editorId}/chat`, editorChatModerationSchema),
+    enabled,
   });
 }
 

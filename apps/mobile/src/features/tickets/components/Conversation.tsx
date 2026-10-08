@@ -4,16 +4,15 @@ import { ActivityIndicator, StyleSheet, Text, TextInput, View } from "react-nati
 import { Button } from "../../../components/ui/Button";
 import { formatPublishedAt } from "../../posts/texts";
 import { useMessages, useSendMessage } from "../api";
-import { ticketErrorMessage } from "../texts";
+import { messageAuthorLabel, ticketErrorMessage } from "../texts";
 import { colors } from "../../../components/ui/theme";
 
 const texts = {
   placeholder: "Votre message",
   send: "Envoyer",
-  team: "Équipe",
 };
 
-/** SPEC §8: messages are text only, never edited nor deleted; refreshed by polling. */
+/** SPEC §8: messages are text only, never edited nor deleted; they arrive in real time. */
 export function Conversation({ ticketId }: { ticketId: string }) {
   const messages = useMessages(ticketId);
   const send = useSendMessage(ticketId);
@@ -29,7 +28,7 @@ export function Conversation({ ticketId }: { ticketId: string }) {
           style={[styles.bubble, message.fromTeam ? styles.team : styles.user]}
         >
           <Text style={styles.author}>
-            {`${message.fromTeam ? `${texts.team} · ` : ""}${message.authorPseudo} · ${formatPublishedAt(message.createdAt)}`}
+            {`${messageAuthorLabel(message)} · ${formatPublishedAt(message.createdAt)}`}
           </Text>
           <Text>{message.content}</Text>
         </View>

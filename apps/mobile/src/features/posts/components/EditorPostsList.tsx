@@ -2,7 +2,7 @@ import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { Button } from "../../../components/ui/Button";
 import { useEditorPosts } from "../api";
 import { postErrorMessage } from "../texts";
-import { PostCard } from "./PostCard";
+import { PostGrid } from "./PostGrid";
 
 const texts = {
   title: "Publications",
@@ -10,7 +10,7 @@ const texts = {
   more: "Voir plus",
 };
 
-/** SPEC §2.2: the publications shown on an editor's public profile. */
+/** SPEC §2.2: the publications of an editor's public profile, in a grid like the feed. */
 export function EditorPostsList({ editorId }: { editorId: string }) {
   const posts = useEditorPosts(editorId);
   const items = posts.data?.pages.flatMap((page) => page.items) ?? [];
@@ -21,9 +21,7 @@ export function EditorPostsList({ editorId }: { editorId: string }) {
       {posts.isPending ? <ActivityIndicator /> : null}
       {posts.error ? <Text>{postErrorMessage(posts.error)}</Text> : null}
       {posts.isSuccess && items.length === 0 ? <Text>{texts.empty}</Text> : null}
-      {items.map((post) => (
-        <PostCard key={post.id} post={post} />
-      ))}
+      <PostGrid posts={items} />
       {posts.hasNextPage ? (
         <Button
           label={texts.more}

@@ -1,15 +1,21 @@
 import type { PostPublic } from "@fama/shared";
-import { Image, StyleSheet, View } from "react-native";
+import { useState } from "react";
+import { Image, Pressable, StyleSheet, View } from "react-native";
 import { FormattedText } from "../../../components/ui/FormattedText";
 import { colors, radius, spacing, textSizes } from "../../../components/ui/theme";
 import { apiClient } from "../../../lib/apiClient";
+import { ImageViewer } from "./ImageViewer";
 import { PostVideoPlayer } from "./PostVideoPlayer";
+
+const texts = { enlarge: (index: number) => `Agrandir l'image ${index}` };
 
 /**
  * Interface brief: one centred column: the title, the summary, then the article and the
  * pictures in the editor's order, with their typefaces (sizes fixed by the app).
  */
 export function PostBlocks({ post }: { post: PostPublic }) {
+  // Interface brief: a picture opens enlarged when touched.
+  const [enlarged, setEnlarged] = useState<string | null>(null);
   const body = (
     <FormattedText
       key="body"
@@ -19,13 +25,19 @@ export function PostBlocks({ post }: { post: PostPublic }) {
       style={styles.body}
     />
   );
-  const images = post.images.map((image) => (
-    <Image
+  const images = post.images.map((image, index) => (
+    <Pressable
       key={image.id}
-      source={{ uri: apiClient.url(image.path) }}
-      style={styles.image}
-      accessibilityIgnoresInvertColors
-    />
+      accessibilityRole="imagebutton"
+      accessibilityLabel={texts.enlarge(index + 1)}
+      onPress={() => setEnlarged(apiClient.url(image.path))}
+    >
+      <Image
+        source={{ uri: apiClient.url(image.path) }}
+        style={styles.image}
+        accessibilityIgnoresInvertColors
+      />
+    </Pressable>
   ));
   // docs/DECISIONS.md (videos): the video comes first among the media.
   const pictures = post.video
@@ -49,6 +61,7 @@ export function PostBlocks({ post }: { post: PostPublic }) {
         style={styles.text}
       />
       {post.layout === "MEDIA_FIRST" ? [...pictures, body] : [body, ...pictures]}
+      <ImageViewer uri={enlarged} onClose={() => setEnlarged(null)} />
     </View>
   );
 }

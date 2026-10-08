@@ -5,6 +5,8 @@ import { formatPublishedAt } from "../../posts/texts";
 import { TICKET_KIND_LABELS, TICKET_STATUS_LABELS } from "../texts";
 import { colors } from "../../../components/ui/theme";
 
+const texts = { waiting: "Nouvelle réponse" };
+
 type Props = {
   ticket: TicketPublic | TicketModeration;
   onPress: () => void;
@@ -22,6 +24,10 @@ export function TicketCard({ ticket, onPress, action }: Props) {
         </Text>
         {team ? <Text style={styles.who}>{team.editorPseudo ?? team.openedByPseudo}</Text> : null}
         {team ? <Text numberOfLines={2}>{team.firstMessage}</Text> : null}
+        {/* docs/DECISIONS.md (chats): someone answered and waits for the team. */}
+        {team?.awaitingTeam && team.assignedModeratorId ? (
+          <Text style={styles.waiting}>{texts.waiting}</Text>
+        ) : null}
       </Pressable>
       {action}
     </View>
@@ -33,4 +39,5 @@ const styles = StyleSheet.create({
   body: { gap: 4 },
   meta: { color: colors.muted },
   who: { fontWeight: "600" },
+  waiting: { color: colors.danger, fontWeight: "600" },
 });

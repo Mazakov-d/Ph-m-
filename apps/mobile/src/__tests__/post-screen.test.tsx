@@ -111,6 +111,20 @@ describe("PostScreen", () => {
     expect(await screen.findByText("Publier une correction")).toBeTruthy();
   });
 
+  it("enlarges a picture when it is touched (interface brief)", async () => {
+    fetchMock.mockResolvedValue(
+      jsonResponse(200, {
+        ...ARTICLE_DETAIL,
+        images: [{ id: "5f1e4a3c-6f1d-4d6b-9a52-3c2f0e7d8a11", path: "/posts/1/images/5" }],
+      }),
+    );
+    await renderWithProviders(<PostScreen />);
+    await fireEvent.press(await screen.findByLabelText("Agrandir l'image 1"));
+    expect(screen.getByLabelText("Fermer l'image")).toBeTruthy();
+    await fireEvent.press(screen.getByLabelText("Fermer l'image"));
+    expect(screen.queryByLabelText("Fermer l'image")).toBeNull();
+  });
+
   it("says when the post does not exist", async () => {
     fetchMock.mockResolvedValueOnce(
       jsonResponse(404, { code: "NOT_FOUND", message: "No such post" }),

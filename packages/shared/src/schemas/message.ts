@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { UserRole } from "../enums.js";
 import { MESSAGE_MAX_LENGTH } from "../rules.js";
 import { idSchema, isoDateTimeSchema } from "./common.js";
 
@@ -14,6 +15,8 @@ export const messagePublicSchema = z.object({
   authorPseudo: z.string(),
   // True when written by a moderator or an admin, to style « l'équipe » messages.
   fromTeam: z.boolean(),
+  // docs/DECISIONS.md (chats): the app signs « Modo », « Admin », or the author's name.
+  authorRole: UserRole,
   content: z.string(),
   createdAt: isoDateTimeSchema,
 });

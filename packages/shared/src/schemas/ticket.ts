@@ -37,11 +37,19 @@ export type TicketPublic = z.infer<typeof ticketPublicSchema>;
 export const ticketModerationSchema = ticketPublicSchema.extend({
   openedById: idSchema,
   openedByPseudo: z.string(),
+  // docs/DECISIONS.md (chats): an EDITOR_CHAT opens on the page of its editor.
+  editorId: idSchema.nullable(),
   editorPseudo: z.string().nullable(),
   assignedModeratorId: idSchema.nullable(),
   assignedModeratorPseudo: z.string().nullable(),
   assignedAt: isoDateTimeSchema.nullable(),
   // The first message, so that moderators know what a NEW ticket is about.
   firstMessage: z.string(),
+  // docs/DECISIONS.md (chats): the last message is not the team's — someone is waiting.
+  awaitingTeam: z.boolean(),
 });
 export type TicketModeration = z.infer<typeof ticketModerationSchema>;
+
+/** docs/DECISIONS.md (chats): the open chat with an editor that the viewer may see, if any. */
+export const editorChatModerationSchema = z.object({ ticket: ticketModerationSchema.nullable() });
+export type EditorChatModeration = z.infer<typeof editorChatModerationSchema>;

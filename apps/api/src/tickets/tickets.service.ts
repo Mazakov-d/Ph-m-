@@ -83,7 +83,9 @@ export class TicketsService {
         editorId,
         assignedModeratorId: moderator.id,
         assignedAt: now,
+        // The same instant: the moderator wrote last (nothing is waiting for the team).
         lastModeratorMessageAt: now,
+        lastMessageAt: now,
         messages: { create: { authorId: moderator.id, content } },
       },
       include: TICKET_INCLUDE,
@@ -116,6 +118,24 @@ export class TicketsService {
       include: TICKET_INCLUDE,
     });
     return tickets.map(toTicketModeration);
+  }
+
+  /**
+   * docs/DECISIONS.md (chats): the open chat with an editor shown on the editor's page — any one
+   * for an ADMIN, the moderator's own otherwise.
+   */
+  async editorChat(viewer: AuthUser, editorId: string): Promise<TicketModeration | null> {
+    const ticket = await this.prisma.ticket.findFirst({
+      where: {
+        kind: "EDITOR_CHAT",
+        editorId,
+        status: { not: "CLOSED" },
+        ...(can(viewer, "chat.readAll") ? {} : { assignedModeratorId: viewer.id }),
+      },
+      orderBy: { lastMessageAt: "desc" },
+      include: TICKET_INCLUDE,
+    });
+    return ticket ? toTicketModeration(ticket) : null;
   }
 
   /** SPEC §2.4: an admin sees every conversation. */

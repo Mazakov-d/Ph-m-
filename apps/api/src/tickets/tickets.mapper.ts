@@ -31,11 +31,16 @@ export function toTicketModeration(ticket: TicketRecord): TicketModeration {
     ...toTicketPublic(ticket),
     openedById: ticket.openedById,
     openedByPseudo: ticket.openedBy.pseudo,
+    editorId: ticket.editorId,
     editorPseudo: ticket.editor?.pseudo ?? null,
     assignedModeratorId: ticket.assignedModeratorId,
     assignedModeratorPseudo: ticket.assignedModerator?.pseudo ?? null,
     assignedAt: ticket.assignedAt?.toISOString() ?? null,
     firstMessage: ticket.messages[0]?.content ?? "",
+    // No message of the assigned moderator since the last one: an answer is waiting.
+    awaitingTeam:
+      ticket.lastModeratorMessageAt === null ||
+      ticket.lastMessageAt.getTime() > ticket.lastModeratorMessageAt.getTime(),
   };
 }
 
@@ -49,6 +54,7 @@ export function toMessagePublic(
     ticketId: message.ticketId,
     authorPseudo: message.author.pseudo,
     fromTeam: TEAM_ROLES.includes(message.author.role),
+    authorRole: message.author.role,
     content: message.content,
     createdAt: message.createdAt.toISOString(),
   };

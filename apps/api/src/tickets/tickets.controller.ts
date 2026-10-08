@@ -4,6 +4,7 @@ import {
   type CreateEditorChatInput,
   createEditorChatInputSchema,
   type CreateMessageInput,
+  type EditorChatModeration,
   createMessageInputSchema,
   idSchema,
   type MessagePublic,
@@ -62,6 +63,16 @@ export class TicketsController {
     @CurrentUser() moderator: AuthUser,
   ): Promise<TicketModeration> {
     return this.tickets.openEditorChat(moderator, input.editorId, input.content);
+  }
+
+  // docs/DECISIONS.md (chats): the editor's page shows the open chat with them.
+  @Get("moderation/editors/:editorId/chat")
+  @RequirePermission("ticket.assign")
+  async editorChat(
+    @Param("editorId", idPipe()) editorId: string,
+    @CurrentUser() viewer: AuthUser,
+  ): Promise<EditorChatModeration> {
+    return { ticket: await this.tickets.editorChat(viewer, editorId) };
   }
 
   @Get("moderation/tickets")

@@ -140,6 +140,37 @@ describe("Support and chats (e2e, SPEC §8)", () => {
       .expect(400);
   });
 
+  it("shows the open chat on the editor's page to its moderator and to an admin only", async () => {
+    const editor = await signUp(app, prisma, "clara", {
+      role: "EDITOR",
+      editorStatus: "INDEPENDENT",
+    });
+    const chatOf = async (viewer: Account) =>
+      (await as(viewer, server().get(`/moderation/editors/${editor.id}/chat`)).expect(200)).body
+        .ticket;
+
+    expect(await chatOf(moderator)).toBeNull();
+    const opened = await as(moderator, server().post("/moderation/editor-chats"))
+      .send({ editorId: editor.id, content: "Bonjour" })
+      .expect(201);
+    expect(await chatOf(moderator)).toMatchObject({
+      id: opened.body.id,
+      editorId: editor.id,
+      awaitingTeam: false,
+    });
+    expect(await chatOf(otherModerator)).toBeNull();
+    expect(await chatOf(admin)).toMatchObject({ id: opened.body.id });
+
+    // The editor answers: the moderator sees that an answer is waiting, signed with the role.
+    await send(editor, opened.body.id, "Bien reçu.").expect(201);
+    expect(await chatOf(moderator)).toMatchObject({ awaitingTeam: true });
+    const messages = await as(moderator, server().get(`/tickets/${opened.body.id}/messages`));
+    expect(messages.body.map((message: { authorRole: string }) => message.authorRole)).toEqual([
+      "MODERATOR",
+      "EDITOR",
+    ]);
+  });
+
   it("goes back to NEW after 24 hours without a message of its moderator (SPEC §8)", async () => {
     const quiet = await openTicket();
     const active = await openTicket(reader, "Autre question");

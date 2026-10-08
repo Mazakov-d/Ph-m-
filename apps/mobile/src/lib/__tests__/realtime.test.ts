@@ -8,6 +8,7 @@ const message = {
   ticketId: TICKET,
   authorPseudo: "modo",
   fromTeam: true,
+  authorRole: "MODERATOR",
   content: "Nous regardons.",
   createdAt: new Date().toISOString(),
 };
