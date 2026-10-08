@@ -1,7 +1,8 @@
 import { Stack } from "expo-router";
-import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { Button } from "../components/ui/Button";
 import { useBlocks, useUnblockUser } from "../features/users/api";
+import { CenteredBox } from "../components/ui/CenteredBox";
 
 const texts = {
   title: "Comptes bloqués",
@@ -15,7 +16,7 @@ export default function BlocksScreen() {
   const blocks = useBlocks();
   const unblock = useUnblockUser();
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <CenteredBox size="narrow">
       <Stack.Screen options={{ title: texts.title }} />
       <Text>{texts.intro}</Text>
       {blocks.isPending ? <ActivityIndicator /> : null}
@@ -31,12 +32,11 @@ export default function BlocksScreen() {
           />
         </View>
       ))}
-    </ScrollView>
+    </CenteredBox>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 16, gap: 12, width: "100%", maxWidth: 720, alignSelf: "center" },
   row: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 12 },
   pseudo: { fontWeight: "600", flex: 1 },
 });

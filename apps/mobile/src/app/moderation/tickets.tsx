@@ -1,7 +1,7 @@
 import { can } from "@fama/shared";
 import { Stack, useRouter } from "expo-router";
 import { useState } from "react";
-import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { Button } from "../../components/ui/Button";
 import { Chip } from "../../components/ui/Chip";
 import { useModeratorTickets, useTicketAction } from "../../features/tickets/api";
@@ -9,6 +9,7 @@ import { TicketCard } from "../../features/tickets/components/TicketCard";
 import { ticketErrorMessage } from "../../features/tickets/texts";
 import { useAuth } from "../../providers/AuthProvider";
 import { colors } from "../../components/ui/theme";
+import { CenteredBox } from "../../components/ui/CenteredBox";
 
 const texts = {
   title: "Tickets",
@@ -32,7 +33,7 @@ export default function ModeratorTicketsScreen() {
     return <Text style={styles.message}>{texts.forbidden}</Text>;
   }
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <CenteredBox size="wide">
       <Stack.Screen options={{ title: texts.title }} />
       <View style={styles.tabs}>
         <Chip
@@ -65,12 +66,11 @@ export default function ModeratorTicketsScreen() {
           }
         />
       ))}
-    </ScrollView>
+    </CenteredBox>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 16, gap: 12, width: "100%", maxWidth: 720, alignSelf: "center" },
   tabs: { flexDirection: "row", gap: 8 },
   message: { padding: 24, textAlign: "center" },
   error: { color: colors.danger },

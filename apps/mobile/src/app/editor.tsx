@@ -1,6 +1,6 @@
 import { can } from "@fama/shared";
 import { Link, Stack, useRouter } from "expo-router";
-import { ActivityIndicator, ScrollView, StyleSheet, Text } from "react-native";
+import { ActivityIndicator, StyleSheet, Text } from "react-native";
 import { Button } from "../components/ui/Button";
 import { useMyEditorApplication } from "../features/editors/api";
 import { ApplicationStatus } from "../features/editors/components/ApplicationStatus";
@@ -9,6 +9,7 @@ import { IdentityVisibilitySwitch } from "../features/editors/components/Identit
 import { editorErrorMessage } from "../features/editors/texts";
 import { useAuth } from "../providers/AuthProvider";
 import { colors } from "../components/ui/theme";
+import { CenteredBox } from "../components/ui/CenteredBox";
 
 const texts = {
   title: "Espace éditeur",
@@ -62,15 +63,14 @@ export default function EditorSpaceScreen() {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+    <CenteredBox size="medium">
       <Stack.Screen options={{ title: texts.title }} />
       {content()}
-    </ScrollView>
+    </CenteredBox>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 24, gap: 24 },
   error: { color: colors.danger },
   link: { color: colors.brand },
 });

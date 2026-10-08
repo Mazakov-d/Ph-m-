@@ -1,10 +1,11 @@
 import { MESSAGE_MAX_LENGTH } from "@fama/shared";
 import { Stack, useRouter } from "expo-router";
-import { ScrollView, StyleSheet, Text } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import { TextActionForm } from "../components/ui/TextActionForm";
 import { useMyTickets, useOpenSupportTicket } from "../features/tickets/api";
 import { TicketCard } from "../features/tickets/components/TicketCard";
 import { ticketErrorMessage } from "../features/tickets/texts";
+import { CenteredBox } from "../components/ui/CenteredBox";
 
 const texts = {
   title: "Parler à l'équipe",
@@ -21,7 +22,7 @@ export default function SupportScreen() {
   const open = useOpenSupportTicket();
 
   return (
-    <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+    <CenteredBox size="medium">
       <Stack.Screen options={{ title: texts.title }} />
       <Text>{texts.intro}</Text>
       <TextActionForm
@@ -47,11 +48,10 @@ export default function SupportScreen() {
           onPress={() => router.push(`/tickets/${ticket.id}`)}
         />
       ))}
-    </ScrollView>
+    </CenteredBox>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 16, gap: 12, width: "100%", maxWidth: 720, alignSelf: "center" },
   heading: { fontSize: 18, fontWeight: "bold", marginTop: 8 },
 });

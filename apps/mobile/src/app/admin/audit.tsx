@@ -1,11 +1,12 @@
 import { can } from "@fama/shared";
 import { Stack } from "expo-router";
-import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { Button } from "../../components/ui/Button";
 import { formatPublishedAt } from "../../features/posts/texts";
 import { useAuditLogs } from "../../features/tickets/api";
 import { useAuth } from "../../providers/AuthProvider";
 import { colors } from "../../components/ui/theme";
+import { CenteredBox } from "../../components/ui/CenteredBox";
 
 const texts = {
   title: "Journal d'audit",
@@ -22,7 +23,7 @@ export default function AuditLogScreen() {
   }
   const entries = logs.data?.pages.flatMap((page) => page.items) ?? [];
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <CenteredBox size="wide">
       <Stack.Screen options={{ title: texts.title }} />
       {logs.isPending ? <ActivityIndicator /> : null}
       {entries.map((entry) => (
@@ -44,12 +45,11 @@ export default function AuditLogScreen() {
           onPress={() => void logs.fetchNextPage()}
         />
       ) : null}
-    </ScrollView>
+    </CenteredBox>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 16, gap: 8, width: "100%", maxWidth: 720, alignSelf: "center" },
   entry: { gap: 2, padding: 12, borderRadius: 8, backgroundColor: colors.surface },
   action: { fontWeight: "600" },
   muted: { color: colors.muted, fontSize: 12 },

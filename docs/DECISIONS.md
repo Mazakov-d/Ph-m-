@@ -441,3 +441,6 @@ qui la remplace.
   - **Connexion et inscription** : les formulaires s'ouvrent dans la même boîte centrée que le
     compte, sous le slogan, avec un lien pour passer de l'un à l'autre. Les pages `/login` et
     `/register` (liens « Connectez-vous pour commenter ») montrent la même boîte.
+  - **Pages du compte** : toutes les pages ouvertes depuis le compte (espace éditeur, sanctions,
+    comptes bloqués, support et tickets, modération, administration, pages légales) s'affichent
+    dans la même boîte centrée, plus ou moins large selon le contenu (420, 560 ou 760 points).

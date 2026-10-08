@@ -1,7 +1,7 @@
 import { can } from "@fama/shared";
 import { Stack } from "expo-router";
 import { useState } from "react";
-import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { Chip } from "../../components/ui/Chip";
 import {
   useCommentQueue,
@@ -14,6 +14,7 @@ import {
   SanctionAppealCard,
 } from "../../features/moderation/components/ModerationCards";
 import { useAuth } from "../../providers/AuthProvider";
+import { CenteredBox } from "../../components/ui/CenteredBox";
 
 const texts = {
   title: "Commentaires et opinions signalés",
@@ -40,7 +41,7 @@ export default function ContentModerationScreen() {
   const count = (data: unknown[] | undefined) => (data ? `(${data.length})` : "");
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <CenteredBox size="wide">
       <Stack.Screen options={{ title: texts.title }} />
       <View style={styles.tabs}>
         <Chip
@@ -72,12 +73,11 @@ export default function ContentModerationScreen() {
       {tab === "appeals"
         ? appeals.data?.map((appeal) => <SanctionAppealCard key={appeal.id} appeal={appeal} />)
         : null}
-    </ScrollView>
+    </CenteredBox>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 16, gap: 12, width: "100%", maxWidth: 720, alignSelf: "center" },
   tabs: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   message: { padding: 24, textAlign: "center" },
 });

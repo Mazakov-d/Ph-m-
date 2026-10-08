@@ -1,10 +1,11 @@
 import { stripInlineFormatting, VERDICT_LABELS } from "@fama/shared";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import { ActivityIndicator, ScrollView, StyleSheet, Text } from "react-native";
+import { ActivityIndicator, StyleSheet, Text } from "react-native";
 import { VerdictForm } from "../../../features/reviews/components/VerdictForm";
 import { useAppeals, useGiveVerdict } from "../../../features/reviews/moderationApi";
 import { reviewErrorMessage } from "../../../features/reviews/texts";
 import { colors } from "../../../components/ui/theme";
+import { CenteredBox } from "../../../components/ui/CenteredBox";
 
 const texts = {
   title: "Trancher l'appel",
@@ -23,7 +24,7 @@ export default function AppealDecisionScreen() {
   const appeal = appeals.data?.find((candidate) => candidate.id === appealId);
 
   return (
-    <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+    <CenteredBox size="wide">
       <Stack.Screen options={{ title: texts.title }} />
       {appeals.isPending ? <ActivityIndicator /> : null}
       {appeals.isSuccess && !appeal ? <Text>{texts.notFound}</Text> : null}
@@ -41,12 +42,11 @@ export default function AppealDecisionScreen() {
           />
         </>
       ) : null}
-    </ScrollView>
+    </CenteredBox>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 20, gap: 12, width: "100%", maxWidth: 720, alignSelf: "center" },
   title: { fontSize: 20, fontWeight: "bold" },
   bold: { fontWeight: "600" },
   muted: { color: colors.muted },

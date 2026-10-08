@@ -1,13 +1,14 @@
 import { can, type EditorStatus } from "@fama/shared";
 import { Stack } from "expo-router";
 import { useState } from "react";
-import { ActivityIndicator, FlatList, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { Button } from "../../components/ui/Button";
 import { ApplicationReviewCard } from "../../features/editors/components/ApplicationReviewCard";
 import { useEditorApplications } from "../../features/editors/moderationApi";
 import { editorErrorMessage } from "../../features/editors/texts";
 import { useAuth } from "../../providers/AuthProvider";
 import { colors } from "../../components/ui/theme";
+import { CenteredBox } from "../../components/ui/CenteredBox";
 
 const texts = {
   title: "Demandes éditeurs",
@@ -15,6 +16,7 @@ const texts = {
   pending: "En attente",
   independent: "Indépendants (à certifier)",
   empty: "Aucune demande.",
+  more: "Voir plus de demandes",
 };
 
 export default function EditorApplicationsScreen() {
@@ -25,16 +27,16 @@ export default function EditorApplicationsScreen() {
 
   if (!canReview) {
     return (
-      <View style={styles.container}>
+      <CenteredBox size="wide">
         <Stack.Screen options={{ title: texts.title }} />
         <Text>{texts.forbidden}</Text>
-      </View>
+      </CenteredBox>
     );
   }
 
   const items = applications.data?.pages.flatMap((page) => page.items) ?? [];
   return (
-    <View style={styles.screen}>
+    <CenteredBox size="wide">
       <Stack.Screen options={{ title: texts.title }} />
       <View style={styles.filters}>
         <Button
@@ -55,27 +57,23 @@ export default function EditorApplicationsScreen() {
       {applications.error ? (
         <Text style={styles.error}>{editorErrorMessage(applications.error)}</Text>
       ) : null}
-      <FlatList
-        data={items}
-        keyExtractor={(application) => application.userId}
-        renderItem={({ item }) => <ApplicationReviewCard application={item} />}
-        contentContainerStyle={styles.list}
-        ListEmptyComponent={applications.isSuccess ? <Text>{texts.empty}</Text> : null}
-        onEndReached={() => {
-          if (applications.hasNextPage && !applications.isFetchingNextPage) {
-            void applications.fetchNextPage();
-          }
-        }}
-        ListFooterComponent={applications.isFetchingNextPage ? <ActivityIndicator /> : null}
-      />
-    </View>
+      {items.map((application) => (
+        <ApplicationReviewCard key={application.userId} application={application} />
+      ))}
+      {applications.isSuccess && items.length === 0 ? <Text>{texts.empty}</Text> : null}
+      {applications.hasNextPage ? (
+        <Button
+          label={texts.more}
+          variant="secondary"
+          loading={applications.isFetchingNextPage}
+          onPress={() => void applications.fetchNextPage()}
+        />
+      ) : null}
+    </CenteredBox>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1 },
-  container: { padding: 24 },
-  filters: { padding: 16, gap: 8 },
-  list: { padding: 16, gap: 16 },
-  error: { color: colors.danger, paddingHorizontal: 16 },
+  filters: { gap: 8 },
+  error: { color: colors.danger },
 });

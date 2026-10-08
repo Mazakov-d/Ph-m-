@@ -2,13 +2,24 @@ import type { ReactNode } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { colors, radius, spacing } from "./theme";
 
-type Props = { children: ReactNode; /** Shown under the box (legal links). */ footer?: ReactNode };
+/** Widest box for each kind of content: a few buttons, a form or a text, a list to work on. */
+const BOX_WIDTHS = { narrow: 420, medium: 560, wide: 760 } as const;
 
-/** Interface brief: the account pages sit in one box in the middle of the screen. */
-export function CenteredBox({ children, footer }: Props) {
+type Props = {
+  children: ReactNode;
+  size?: keyof typeof BOX_WIDTHS;
+  /** Shown under the box (legal links). */
+  footer?: ReactNode;
+};
+
+/**
+ * Interface brief: the account and every page opened from it sit in one box in the middle of
+ * the screen, as wide as their content needs.
+ */
+export function CenteredBox({ children, size = "narrow", footer }: Props) {
   return (
     <ScrollView contentContainerStyle={styles.screen} keyboardShouldPersistTaps="handled">
-      <View style={styles.box}>{children}</View>
+      <View style={[styles.box, { maxWidth: BOX_WIDTHS[size] }]}>{children}</View>
       {footer}
     </ScrollView>
   );
@@ -24,7 +35,6 @@ const styles = StyleSheet.create({
   },
   box: {
     width: "100%",
-    maxWidth: 420,
     gap: spacing.md,
     padding: spacing.xl,
     borderWidth: 1,

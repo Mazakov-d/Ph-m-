@@ -1,10 +1,11 @@
 import { can } from "@fama/shared";
 import { Stack, useRouter } from "expo-router";
-import { ActivityIndicator, ScrollView, StyleSheet, Text } from "react-native";
+import { ActivityIndicator, StyleSheet, Text } from "react-native";
 import { useAllTickets } from "../../features/tickets/api";
 import { TicketCard } from "../../features/tickets/components/TicketCard";
 import { useAuth } from "../../providers/AuthProvider";
 import { colors } from "../../components/ui/theme";
+import { CenteredBox } from "../../components/ui/CenteredBox";
 
 const texts = {
   title: "Toutes les conversations",
@@ -21,7 +22,7 @@ export default function AllConversationsScreen() {
     return <Text style={styles.message}>{texts.forbidden}</Text>;
   }
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <CenteredBox size="medium">
       <Stack.Screen options={{ title: texts.title }} />
       <Text style={styles.notice}>{texts.notice}</Text>
       {tickets.isPending ? <ActivityIndicator /> : null}
@@ -32,12 +33,11 @@ export default function AllConversationsScreen() {
           onPress={() => router.push(`/tickets/${ticket.id}`)}
         />
       ))}
-    </ScrollView>
+    </CenteredBox>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 16, gap: 12, width: "100%", maxWidth: 720, alignSelf: "center" },
   notice: { color: colors.muted, fontStyle: "italic" },
   message: { padding: 24, textAlign: "center" },
 });

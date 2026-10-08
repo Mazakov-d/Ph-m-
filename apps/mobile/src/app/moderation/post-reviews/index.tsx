@@ -1,13 +1,14 @@
 import { can } from "@fama/shared";
 import { Stack } from "expo-router";
 import { useState } from "react";
-import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { Chip } from "../../../components/ui/Chip";
 import { AppealCard } from "../../../features/reviews/components/AppealCard";
 import { ReviewQueueCard } from "../../../features/reviews/components/ReviewQueueCard";
 import { useAppeals, useReviewQueue } from "../../../features/reviews/moderationApi";
 import { reviewErrorMessage } from "../../../features/reviews/texts";
 import { useAuth } from "../../../providers/AuthProvider";
+import { CenteredBox } from "../../../components/ui/CenteredBox";
 
 const texts = {
   title: "Articles signalés",
@@ -30,7 +31,7 @@ export default function PostReviewsScreen() {
   const current = tab === "queue" ? queue : appeals;
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <CenteredBox size="wide">
       <Stack.Screen options={{ title: texts.title }} />
       <View style={styles.tabs}>
         <Chip
@@ -54,12 +55,11 @@ export default function PostReviewsScreen() {
           {tab === "queue" ? texts.emptyQueue : texts.emptyAppeals}
         </Text>
       ) : null}
-    </ScrollView>
+    </CenteredBox>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 16, gap: 12, width: "100%", maxWidth: 720, alignSelf: "center" },
   tabs: { flexDirection: "row", gap: 8 },
   message: { padding: 24, textAlign: "center" },
 });
