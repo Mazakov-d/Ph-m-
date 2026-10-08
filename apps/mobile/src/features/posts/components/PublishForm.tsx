@@ -37,7 +37,7 @@ export function PublishForm({ onPublished }: { onPublished: (postId: string) => 
   const createPost = useCreatePost();
   const [images, setImages] = useState<LocalFile[]>([]);
   const [imagesError, setImagesError] = useState<string | undefined>();
-  const { control, handleSubmit, formState, setValue } = useForm({
+  const { control, handleSubmit, formState, setValue, getValues } = useForm({
     resolver: zodResolver(createPostInputSchema),
     defaultValues: {
       kind: "ARTICLE",
@@ -76,6 +76,14 @@ export function PublishForm({ onPublished }: { onPublished: (postId: string) => 
               field.onChange(value);
               // SPEC §7: an opinion starts with the default choices; an article has none.
               setValue("voteOptions", value === "OPINION" ? [...DEFAULT_VOTE_OPTIONS] : undefined);
+              // SPEC §3: sources are optional for an opinion; an article needs at least one.
+              const sources = getValues("sources");
+              if (value === "OPINION" && sources.every((source) => source.trim() === "")) {
+                setValue("sources", []);
+              }
+              if (value === "ARTICLE" && sources.length === 0) {
+                setValue("sources", [""]);
+              }
             }}
           />
         )}
@@ -104,6 +112,7 @@ export function PublishForm({ onPublished }: { onPublished: (postId: string) => 
           <SourcesField
             sources={field.value}
             onChange={field.onChange}
+            optional={kind === "OPINION"}
             error={errors.sources ? texts.sourcesError : undefined}
           />
         )}

@@ -25,7 +25,13 @@ describe("createPostInputSchema (SPEC §3)", () => {
     },
   );
 
-  it("requires at least one source and at most 20", () => {
+  it("lets an opinion have no source (SPEC §3)", () => {
+    expect(
+      createPostInputSchema.safeParse({ ...validPost, kind: "OPINION", sources: [] }).success,
+    ).toBe(true);
+  });
+
+  it("requires at least one source for an article and at most 20", () => {
     expect(createPostInputSchema.safeParse({ ...validPost, sources: [] }).success).toBe(false);
     const sources = Array.from({ length: 21 }, (_, i) => `Source ${i}`);
     expect(createPostInputSchema.safeParse({ ...validPost, sources }).success).toBe(false);

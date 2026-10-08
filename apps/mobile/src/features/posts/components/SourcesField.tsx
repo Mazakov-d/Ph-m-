@@ -3,21 +3,28 @@ import { Button } from "../../../components/ui/Button";
 
 const texts = {
   label: "Sources (lien ou référence, au moins une)",
+  optionalLabel: "Sources (lien ou référence, facultatives pour une opinion)",
   placeholder: "https://… ou « Rapport de la Cour des comptes, 2026 »",
   add: "Ajouter une source",
   remove: (index: number) => `Retirer la source ${index + 1}`,
 };
 
-type Props = { sources: string[]; onChange: (sources: string[]) => void; error?: string };
+type Props = {
+  sources: string[];
+  onChange: (sources: string[]) => void;
+  optional: boolean;
+  error?: string;
+};
 
-/** SPEC §3: at least one source per post. */
-export function SourcesField({ sources, onChange, error }: Props) {
+/** SPEC §3: at least one source for an article, optional for an opinion. */
+export function SourcesField({ sources, onChange, optional, error }: Props) {
+  const minimum = optional ? 0 : 1;
   const update = (index: number, value: string) =>
     onChange(sources.map((source, other) => (other === index ? value : source)));
 
   return (
     <View style={styles.field}>
-      <Text style={styles.label}>{texts.label}</Text>
+      <Text style={styles.label}>{optional ? texts.optionalLabel : texts.label}</Text>
       {sources.map((source, index) => (
         <View key={index} style={styles.row}>
           <TextInput
@@ -28,7 +35,7 @@ export function SourcesField({ sources, onChange, error }: Props) {
             autoCapitalize="none"
             style={styles.input}
           />
-          {sources.length > 1 ? (
+          {sources.length > minimum ? (
             <Pressable
               accessibilityRole="button"
               accessibilityLabel={texts.remove(index)}

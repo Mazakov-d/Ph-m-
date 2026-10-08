@@ -13,7 +13,7 @@ import { cursorQuerySchema, idSchema, isoDateTimeSchema, sourceSchema } from "./
 import { editorSummaryPublicSchema } from "./editor.js";
 import { voteOptionLabelSchema, voteSummaryPublicSchema } from "./vote.js";
 
-// SPEC §3: title, summary, body, sources (≥ 1), zone, theme and kind are mandatory.
+// SPEC §3: title, summary, body, sources (≥ 1 for an article), zone, theme and kind are mandatory.
 // Images are uploaded separately. For an OPINION the API forces commentsEnabled to true.
 export const createPostInputSchema = z
   .object({
@@ -21,7 +21,8 @@ export const createPostInputSchema = z
     title: z.string().trim().min(1).max(POST_TITLE_MAX_LENGTH),
     summary: z.string().trim().min(1).max(POST_SUMMARY_MAX_LENGTH),
     body: z.string().trim().min(1).max(POST_BODY_MAX_LENGTH),
-    sources: z.array(sourceSchema).min(1).max(SOURCES_MAX_COUNT),
+    // SPEC §3: at least one source for an article, optional for an opinion (see below).
+    sources: z.array(sourceSchema).max(SOURCES_MAX_COUNT),
     zone: Zone,
     region: z.string().trim().min(1).max(REGION_MAX_LENGTH).nullable(),
     theme: Theme,
@@ -37,6 +38,11 @@ export const createPostInputSchema = z
   .refine((post) => (post.zone === "LOCAL") === (post.region !== null), {
     path: ["region"],
     message: "Region is required for a LOCAL zone and forbidden otherwise",
+  })
+  // SPEC §1 and §3: an article always cites at least one source.
+  .refine((post) => post.kind === "OPINION" || post.sources.length > 0, {
+    path: ["sources"],
+    message: "An article needs at least one source",
   })
   // SPEC §7: only an opinion has answer choices.
   .refine((post) => post.kind === "OPINION" || post.voteOptions === undefined, {

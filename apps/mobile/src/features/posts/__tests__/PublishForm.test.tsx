@@ -85,7 +85,8 @@ describe("PublishForm (SPEC §3)", () => {
     await fireEvent.changeText(screen.getByLabelText("Titre"), "Faut-il ?");
     await fireEvent.changeText(screen.getByLabelText("Résumé"), "Une opinion.");
     await fireEvent.changeText(screen.getByLabelText("Texte"), "Texte.");
-    await fireEvent.changeText(screen.getByLabelText("Source 1"), "Référence");
+    // SPEC §3: no source required for an opinion.
+    expect(screen.queryByLabelText("Source 1")).toBeNull();
     await fireEvent.press(screen.getByText("France"));
     await fireEvent.press(screen.getByText("Politique"));
     await fireEvent.press(screen.getByText("Publier"));
@@ -95,6 +96,7 @@ describe("PublishForm (SPEC §3)", () => {
     const post = body instanceof FormData ? body.get("post") : null;
     expect(typeof post === "string" ? JSON.parse(post) : null).toMatchObject({
       kind: "OPINION",
+      sources: [],
       voteOptions: ["Oui", "Pas d'accord", "Sans avis"],
     });
   });

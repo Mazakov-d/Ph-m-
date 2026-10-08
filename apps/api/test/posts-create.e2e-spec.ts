@@ -79,8 +79,18 @@ describe("Publishing a post (e2e, SPEC §3)", () => {
       },
     );
 
-    it("requires at least one source", async () => {
+    it("requires at least one source for an article", async () => {
       await sendPost(app, editorToken, { ...ARTICLE, sources: [] }).expect(400);
+    });
+
+    it("publishes an opinion without source (SPEC §3)", async () => {
+      const response = await sendPost(app, editorToken, {
+        ...ARTICLE,
+        kind: "OPINION",
+        sources: [],
+      });
+      expect(response.status).toBe(201);
+      expect(response.body).toMatchObject({ sources: [] });
     });
 
     it("requires a region for a LOCAL post", async () => {
