@@ -1,4 +1,4 @@
-import { PostReportReason } from "@fama/shared";
+import { CommentReportReason, PostReportReason } from "@fama/shared";
 import { ApiRequestError } from "../../lib/apiClient";
 
 // SPEC §5.1: report reasons, in French.
@@ -10,10 +10,21 @@ export const POST_REPORT_REASON_LABELS: Record<PostReportReason, string> = {
   OTHER: "Autre",
 };
 
-/** Label of a post report reason (the moderation schema also allows comment reasons). */
+// SPEC §6.2: comment report reasons, in French.
+export const COMMENT_REPORT_REASON_LABELS: Record<CommentReportReason, string> = {
+  INSULT: "Insulte",
+  DISCRIMINATION: "Discrimination",
+  HARASSMENT: "Harcèlement",
+  SPAM: "Spam",
+  OTHER: "Autre",
+};
+
+/** Label of a post or comment report reason. */
 export function postReportReasonLabel(reason: string): string {
-  const parsed = PostReportReason.safeParse(reason);
-  return parsed.success ? POST_REPORT_REASON_LABELS[parsed.data] : reason;
+  const post = PostReportReason.safeParse(reason);
+  if (post.success) return POST_REPORT_REASON_LABELS[post.data];
+  const comment = CommentReportReason.safeParse(reason);
+  return comment.success ? COMMENT_REPORT_REASON_LABELS[comment.data] : reason;
 }
 
 export function reportErrorMessage(error: unknown): string {

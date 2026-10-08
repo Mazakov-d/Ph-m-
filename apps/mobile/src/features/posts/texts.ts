@@ -59,6 +59,8 @@ export function postErrorMessage(error: unknown): string {
     switch (error.code) {
       case "NOT_FOUND":
         return "Cette publication n'existe pas.";
+      case "POST_REMOVED":
+        return "Cette publication a été retirée par la modération.";
       case "INVALID_IMAGE":
         return "Une image est invalide : JPEG, PNG ou WebP uniquement.";
       case "FILE_TOO_LARGE":

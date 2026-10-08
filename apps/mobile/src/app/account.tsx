@@ -15,6 +15,9 @@ const texts = {
   editorSpace: "Mon espace éditeur",
   editorApplications: "Demandes éditeurs",
   postReviews: "Articles signalés",
+  moderation: "Commentaires et opinions signalés",
+  sanctions: "Mes sanctions",
+  blocks: "Comptes bloqués",
 };
 
 export default function AccountScreen() {
@@ -50,6 +53,15 @@ export default function AccountScreen() {
               label={texts.editorApplications}
               onPress={() => router.push("/moderation/editor-applications")}
             />
+          ) : null}
+          <Button
+            label={texts.sanctions}
+            variant="secondary"
+            onPress={() => router.push("/sanctions")}
+          />
+          <Button label={texts.blocks} variant="secondary" onPress={() => router.push("/blocks")} />
+          {can(user, "moderation.queue.read") ? (
+            <Button label={texts.moderation} onPress={() => router.push("/moderation/comments")} />
           ) : null}
           {can(user, "moderation.queue.read") ? (
             <Button

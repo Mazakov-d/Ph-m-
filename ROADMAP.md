@@ -172,10 +172,10 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 - [x] API : application des sanctions (suspensions avec date de fin, bannissement), appel unique.
 - [x] API : blocage d'un utilisateur (§10) et exclusion de ses contenus pour le bloqueur.
 - [x] Toutes les décisions écrivent un `AuditLog`.
-- [ ] App : badge « ✓ Examiné par la modération : conforme aux règles » à la place du bouton Signaler.
-- [ ] App : écran modérateur « Commentaires signalés » ; écran « Mes sanctions » pour l'utilisateur concerné.
-- [ ] App : action « Bloquer cet utilisateur ».
-- [ ] Opinions signalées (§6.3 « les mêmes règles s'appliquent aux posts des éditeurs ») : file modérateur, décision conforme ou retrait (`removedAt`) + sanction de l'éditeur ; une opinion retirée disparaît du fil et son contenu est masqué.
+- [x] App : badge « ✓ Examiné par la modération : conforme aux règles » à la place du bouton Signaler.
+- [x] App : écran modérateur « Commentaires signalés » ; écran « Mes sanctions » pour l'utilisateur concerné.
+- [x] App : action « Bloquer cet utilisateur ».
+- [x] Opinions signalées (§6.3 « les mêmes règles s'appliquent aux posts des éditeurs ») : file modérateur, décision conforme ou retrait (`removedAt`) + sanction de l'éditeur ; une opinion retirée disparaît du fil et son contenu est masqué.
 
 **Critères de validation**
 

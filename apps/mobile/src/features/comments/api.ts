@@ -1,5 +1,7 @@
 import {
   commentPublicSchema,
+  type CreateCommentReportInput,
+  reportPublicSchema,
   commentThreadPublicSchema,
   type CreateCommentInput,
   paginated,
@@ -55,6 +57,16 @@ export function useDeleteComment(postId: string) {
   return useMutation({
     mutationFn: (commentId: string) =>
       apiClient.delete(`/comments/${commentId}`, commentPublicSchema),
+    onSuccess: refresh,
+  });
+}
+
+/** SPEC §6.2: report a comment (it may then be hidden for review). */
+export function useReportComment(postId: string) {
+  const refresh = useRefreshComments(postId);
+  return useMutation({
+    mutationFn: ({ commentId, input }: { commentId: string; input: CreateCommentReportInput }) =>
+      apiClient.post(`/comments/${commentId}/reports`, input, reportPublicSchema),
     onSuccess: refresh,
   });
 }

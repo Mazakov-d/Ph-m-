@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Button } from "../../../components/ui/Button";
-import { TextField } from "../../../components/ui/TextField";
+import { Button } from "./Button";
+import { TextField } from "./TextField";
 
 type Props = {
   label: string;

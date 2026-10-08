@@ -9,7 +9,7 @@ import {
 import { StyleSheet, Text, View } from "react-native";
 import { type EditorReviewAction, useEditorReviewAction } from "../api";
 import { reviewErrorMessage } from "../texts";
-import { TextActionForm } from "./TextActionForm";
+import { TextActionForm } from "../../../components/ui/TextActionForm";
 
 const texts = {
   intro:

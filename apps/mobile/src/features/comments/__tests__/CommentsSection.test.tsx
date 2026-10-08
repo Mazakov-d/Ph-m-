@@ -166,9 +166,45 @@ describe("CommentsSection (SPEC §6)", () => {
     expect(deleteButtons).toHaveLength(1); // only the user's own comment
     await fireEvent.press(at(deleteButtons, 0));
     expect(callsTo("DELETE", "/comments/8b1e4a3c-6f1d-4d6b-9a52-3c2f0e7d8a11")).toHaveLength(0);
-    await fireEvent.press(screen.getByText("Oui, supprimer"));
+    await fireEvent.press(screen.getByText("Confirmer"));
     await waitFor(() =>
       expect(callsTo("DELETE", "/comments/8b1e4a3c-6f1d-4d6b-9a52-3c2f0e7d8a11")).toHaveLength(1),
     );
+  });
+
+  it("shows the badge instead of « Signaler » on a verified comment (SPEC §6.2)", async () => {
+    const verifiedThreads: CommentThreadPublic[] = [
+      {
+        ...comment(ROOT_ID, { content: "Merci pour les sources.", status: "VERIFIED" }),
+        replies: [],
+      },
+    ];
+    await tokenStorage.save({ accessToken: "access", refreshToken: "refresh" });
+    fetchMock.mockImplementation(async (url) =>
+      String(url).endsWith("/auth/refresh")
+        ? jsonResponse(200, sessionFor("READER"))
+        : jsonResponse(200, { items: verifiedThreads, nextCursor: null }),
+    );
+    await renderWithProviders(<CommentsSection post={ARTICLE_DETAIL} />);
+    expect(
+      await screen.findByText("✓ Examiné par la modération : conforme aux règles"),
+    ).toBeTruthy();
+    expect(screen.queryByText("Signaler")).toBeNull();
+  });
+
+  it("reports someone else's comment with a reason", async () => {
+    await renderSection({ signedIn: true });
+    await fireEvent.press(at(await screen.findAllByText("Signaler"), 0));
+    await fireEvent.press(screen.getByText("Insulte"));
+    await fireEvent.press(screen.getByText("Envoyer le signalement"));
+    await waitFor(() => expect(callsTo("POST", `/comments/${ROOT_ID}/reports`)).toHaveLength(1));
+  });
+
+  it("blocks the author of a comment after confirmation (SPEC §10)", async () => {
+    await renderSection({ signedIn: true });
+    await fireEvent.press(at(await screen.findAllByText("Bloquer cet utilisateur"), 0));
+    expect(screen.getByText(/^Bloquer hugo \?/)).toBeTruthy();
+    await fireEvent.press(screen.getByText("Confirmer"));
+    await waitFor(() => expect(callsTo("POST", `/users/${OTHER}/block`)).toHaveLength(1));
   });
 });
