@@ -8,6 +8,7 @@ import { HealthModule } from "./health/health.module.js";
 import { PostsModule } from "./posts/posts.module.js";
 import { PrismaModule } from "./prisma/prisma.module.js";
 import { ReportsModule } from "./reports/reports.module.js";
+import { ReviewsModule } from "./reviews/reviews.module.js";
 import { StorageModule } from "./storage/storage.module.js";
 import { VotesModule } from "./votes/votes.module.js";
 
@@ -22,6 +23,7 @@ import { VotesModule } from "./votes/votes.module.js";
     CommentsModule,
     VotesModule,
     ReportsModule,
+    ReviewsModule,
   ],
   providers: [{ provide: APP_FILTER, useClass: ApiExceptionFilter }],
 })

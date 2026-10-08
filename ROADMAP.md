@@ -150,9 +150,9 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 
 - [x] API : signaler un post (§5.1) avec poids calculé et stocké (§5.2) ; un signalement par compte et par post ; pas d'auto-signalement.
 - [x] API : ouverture automatique de la revue au seuil (§5.3).
-- [ ] API : file de revue triée par priorité (§5.4), réservée aux modérateurs, sans les dossiers en conflit d'intérêts.
-- [ ] API : verdict + note publique + sources (§5.5) ; mise à jour des signalements (`UPHELD` / `DISMISSED`) et des compteurs des signaleurs.
-- [ ] API : réponse ou correction de l'éditeur sous 48 h ; appel unique traité par un autre modérateur.
+- [x] API : file de revue triée par priorité (§5.4), réservée aux modérateurs, sans les dossiers en conflit d'intérêts.
+- [x] API : verdict + note publique + sources (§5.5) ; mise à jour des signalements (`UPHELD` / `DISMISSED`) et des compteurs des signaleurs.
+- [x] API : réponse ou correction de l'éditeur sous 48 h ; appel unique traité par un autre modérateur.
 - [ ] App : bouton « Signaler » avec choix du motif.
 - [ ] App : barre de fiabilité (§5.6) et feuille « Pourquoi ? » (verdict, note, sources, réponse de l'éditeur).
 - [ ] App : écran modérateur « Articles signalés » et écran de verdict.
