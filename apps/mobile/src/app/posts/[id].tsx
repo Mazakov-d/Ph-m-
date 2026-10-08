@@ -5,6 +5,8 @@ import { EditorBadge } from "../../features/editors/components/EditorBadge";
 import { usePost } from "../../features/posts/api";
 import { VoteBar } from "../../features/votes/components/VoteBar";
 import { ReliabilityBar } from "../../features/posts/components/ReliabilityBar";
+import { ReportButton } from "../../features/reports/components/ReportButton";
+import { ReviewPanel } from "../../features/reviews/components/ReviewPanel";
 import { SourcesList } from "../../features/posts/components/SourcesList";
 import {
   formatPublishedAt,
@@ -53,6 +55,7 @@ export default function PostScreen() {
       <Text style={styles.muted}>{`${place} · ${THEME_LABELS[data.theme]}`}</Text>
       <Text style={styles.title}>{data.title}</Text>
       <ReliabilityBar post={data} />
+      <ReviewPanel post={data} />
       <Text style={styles.summary}>{data.summary}</Text>
       {data.images.map((image) => (
         <Image
@@ -76,6 +79,7 @@ export default function PostScreen() {
           <Text>{correction.content}</Text>
         </View>
       ))}
+      <ReportButton post={data} />
       <CommentsSection post={data} />
     </ScrollView>
   );

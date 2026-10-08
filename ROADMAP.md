@@ -153,8 +153,8 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 - [x] API : file de revue triée par priorité (§5.4), réservée aux modérateurs, sans les dossiers en conflit d'intérêts.
 - [x] API : verdict + note publique + sources (§5.5) ; mise à jour des signalements (`UPHELD` / `DISMISSED`) et des compteurs des signaleurs.
 - [x] API : réponse ou correction de l'éditeur sous 48 h ; appel unique traité par un autre modérateur.
-- [ ] App : bouton « Signaler » avec choix du motif.
-- [ ] App : barre de fiabilité (§5.6) et feuille « Pourquoi ? » (verdict, note, sources, réponse de l'éditeur).
+- [x] App : bouton « Signaler » avec choix du motif.
+- [x] App : barre de fiabilité (§5.6) et feuille « Pourquoi ? » (verdict, note, sources, réponse de l'éditeur).
 - [ ] App : écran modérateur « Articles signalés » et écran de verdict.
 
 **Critères de validation**
