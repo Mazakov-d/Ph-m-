@@ -4,11 +4,12 @@ import { VotesModule } from "../votes/votes.module.js";
 import { EditorPostsController } from "./editor-posts.controller.js";
 import { PostsController } from "./posts.controller.js";
 import { PostsService } from "./posts.service.js";
+import { SimilarPostsService } from "./similar-posts.service.js";
 import { WeightedFeedService } from "./weighted-feed.service.js";
 
 @Module({
   imports: [VotesModule, EditorReliabilityModule],
   controllers: [PostsController, EditorPostsController],
-  providers: [PostsService, WeightedFeedService],
+  providers: [PostsService, WeightedFeedService, SimilarPostsService],
 })
 export class PostsModule {}

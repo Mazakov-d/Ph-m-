@@ -291,7 +291,7 @@ Comptées sur les commentaires `REMOVED` des 6 derniers mois (`SANCTION_RESET_MO
 
 - Pas d'étiquette politique, pas de vote des lecteurs sur l'orientation.
 - Profil éditeur : ligne éditoriale déclarée, propriétaire (`ownerName`, `ownerGroup`).
-- « Voir les similaires » (post-MVP) : posts partageant zone + thème + mots-clés, diversifiés par `ownerGroup` et taille d'éditeur.
+- « Voir les similaires » (post-MVP) : posts partageant zone + thème + mots-clés, diversifiés par `ownerGroup` et taille d'éditeur. Détails : voir `DECISIONS.md`.
 
 ---
 

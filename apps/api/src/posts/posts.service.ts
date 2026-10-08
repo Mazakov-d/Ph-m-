@@ -10,6 +10,7 @@ import {
   type PostPublic,
   type PostQuery,
   type PostSummaryPublic,
+  type SimilarPostsPublic,
   type UpdatePostCommentsInput,
 } from "@fama/shared";
 import { ApiException } from "../common/errors/api.exception.js";
@@ -21,6 +22,7 @@ import { VotesService } from "../votes/votes.service.js";
 import { type PostImageType, sanitizeImage } from "./post-images.js";
 import { POST_INCLUDE, type PostRecord } from "./post-record.js";
 import { toPostPublic, toPostSummaryPublic } from "./posts.mapper.js";
+import { SimilarPostsService } from "./similar-posts.service.js";
 import { WeightedFeedService } from "./weighted-feed.service.js";
 import { EditorReliabilityService } from "../reliability/editor-reliability.service.js";
 
@@ -34,7 +36,14 @@ export class PostsService {
     private readonly votesService: VotesService,
     private readonly weightedFeed: WeightedFeedService,
     private readonly reliability: EditorReliabilityService,
+    private readonly similarPosts: SimilarPostsService,
   ) {}
+
+  /** SPEC §9: « X autres médias en parlent » and the similar posts, for the reader. */
+  async similar(viewer: AuthUser | null, postId: string): Promise<SimilarPostsPublic> {
+    const blockedIds = viewer ? await this.blockedAuthorIds(viewer.id) : [];
+    return this.similarPosts.forPost(postId, blockedIds);
+  }
 
   /** A full post as seen by `viewerId` (their vote, and the totals if they may see them). */
   private async toPublic(post: PostRecord, viewerId: string | null): Promise<PostPublic> {

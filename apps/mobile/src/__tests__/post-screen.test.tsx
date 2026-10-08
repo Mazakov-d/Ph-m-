@@ -1,10 +1,11 @@
 import { fireEvent, screen } from "@testing-library/react-native";
 import PostScreen from "../app/posts/[id]";
 import { apiClient } from "../lib/apiClient";
-import { ARTICLE_DETAIL } from "../test/fixtures";
+import { ARTICLE_DETAIL, OPINION_CARD } from "../test/fixtures";
 import { jsonResponse, renderWithProviders } from "../test/renderWithProviders";
 
 jest.mock("expo-router", () => ({
+  useRouter: () => ({ push: jest.fn() }),
   useLocalSearchParams: () => ({ id: "1b1e4a3c-6f1d-4d6b-9a52-3c2f0e7d8a11" }),
   // A link is a Text in React Native.
   Link: ({ children }: { children: string }) => {
@@ -59,6 +60,20 @@ describe("PostScreen", () => {
     // The body of ARTICLE_DETAIL is in Merriweather (SERIF): its bold words use the bold font.
     expect(bold).toHaveStyle({ fontFamily: "merriweather-700-normal" });
     expect(screen.queryByText(/\*\*/)).toBeNull();
+  });
+
+  it("tells how many other media talk about it and lists them on demand (SPEC §9)", async () => {
+    fetchMock.mockImplementation(async (url) =>
+      String(url).endsWith("/similar")
+        ? jsonResponse(200, { otherMediaCount: 2, posts: [OPINION_CARD] })
+        : jsonResponse(200, ARTICLE_DETAIL),
+    );
+    await renderWithProviders(<PostScreen />);
+
+    expect(await screen.findByText("2 autres médias en parlent")).toBeTruthy();
+    expect(screen.queryByText("Faut-il rouvrir le débat ?")).toBeNull();
+    await fireEvent.press(screen.getByText("Voir les similaires"));
+    expect(screen.getByText("Faut-il rouvrir le débat ?")).toBeTruthy();
   });
 
   it("says when the post does not exist", async () => {

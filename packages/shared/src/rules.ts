@@ -147,3 +147,10 @@ export const EDITOR_RELIABILITY_OLDEST_WEIGHT = 0.25;
 export const EDITOR_RELIABILITY_MIN_VERDICTS = 3;
 export const EDITOR_RELIABILITY_VERY_RELIABLE_MIN = 60;
 export const EDITOR_RELIABILITY_RELIABLE_MIN = 45;
+
+// SPEC §9 + docs/DECISIONS.md: « Voir les similaires ». Same zone (and region) and theme, at
+// least SIMILAR_POSTS_MIN_SHARED_WORDS significant words in common in the title and summary,
+// published within SIMILAR_POSTS_WINDOW_DAYS of the post; at most SIMILAR_POSTS_MAX shown.
+export const SIMILAR_POSTS_WINDOW_DAYS = 7;
+export const SIMILAR_POSTS_MIN_SHARED_WORDS = 2;
+export const SIMILAR_POSTS_MAX = 5;

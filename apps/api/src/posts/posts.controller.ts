@@ -24,6 +24,7 @@ import {
   type Paginated,
   type PostPublic,
   type PostQuery,
+  type SimilarPostsPublic,
   postQuerySchema,
   type PostSummaryPublic,
   idSchema,
@@ -66,6 +67,16 @@ export class PostsController {
     // docs/DECISIONS.md: a malformed session id is ignored (the view is just not counted).
     const sessionId = idSchema.safeParse(sessionHeader).data ?? null;
     return this.postsService.findOne(viewer, id, sessionId);
+  }
+
+  // SPEC §9: readable without an account, like the post.
+  @Get(":id/similar")
+  @OptionalAuth()
+  similar(
+    @Param("id", new ZodValidationPipe(idSchema)) id: string,
+    @OptionalUser() viewer: AuthUser | null,
+  ): Promise<SimilarPostsPublic> {
+    return this.postsService.similar(viewer, id);
   }
 
   // docs/DECISIONS.md: images are public content; they never change, so browsers may keep them.

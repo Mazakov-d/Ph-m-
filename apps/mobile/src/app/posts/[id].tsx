@@ -7,6 +7,7 @@ import { ReliabilityGauge } from "../../features/editors/components/ReliabilityG
 import { usePost } from "../../features/posts/api";
 import { PostBlocks } from "../../features/posts/components/PostBlocks";
 import { ReliabilityBar } from "../../features/posts/components/ReliabilityBar";
+import { SimilarPosts } from "../../features/posts/components/SimilarPosts";
 import { SourcesButton } from "../../features/posts/components/SourcesButton";
 import {
   formatPublishedAt,
@@ -60,6 +61,7 @@ export default function PostScreen() {
         <PostBlocks post={data} />
         {/* SPEC §7: an opinion is voted on; votes never change any order. */}
         <VoteBar post={data} />
+        <SimilarPosts postId={data.id} />
         {/* Interface brief: the sources at the bottom left, the status at the bottom right. */}
         <View style={styles.bottomRow}>
           <SourcesButton sources={data.sources} />

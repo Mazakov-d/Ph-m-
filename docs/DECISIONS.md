@@ -487,3 +487,21 @@ qui la remplace.
     la pénalité est divisée par 2 si une correction a été publiée avant le verdict ;
   - affichage par palier seulement (jamais le score), sur le profil public de l'éditeur et à côté
     de son nom sur la page d'un post ; pas sur les cartes du fil.
+
+## 2026-10-08 — « Voir les similaires » et « X autres médias en parlent » (SPEC §9)
+
+- **Question** : la SPEC §9 dit « zone + thème + mots-clés, diversifiés par `ownerGroup` et taille
+  d'éditeur » sans préciser les mots-clés, la période, la diversification ni l'affichage.
+- **Décision** (validée par le porteur du projet, sauf les points marqués) :
+  - même zone et même thème ; pour une publication locale, même région aussi (**sans
+    validation**) ;
+  - au moins 2 mots significatifs en commun dans le titre et le résumé (dictionnaire français de
+    PostgreSQL, accents ignorés, mots vides comme « le » ou « de » exclus) ; aucun champ de
+    mots-clés à remplir ;
+  - posts publiés jusqu'à 7 jours avant ou après le post lu, d'autres éditeurs que son auteur,
+    jamais d'un éditeur que le lecteur a bloqué ;
+  - au plus un post par groupe propriétaire (un éditeur sans groupe compte pour un groupe), en
+    alternant éditeurs certifiés et indépendants, 5 au plus ;
+  - « X autres médias en parlent » compte les éditeurs distincts (**sans validation**) ;
+  - affichage sur la page d'un post, sous l'article : le compteur et « Voir les similaires », qui
+    déplie la liste ; rien sur les cartes du fil, rien quand personne d'autre n'en parle.

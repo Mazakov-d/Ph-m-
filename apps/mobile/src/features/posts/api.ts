@@ -4,6 +4,7 @@ import {
   paginated,
   postPublicSchema,
   postSummaryPublicSchema,
+  similarPostsPublicSchema,
   type Theme,
   type Zone,
 } from "@fama/shared";
@@ -30,6 +31,7 @@ export const postKeys = {
   feed: (filters: FeedFilters, seed: string) => [...postKeys.all, "feed", filters, seed] as const,
   detail: (postId: string) => [...postKeys.all, "detail", postId] as const,
   byEditor: (editorId: string) => [...postKeys.all, "editor", editorId] as const,
+  similar: (postId: string) => [...postKeys.all, "similar", postId] as const,
 };
 
 /**
@@ -60,6 +62,14 @@ export function usePost(postId: string) {
   return useQuery({
     queryKey: postKeys.detail(postId),
     queryFn: () => apiClient.get(`/posts/${postId}`, postPublicSchema),
+  });
+}
+
+/** SPEC §9: « X autres médias en parlent » and the similar posts of other editors. */
+export function useSimilarPosts(postId: string) {
+  return useQuery({
+    queryKey: postKeys.similar(postId),
+    queryFn: () => apiClient.get(`/posts/${postId}/similar`, similarPostsPublicSchema),
   });
 }
 

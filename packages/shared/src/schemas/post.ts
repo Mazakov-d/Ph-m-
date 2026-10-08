@@ -164,3 +164,13 @@ export const postPublicSchema = postSummaryPublicSchema.extend({
   editorReliability: EditorReliabilityLevel,
 });
 export type PostPublic = z.infer<typeof postPublicSchema>;
+
+/**
+ * SPEC §9: « X autres médias en parlent » (the number of other editors with a similar post) and
+ * the similar posts themselves, diversified by owner group and size of editor.
+ */
+export const similarPostsPublicSchema = z.object({
+  otherMediaCount: z.number().int().nonnegative(),
+  posts: z.array(postSummaryPublicSchema),
+});
+export type SimilarPostsPublic = z.infer<typeof similarPostsPublicSchema>;
