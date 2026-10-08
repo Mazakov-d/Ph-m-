@@ -2,6 +2,7 @@ import { JwtService } from "@nestjs/jwt";
 import { Test } from "@nestjs/testing";
 import { truncateAllTables } from "../../test/support/database.js";
 import { ApiException } from "../common/errors/api.exception.js";
+import { RateLimitModule } from "../common/rate-limit/rate-limit.module.js";
 import { PrismaModule } from "../prisma/prisma.module.js";
 import { PrismaService } from "../prisma/prisma.service.js";
 import { AuthModule } from "./auth.module.js";
@@ -30,7 +31,7 @@ describe("AuthService", () => {
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      imports: [PrismaModule, AuthModule],
+      imports: [PrismaModule, RateLimitModule, AuthModule],
     }).compile();
     auth = moduleRef.get(AuthService);
     prisma = moduleRef.get(PrismaService);

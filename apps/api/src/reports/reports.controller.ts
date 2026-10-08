@@ -7,10 +7,12 @@ import {
   createPostReportInputSchema,
   idSchema,
   type ReportPublic,
+  RATE_LIMIT_REPORT,
 } from "@fama/shared";
 import { CurrentUser } from "../common/decorators/current-user.decorator.js";
 import { RequirePermission } from "../common/decorators/require-permission.decorator.js";
 import { ZodValidationPipe } from "../common/pipes/zod-validation.pipe.js";
+import { RateLimit } from "../common/rate-limit/rate-limit.js";
 import { CommentReportsService } from "./comment-reports.service.js";
 import { PostReportsService } from "./post-reports.service.js";
 
@@ -21,6 +23,7 @@ export class ReportsController {
     private readonly commentReportsService: CommentReportsService,
   ) {}
 
+  @RateLimit(RATE_LIMIT_REPORT)
   @Post("posts/:postId/reports")
   @RequirePermission("report.create")
   report(
@@ -31,6 +34,7 @@ export class ReportsController {
     return this.postReportsService.report(reporter, postId, input);
   }
 
+  @RateLimit(RATE_LIMIT_REPORT)
   @Post("comments/:commentId/reports")
   @RequirePermission("report.create")
   reportComment(

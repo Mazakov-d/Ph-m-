@@ -12,6 +12,8 @@ import {
   refreshTokenInputSchema,
   type RegisterInput,
   registerInputSchema,
+  RATE_LIMIT_LOGIN,
+  RATE_LIMIT_REGISTER,
 } from "@fama/shared";
 import type { CookieOptions, Response } from "express";
 import { Cookie } from "../common/decorators/cookie.decorator.js";
@@ -19,6 +21,7 @@ import { CurrentUser } from "../common/decorators/current-user.decorator.js";
 import { Public } from "../common/decorators/public.decorator.js";
 import { ApiException } from "../common/errors/api.exception.js";
 import { ZodValidationPipe } from "../common/pipes/zod-validation.pipe.js";
+import { RateLimit } from "../common/rate-limit/rate-limit.js";
 import { AuthService, type IssuedSession } from "./auth.service.js";
 
 export const REFRESH_COOKIE_NAME = "fama_refresh";
@@ -44,6 +47,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Public()
+  @RateLimit(RATE_LIMIT_REGISTER)
   @Post("register")
   async register(
     @Body(new ZodValidationPipe(registerInputSchema)) input: RegisterInput,
@@ -55,6 +59,7 @@ export class AuthController {
   }
 
   @Public()
+  @RateLimit(RATE_LIMIT_LOGIN)
   @Post("login")
   @HttpCode(HttpStatus.OK)
   async login(

@@ -92,6 +92,12 @@ export const SEARCH_QUERY_MAX_LENGTH = 100;
 export const SEARCH_POSTS_MAX = 20;
 export const SEARCH_EDITORS_MAX = 5;
 
+// docs/DECISIONS.md: rate limits (requests per window).
+export const RATE_LIMIT_REGISTER = { limit: 5, windowMinutes: 60 } as const;
+export const RATE_LIMIT_LOGIN = { limit: 10, windowMinutes: 15 } as const;
+export const RATE_LIMIT_COMMENT = { limit: 10, windowMinutes: 1 } as const;
+export const RATE_LIMIT_REPORT = { limit: 20, windowMinutes: 60 } as const;
+
 // SPEC §10 + docs/DECISIONS.md: what a deleted account is called (reserved at sign-up).
 export const DELETED_ACCOUNT_PSEUDO = "Compte supprimé";
 

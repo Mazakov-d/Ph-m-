@@ -324,3 +324,12 @@ qui la remplace.
     dont le compte est supprimé depuis plus de `RETENTION_DAYS` sont effacés ;
   - un compte banni peut aussi supprimer son compte.
 - **Pourquoi** : exigence Apple (§10) et RGPD ; la durée de conservation légale reste à confirmer.
+
+## 2026-10-08 — Limitation de débit (sans validation)
+
+- **Question** : la ROADMAP (phase 11) demande de limiter le débit sans fixer de valeurs.
+- **Décision** (prise sans validation, à relire) : inscription 5 par heure et connexion 10 par 15 min,
+  par adresse IP ; commentaires 10 par minute et signalements 20 par heure, par compte ; au-delà,
+  réponse 429 `RATE_LIMITED`. Compteurs en mémoire : suffisant pour une seule instance de l'API ; un
+  stockage partagé (Redis) sera nécessaire avec plusieurs instances.
+- **Pourquoi** : limiter la création de comptes en masse, les essais de mots de passe et le spam.

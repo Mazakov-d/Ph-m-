@@ -23,6 +23,8 @@ export function commentErrorMessage(error: unknown): string {
         return "Ce commentaire est en cours d'examen : il ne peut pas être supprimé.";
       case "ACCOUNT_RESTRICTED":
         return "Votre compte est suspendu : vous ne pouvez pas commenter.";
+      case "RATE_LIMITED":
+        return "Trop d'envois en peu de temps. Patientez un moment avant de réessayer.";
       case "NETWORK_ERROR":
         return "Impossible de joindre le serveur. Vérifiez votre connexion.";
       default:

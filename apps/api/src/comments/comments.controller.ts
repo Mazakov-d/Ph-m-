@@ -9,12 +9,14 @@ import {
   cursorQuerySchema,
   idSchema,
   type Paginated,
+  RATE_LIMIT_COMMENT,
 } from "@fama/shared";
 import { CurrentUser } from "../common/decorators/current-user.decorator.js";
 import { OptionalUser } from "../common/decorators/current-user.decorator.js";
 import { OptionalAuth } from "../common/decorators/optional-auth.decorator.js";
 import { RequirePermission } from "../common/decorators/require-permission.decorator.js";
 import { ZodValidationPipe } from "../common/pipes/zod-validation.pipe.js";
+import { RateLimit } from "../common/rate-limit/rate-limit.js";
 import { CommentsService } from "./comments.service.js";
 
 // SPEC §6: comments are never edited, so there is no update route (ROADMAP phase 5).
@@ -22,6 +24,7 @@ import { CommentsService } from "./comments.service.js";
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 
+  @RateLimit(RATE_LIMIT_COMMENT)
   @Post("comments")
   @RequirePermission("comment.create")
   create(

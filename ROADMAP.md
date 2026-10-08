@@ -231,7 +231,7 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 - [x] Suppression de compte depuis l'app (anonymisation, §10).
 - [x] Job planifié de purge selon `RETENTION_DAYS`.
 - [x] Pages : règles de la communauté, politique de confidentialité, mentions légales (textes fournis par le porteur du projet ; prévoir l'emplacement).
-- [ ] Limitation de débit (rate limiting) sur l'inscription, la connexion, les commentaires et les signalements.
+- [x] Limitation de débit (rate limiting) sur l'inscription, la connexion, les commentaires et les signalements.
 - [ ] Revue de sécurité : aucune donnée privée dans les réponses publiques (test automatisé qui parcourt les schémas publics).
 - [ ] Configuration EAS (builds iOS / Android) et déploiement de l'API (choix consigné dans `DECISIONS.md`).
 
@@ -249,7 +249,7 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 - [ ] Fil pondéré : tirage, division par √n, règle d'espacement (§4.2).
 - [ ] Jauge de fiabilité des comptes éditeurs (§5.7).
 - [ ] « Voir les similaires » et « X autres médias en parlent » (§9).
-- [ ] Notifications push.
+- [ ] Notifications push. Choix des notifications par filtre ("je veux etre informe des nouveaux post sur la politique")
 - [ ] Vidéos dans les posts.
 - [ ] Corrections d'articles publiées par l'éditeur (`PostCorrection`) si non faites avant.
 - [ ] Revue communautaire par jury tiré au sort (§5.8).

@@ -64,6 +64,10 @@ describe("rules (SPEC §11)", () => {
       SEARCH_QUERY_MAX_LENGTH: 100,
       SEARCH_POSTS_MAX: 20,
       SEARCH_EDITORS_MAX: 5,
+      RATE_LIMIT_REGISTER: { limit: 5, windowMinutes: 60 },
+      RATE_LIMIT_LOGIN: { limit: 10, windowMinutes: 15 },
+      RATE_LIMIT_COMMENT: { limit: 10, windowMinutes: 1 },
+      RATE_LIMIT_REPORT: { limit: 20, windowMinutes: 60 },
       DELETED_ACCOUNT_PSEUDO: "Compte supprimé",
       RETENTION_DAYS: 365,
     });
