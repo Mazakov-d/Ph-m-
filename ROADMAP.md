@@ -204,8 +204,8 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 
 ## Phase 10 — Recherche
 
-- [ ] Colonnes / index de recherche plein texte (`tsvector`, configuration `french`) sur titre, résumé, corps ; extension `pg_trgm` pour pseudos et titres.
-- [ ] API : `GET /search?q=...` combinable avec `today` / `zone` / `theme`, résultats séparés (éditeurs, posts).
+- [x] Colonnes / index de recherche plein texte (`tsvector`, configuration `french`) sur titre, résumé, corps ; extension `pg_trgm` pour pseudos et titres.
+- [x] API : `GET /search?q=...` combinable avec `today` / `zone` / `theme`, résultats séparés (éditeurs, posts).
 - [ ] App : barre de recherche en haut du fil, résultats avec les mêmes filtres.
 
 **Critères de validation**

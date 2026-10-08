@@ -60,6 +60,10 @@ describe("rules (SPEC §11)", () => {
       VOTE_OPTIONS_MAX: 4,
       VOTE_OPTION_LABEL_MAX_LENGTH: 50,
       DEFAULT_VOTE_OPTIONS: ["D'accord", "Pas d'accord"],
+      SEARCH_QUERY_MIN_LENGTH: 2,
+      SEARCH_QUERY_MAX_LENGTH: 100,
+      SEARCH_POSTS_MAX: 20,
+      SEARCH_EDITORS_MAX: 5,
       RETENTION_DAYS: 365,
     });
   });

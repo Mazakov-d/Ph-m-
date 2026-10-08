@@ -10,3 +10,4 @@ export * from "./sanction.js";
 export * from "./ticket.js";
 export * from "./user.js";
 export * from "./vote.js";
+export * from "./search.js";

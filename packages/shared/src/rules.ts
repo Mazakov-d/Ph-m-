@@ -86,5 +86,11 @@ export const VOTE_OPTIONS_MAX = 4;
 export const VOTE_OPTION_LABEL_MAX_LENGTH = 50;
 export const DEFAULT_VOTE_OPTIONS = ["D'accord", "Pas d'accord"] as const;
 
+// docs/DECISIONS.md: search (SPEC §4.4).
+export const SEARCH_QUERY_MIN_LENGTH = 2;
+export const SEARCH_QUERY_MAX_LENGTH = 100;
+export const SEARCH_POSTS_MAX = 20;
+export const SEARCH_EDITORS_MAX = 5;
+
 // SPEC §6 and §10: purge delay for logically deleted content. To be confirmed with a lawyer.
 export const RETENTION_DAYS = 365;

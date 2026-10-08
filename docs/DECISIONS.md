@@ -294,3 +294,16 @@ qui la remplace.
     l'attribution — date de 24 h (`TICKET_ASSIGN_TIMEOUT_HOURS`) : tâche planifiée toutes les 10 min ;
   - messages : texte seul, ajout uniquement ; rafraîchissement de la conversation toutes les 10 s.
 - **Pourquoi** : déduit de la SPEC ; à confirmer par le porteur du projet.
+
+## 2026-10-08 — Recherche (sans validation)
+
+- **Question** : la SPEC (§4.4) fixe la technique (plein texte `french` + `pg_trgm`) mais pas la portée.
+- **Décision** (prise sans validation, à relire) :
+  - recherche insensible aux accents (`unaccent`) : « economie » trouve « économie » ;
+  - posts : tous les posts non retirés (pas seulement les 48 h du fil), `today` limitant aux 24 h ;
+    plein texte pondéré titre > résumé > corps, plus tolérance aux fautes sur le titre (`pg_trgm`) ;
+    triés par pertinence ; sans les auteurs bloqués par le lecteur ; 20 résultats au plus, sans
+    pagination au MVP ;
+  - éditeurs : éditeurs validés dont le pseudo ressemble à la recherche (`pg_trgm`), 5 au plus ;
+  - la recherche commence à 2 caractères (100 au plus).
+- **Pourquoi** : déduit de la SPEC ; à confirmer par le porteur du projet.
