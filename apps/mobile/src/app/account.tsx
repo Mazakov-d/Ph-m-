@@ -14,6 +14,7 @@ const texts = {
   becomeEditor: "Devenir éditeur",
   editorSpace: "Mon espace éditeur",
   editorApplications: "Demandes éditeurs",
+  postReviews: "Articles signalés",
 };
 
 export default function AccountScreen() {
@@ -48,6 +49,12 @@ export default function AccountScreen() {
             <Button
               label={texts.editorApplications}
               onPress={() => router.push("/moderation/editor-applications")}
+            />
+          ) : null}
+          {can(user, "moderation.queue.read") ? (
+            <Button
+              label={texts.postReviews}
+              onPress={() => router.push("/moderation/post-reviews")}
             />
           ) : null}
           <Button label={texts.signOut} variant="secondary" onPress={signOut} />

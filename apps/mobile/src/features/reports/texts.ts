@@ -1,4 +1,4 @@
-import type { PostReportReason } from "@fama/shared";
+import { PostReportReason } from "@fama/shared";
 import { ApiRequestError } from "../../lib/apiClient";
 
 // SPEC §5.1: report reasons, in French.
@@ -9,6 +9,12 @@ export const POST_REPORT_REASON_LABELS: Record<PostReportReason, string> = {
   MISLEADING: "Présentation trompeuse",
   OTHER: "Autre",
 };
+
+/** Label of a post report reason (the moderation schema also allows comment reasons). */
+export function postReportReasonLabel(reason: string): string {
+  const parsed = PostReportReason.safeParse(reason);
+  return parsed.success ? POST_REPORT_REASON_LABELS[parsed.data] : reason;
+}
 
 export function reportErrorMessage(error: unknown): string {
   if (error instanceof ApiRequestError) {

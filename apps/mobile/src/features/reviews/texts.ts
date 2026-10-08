@@ -15,6 +15,12 @@ export function reviewErrorMessage(error: unknown): string {
         return "Le délai de 48 heures après le verdict est dépassé.";
       case "ALREADY_REPLIED":
         return "Vous avez déjà répondu à ce verdict.";
+      case "SAME_MODERATOR_APPEAL":
+        return "Vous avez rendu le premier verdict : un autre modérateur doit trancher l'appel.";
+      case "CONFLICT_OF_INTEREST":
+        return "Vous ne pouvez pas traiter ce dossier (conflit d'intérêts).";
+      case "INVALID_STATUS_TRANSITION":
+        return "Ce dossier a déjà été traité.";
       case "APPEAL_ALREADY_USED":
         return "L'appel a déjà été utilisé pour cette publication.";
       case "NETWORK_ERROR":

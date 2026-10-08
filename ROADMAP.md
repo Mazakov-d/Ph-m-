@@ -155,7 +155,7 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 - [x] API : réponse ou correction de l'éditeur sous 48 h ; appel unique traité par un autre modérateur.
 - [x] App : bouton « Signaler » avec choix du motif.
 - [x] App : barre de fiabilité (§5.6) et feuille « Pourquoi ? » (verdict, note, sources, réponse de l'éditeur).
-- [ ] App : écran modérateur « Articles signalés » et écran de verdict.
+- [x] App : écran modérateur « Articles signalés » et écran de verdict.
 
 **Critères de validation**
 
