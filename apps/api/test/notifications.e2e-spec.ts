@@ -274,7 +274,7 @@ describe("Push notifications (e2e, docs/DECISIONS.md)", () => {
     const opened = await request(server())
       .post("/tickets")
       .set("Authorization", `Bearer ${reader.accessToken}`)
-      .send({ content: "Bonjour" })
+      .send({ topic: "ACCOUNT", content: "Bonjour" })
       .expect(201);
     const moderator = await readerWithPhone("modo");
     await prisma.user.update({ where: { id: moderator.id }, data: { role: "MODERATOR" } });

@@ -12,6 +12,7 @@ import { jsonResponse, renderWithProviders } from "../test/renderWithProviders";
 const mockPush = jest.fn();
 jest.mock("expo-router", () => ({
   useRouter: () => ({ push: mockPush }),
+  useLocalSearchParams: () => ({}),
   Stack: { Screen: () => null },
 }));
 
@@ -21,10 +22,12 @@ const ticket: TicketModeration = {
   id: ID(1),
   kind: "SUPPORT",
   status: "NEW",
+  topic: "PROBLEM",
   createdAt: now,
   lastMessageAt: now,
   openedById: ID(2),
   openedByPseudo: "lecteur",
+  audience: "READER",
   editorId: null,
   editorPseudo: null,
   assignedModeratorId: null,
@@ -77,16 +80,27 @@ describe("support and chat screens (SPEC §8)", () => {
     await apiClient.endSession();
   });
 
-  it("opens a support ticket and goes to the conversation", async () => {
+  it("contacts Phémé with a reason and goes to the conversation (docs/DECISIONS.md)", async () => {
     await signIn("READER", (path) => (path.endsWith("/tickets/mine") ? [] : ticket));
     await renderWithProviders(<SupportScreen />);
-    await fireEvent.press(await screen.findByText("Écrire à l'équipe"));
     await fireEvent.changeText(
-      screen.getByLabelText("Écrire à l'équipe"),
+      await screen.findByLabelText("Votre message"),
       "Mon compte a été suspendu à tort.",
     );
     await fireEvent.press(screen.getByText("Envoyer"));
+    expect(screen.getByText("Choisissez un motif et écrivez votre message.")).toBeTruthy();
+
+    await fireEvent.press(screen.getByText("Mon compte ou une sanction"));
+    await fireEvent.press(screen.getByText("Envoyer"));
     await waitFor(() => expect(mockPush).toHaveBeenCalledWith(`/tickets/${ID(1)}`));
+    const call = fetchMock.mock.calls.find(
+      ([url, init]) => String(url).endsWith("/tickets") && init?.method === "POST",
+    );
+    const body = call?.[1]?.body;
+    expect(typeof body === "string" ? JSON.parse(body) : null).toEqual({
+      topic: "ACCOUNT",
+      content: "Mon compte a été suspendu à tort.",
+    });
   });
 
   it("shows the conversation, the team's messages marked, and sends a message", async () => {

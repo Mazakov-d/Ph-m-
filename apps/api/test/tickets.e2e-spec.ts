@@ -41,7 +41,9 @@ describe("Support and chats (e2e, SPEC §8)", () => {
     account: Account = reader,
     content = "Mon compte a été suspendu à tort.",
   ) => {
-    const response = await as(account, server().post("/tickets")).send({ content }).expect(201);
+    const response = await as(account, server().post("/tickets"))
+      .send({ topic: "PROBLEM", content })
+      .expect(201);
     return response.body.id as string;
   };
   const assign = (account: Account, id: string) =>
@@ -74,7 +76,32 @@ describe("Support and chats (e2e, SPEC §8)", () => {
       data: { suspendedUntil: new Date(Date.now() + HOUR) },
     });
     await openTicket();
-    await as(moderator, server().post("/tickets")).send({ content: "Moi ?" }).expect(403);
+    await as(moderator, server().post("/tickets"))
+      .send({ topic: "OTHER", content: "Moi ?" })
+      .expect(403);
+  });
+
+  it("records the reason, tells readers' tickets from editors', and who handles them (contact)", async () => {
+    const editor = await signUp(app, prisma, "clara", {
+      role: "EDITOR",
+      editorStatus: "INDEPENDENT",
+    });
+    const fromReader = await openTicket(reader, "Une idée");
+    await as(editor, server().post("/tickets"))
+      .send({ topic: "IDEA", content: "Une idée d'éditeur" })
+      .expect(201);
+    await as(reader, server().post("/tickets")).send({ topic: "SPAM", content: "?" }).expect(400);
+    await assign(moderator, fromReader).expect(201);
+
+    const all = await as(admin, server().get("/admin/tickets")).expect(200);
+    const byContent = (content: string) =>
+      all.body.find((ticket: { firstMessage: string }) => ticket.firstMessage === content);
+    expect(byContent("Une idée")).toMatchObject({
+      topic: "PROBLEM",
+      audience: "READER",
+      assignedModeratorPseudo: "modo-alice",
+    });
+    expect(byContent("Une idée d'éditeur")).toMatchObject({ topic: "IDEA", audience: "EDITOR" });
   });
 
   it("assigns atomically: two simultaneous assignments, only one wins (ROADMAP phase 9)", async () => {

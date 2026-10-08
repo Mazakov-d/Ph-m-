@@ -63,7 +63,7 @@ describe("Real-time conversations (e2e, docs/DECISIONS.md)", () => {
     const response = await request(app.getHttpServer())
       .post("/tickets")
       .set("Authorization", `Bearer ${reader.accessToken}`)
-      .send({ content: "Bonjour" })
+      .send({ topic: "PROBLEM", content: "Bonjour" })
       .expect(201);
     return response.body.id;
   }

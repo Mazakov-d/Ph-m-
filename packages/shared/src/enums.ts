@@ -228,3 +228,7 @@ export const EditorProof = z.enum([
   "CPPAP",
 ]);
 export type EditorProof = z.infer<typeof EditorProof>;
+
+// docs/DECISIONS.md (contact): why a member contacts Phémé (« Contacter Phémé »).
+export const TicketTopic = z.enum(["PROBLEM", "IDEA", "EDITOR_ACCOUNT", "ACCOUNT", "OTHER"]);
+export type TicketTopic = z.infer<typeof TicketTopic>;

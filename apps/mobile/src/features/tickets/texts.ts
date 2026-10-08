@@ -1,4 +1,10 @@
-import type { MessagePublic, TicketKind, TicketModeration, TicketStatus } from "@fama/shared";
+import type {
+  MessagePublic,
+  TicketKind,
+  TicketModeration,
+  TicketStatus,
+  TicketTopic,
+} from "@fama/shared";
 import { ApiRequestError } from "../../lib/apiClient";
 
 export const TICKET_STATUS_LABELS: Record<TicketStatus, string> = {
@@ -10,6 +16,20 @@ export const TICKET_STATUS_LABELS: Record<TicketStatus, string> = {
 export const TICKET_KIND_LABELS: Record<TicketKind, string> = {
   SUPPORT: "Support",
   EDITOR_CHAT: "Échange avec un éditeur",
+};
+
+// docs/DECISIONS.md (contact): the reasons offered by « Contacter Phémé ».
+export const TICKET_TOPIC_LABELS: Record<TicketTopic, string> = {
+  PROBLEM: "Un problème à signaler",
+  IDEA: "Une idée à proposer",
+  EDITOR_ACCOUNT: "Ouvrir un compte éditeur",
+  ACCOUNT: "Mon compte ou une sanction",
+  OTHER: "Autre chose",
+};
+
+export const TICKET_AUDIENCE_LABELS: Record<TicketModeration["audience"], string> = {
+  EDITOR: "Éditeur",
+  READER: "Lecteur",
 };
 
 export function ticketErrorMessage(error: unknown): string {

@@ -6,6 +6,7 @@ import {
   type TicketModeration,
   type TicketPublic,
   type TicketQuery,
+  type TicketTopic,
 } from "@fama/shared";
 import { ApiException } from "../common/errors/api.exception.js";
 import type { Ticket } from "../generated/prisma/client.js";
@@ -45,11 +46,12 @@ export class TicketsService {
     return true;
   }
 
-  /** « Parler à l'équipe »: a SUPPORT ticket with its first message. */
-  async openSupport(user: AuthUser, content: string): Promise<TicketPublic> {
+  /** « Contacter Phémé »: a SUPPORT ticket with its reason and its first message. */
+  async openSupport(user: AuthUser, topic: TicketTopic, content: string): Promise<TicketPublic> {
     const ticket = await this.prisma.ticket.create({
       data: {
         kind: "SUPPORT",
+        topic,
         openedById: user.id,
         messages: { create: { authorId: user.id, content } },
       },

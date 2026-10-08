@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { TicketKind, TicketStatus } from "../enums.js";
+import { TicketKind, TicketStatus, TicketTopic } from "../enums.js";
 import { cursorQuerySchema, idSchema, isoDateTimeSchema } from "./common.js";
 import { createMessageInputSchema } from "./message.js";
 
@@ -10,6 +10,10 @@ export const createTicketInputSchema = z.discriminatedUnion("kind", [
   createMessageInputSchema.extend({ kind: z.literal("EDITOR_CHAT"), editorId: idSchema }),
 ]);
 export type CreateTicketInput = z.infer<typeof createTicketInputSchema>;
+
+// docs/DECISIONS.md (contact): « Contacter Phémé » — the reason, then the first message.
+export const openSupportTicketInputSchema = createMessageInputSchema.extend({ topic: TicketTopic });
+export type OpenSupportTicketInput = z.infer<typeof openSupportTicketInputSchema>;
 
 // docs/DECISIONS.md: moderators list the unassigned tickets or their own.
 export const ticketQuerySchema = cursorQuerySchema.extend({
@@ -28,6 +32,8 @@ export const ticketPublicSchema = z.object({
   id: idSchema,
   kind: TicketKind,
   status: TicketStatus,
+  // The reason of a SUPPORT ticket (null for a chat with an editor).
+  topic: TicketTopic.nullable(),
   createdAt: isoDateTimeSchema,
   lastMessageAt: isoDateTimeSchema,
 });
@@ -37,6 +43,9 @@ export type TicketPublic = z.infer<typeof ticketPublicSchema>;
 export const ticketModerationSchema = ticketPublicSchema.extend({
   openedById: idSchema,
   openedByPseudo: z.string(),
+  // docs/DECISIONS.md (contact): an editor's ticket (a chat, or an editor writing to the team)
+  // or a reader's.
+  audience: z.enum(["EDITOR", "READER"]),
   // docs/DECISIONS.md (chats): an EDITOR_CHAT opens on the page of its editor.
   editorId: idSchema.nullable(),
   editorPseudo: z.string().nullable(),

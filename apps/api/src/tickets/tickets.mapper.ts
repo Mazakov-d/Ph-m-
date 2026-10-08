@@ -2,14 +2,14 @@ import type { MessagePublic, TicketModeration, TicketPublic } from "@fama/shared
 import type { Message, Ticket, User } from "../generated/prisma/client.js";
 
 export type TicketRecord = Ticket & {
-  openedBy: Pick<User, "pseudo">;
+  openedBy: Pick<User, "pseudo" | "role">;
   editor: Pick<User, "pseudo"> | null;
   assignedModerator: Pick<User, "pseudo"> | null;
   messages: Pick<Message, "content">[];
 };
 
 export const TICKET_INCLUDE = {
-  openedBy: { select: { pseudo: true } },
+  openedBy: { select: { pseudo: true, role: true } },
   editor: { select: { pseudo: true } },
   assignedModerator: { select: { pseudo: true } },
   // The first message (what the ticket is about).
@@ -21,6 +21,7 @@ export function toTicketPublic(ticket: Ticket): TicketPublic {
     id: ticket.id,
     kind: ticket.kind,
     status: ticket.status,
+    topic: ticket.topic,
     createdAt: ticket.createdAt.toISOString(),
     lastMessageAt: ticket.lastMessageAt.toISOString(),
   };
@@ -31,6 +32,8 @@ export function toTicketModeration(ticket: TicketRecord): TicketModeration {
     ...toTicketPublic(ticket),
     openedById: ticket.openedById,
     openedByPseudo: ticket.openedBy.pseudo,
+    audience:
+      ticket.kind === "EDITOR_CHAT" || ticket.openedBy.role === "EDITOR" ? "EDITOR" : "READER",
     editorId: ticket.editorId,
     editorPseudo: ticket.editor?.pseudo ?? null,
     assignedModeratorId: ticket.assignedModeratorId,

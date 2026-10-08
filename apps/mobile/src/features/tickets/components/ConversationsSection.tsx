@@ -15,6 +15,7 @@ const texts = {
   mine: "Mes conversations",
   empty: "Aucune conversation.",
   claim: "Prendre en charge",
+  groups: { EDITOR: "Éditeurs", READER: "Lecteurs" },
 };
 
 /**
@@ -82,20 +83,32 @@ type ListProps = {
 
 function TicketList({ title, tickets, loading, error, action }: ListProps) {
   const router = useRouter();
+  // docs/DECISIONS.md (contact): editors' tickets and readers' tickets apart.
+  const groups = (["EDITOR", "READER"] as const).map((audience) => ({
+    audience,
+    tickets: tickets.filter((ticket) => ticket.audience === audience),
+  }));
   return (
     <View style={styles.list}>
       <Text style={styles.title}>{title}</Text>
       {loading ? <ActivityIndicator /> : null}
       {error ? <Text style={styles.error}>{ticketErrorMessage(error)}</Text> : null}
       {!loading && tickets.length === 0 ? <Text style={styles.muted}>{texts.empty}</Text> : null}
-      {tickets.map((ticket) => (
-        <TicketCard
-          key={ticket.id}
-          ticket={ticket}
-          onPress={() => router.push(conversationPath(ticket))}
-          action={action?.(ticket)}
-        />
-      ))}
+      {groups.map((group) =>
+        group.tickets.length > 0 ? (
+          <View key={group.audience} style={styles.list}>
+            <Text style={styles.group}>{texts.groups[group.audience]}</Text>
+            {group.tickets.map((ticket) => (
+              <TicketCard
+                key={ticket.id}
+                ticket={ticket}
+                onPress={() => router.push(conversationPath(ticket))}
+                action={action?.(ticket)}
+              />
+            ))}
+          </View>
+        ) : null,
+      )}
     </View>
   );
 }
@@ -104,5 +117,6 @@ const styles = StyleSheet.create({
   list: { gap: spacing.sm },
   title: { fontWeight: "bold", color: colors.text },
   muted: { color: colors.muted },
+  group: { color: colors.muted, fontWeight: "600" },
   error: { color: colors.danger },
 });

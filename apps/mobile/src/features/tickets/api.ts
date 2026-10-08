@@ -1,5 +1,6 @@
 import {
   auditLogModerationSchema,
+  type OpenSupportTicketInput,
   editorChatModerationSchema,
   type MessagePublic,
   messagePublicSchema,
@@ -40,7 +41,8 @@ export function useMyTickets() {
 export function useOpenSupportTicket() {
   const refresh = useRefreshTickets();
   return useMutation({
-    mutationFn: (content: string) => apiClient.post("/tickets", { content }, ticketPublicSchema),
+    mutationFn: (input: OpenSupportTicketInput) =>
+      apiClient.post("/tickets", input, ticketPublicSchema),
     onSuccess: refresh,
   });
 }

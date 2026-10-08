@@ -7,6 +7,8 @@ import {
   type EditorChatModeration,
   createMessageInputSchema,
   idSchema,
+  type OpenSupportTicketInput,
+  openSupportTicketInputSchema,
   type MessagePublic,
   type TicketModeration,
   type TicketPublic,
@@ -28,10 +30,10 @@ export class TicketsController {
   @Post("tickets")
   @RequirePermission("support.open")
   openSupport(
-    @Body(new ZodValidationPipe(createMessageInputSchema)) input: CreateMessageInput,
+    @Body(new ZodValidationPipe(openSupportTicketInputSchema)) input: OpenSupportTicketInput,
     @CurrentUser() user: AuthUser,
   ): Promise<TicketPublic> {
-    return this.tickets.openSupport(user, input.content);
+    return this.tickets.openSupport(user, input.topic, input.content);
   }
 
   @Get("tickets/mine")

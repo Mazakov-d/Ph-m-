@@ -96,6 +96,15 @@ enum EditorProof {
   CPPAP
 }
 
+/// docs/DECISIONS.md (contact): why a member contacts Phémé.
+enum TicketTopic {
+  PROBLEM
+  IDEA
+  EDITOR_ACCOUNT
+  ACCOUNT
+  OTHER
+}
+
 enum Zone {
   FRANCE
   EUROPE
@@ -631,6 +640,8 @@ model Block {
 model Ticket {
   id                     String       @id @default(uuid()) @db.Uuid
   kind                   TicketKind
+  // docs/DECISIONS.md (contact): the reason of a SUPPORT ticket.
+  topic                  TicketTopic?
   status                 TicketStatus @default(NEW)
   openedById             String       @db.Uuid
   // SPEC §8: the editor of an EDITOR_CHAT.

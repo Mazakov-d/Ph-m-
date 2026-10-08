@@ -24,7 +24,7 @@ const texts = {
   sanctions: "Mes sanctions",
   blocks: "Comptes bloqués",
   alerts: "Mes alertes",
-  support: "Parler à l'équipe",
+  support: "Contacter Phémé",
   tickets: "Tickets",
   conversations: "Toutes les conversations",
   audit: "Journal d'audit",
@@ -74,6 +74,10 @@ export default function AccountScreen() {
               label={texts.postReviews}
               onPress={() => router.push("/moderation/post-reviews")}
             />
+          ) : null}
+          {/* docs/DECISIONS.md (contact): readers and editors write to the team. */}
+          {can(user, "support.open") ? (
+            <Button label={texts.support} onPress={() => router.push("/support")} />
           ) : null}
           <ConversationsSection />
           <Button label={texts.signOut} variant="secondary" onPress={signOut} />

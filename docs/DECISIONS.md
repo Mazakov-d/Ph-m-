@@ -693,3 +693,12 @@ qui la remplace.
     fiabilité, jury, sanctions et retrait du statut restent les garde-fous ;
   - le formulaire propose « Contacter Phémé » (motif « Ouvrir un compte éditeur ») pour toute
     question.
+
+## 2026-10-09 — « Contacter Phémé » et tickets de la modération (todo.txt)
+
+- **Décision** (demandée par le porteur du projet) : dans le compte, les lecteurs et les éditeurs
+  ont « Contacter Phémé » ; on choisit d'abord le motif (un problème à signaler, une idée à
+  proposer, ouvrir un compte éditeur, mon compte ou une sanction, autre chose), puis on écrit.
+  Côté modération, les tickets sont rangés en « Éditeurs » (chats avec un éditeur, ou éditeur qui
+  écrit à l'équipe) et « Lecteurs », avec leur motif et qui les a pris en charge (l'admin voit
+  tout).
