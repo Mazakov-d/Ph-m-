@@ -627,3 +627,11 @@ qui la remplace.
     Le Havre, Dijon, Villeurbanne, Angers, Grenoble, Nîmes ;
   - les publications locales existantes gardent leur lieu quand le nom saisi correspond à la liste ;
     sinon elles passent en « France » (les alertes locales sans correspondance sont supprimées).
+
+## 2026-10-08 — Demande d'éditeur d'un compte supprimé
+
+- **Question** : que devient une demande d'éditeur quand son compte est supprimé ?
+- **Décision** (demandée par le porteur du projet) : une demande jamais validée (en attente ou
+  refusée) est supprimée avec le compte, identité et pièces justificatives comprises ; elle
+  disparaît de la file de modération. Un éditeur validé garde son profil (ses publications
+  restent) jusqu'à la purge de rétention, comme avant.

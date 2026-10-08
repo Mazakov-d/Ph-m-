@@ -4,13 +4,17 @@ import { type AuthUser, DELETED_ACCOUNT_PSEUDO } from "@fama/shared";
 import { hash, verify } from "argon2";
 import { ApiException } from "../common/errors/api.exception.js";
 import { PrismaService } from "../prisma/prisma.service.js";
+import { StorageService } from "../storage/storage.service.js";
 
 const UNUSABLE_PASSWORD_BYTES = 32;
 
 /** SPEC §10: deleting one's account from the app (Apple requirement). */
 @Injectable()
 export class AccountService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly storage: StorageService,
+  ) {}
 
   /**
    * docs/DECISIONS.md: confirmed with the password; the account is anonymized at once and can
@@ -24,7 +28,25 @@ export class AccountService {
     // Nobody knows this random password: the account can never sign in again.
     const unusablePasswordHash = await hash(randomBytes(UNUSABLE_PASSWORD_BYTES).toString("hex"));
     const now = new Date();
+    // docs/DECISIONS.md: an editor application that was never validated goes with the account
+    // (identity and documents included); a validated editor keeps the profile of its posts.
+    const application = await this.prisma.editorProfile.findUnique({
+      where: { userId: user.id },
+      select: {
+        status: true,
+        user: { select: { editorIdentity: { select: { documentKeys: true } } } },
+      },
+    });
+    const dropApplication =
+      application !== null &&
+      (application.status === "PENDING" || application.status === "REJECTED");
     await this.prisma.$transaction([
+      ...(dropApplication
+        ? [
+            this.prisma.editorIdentity.deleteMany({ where: { userId: user.id } }),
+            this.prisma.editorProfile.deleteMany({ where: { userId: user.id } }),
+          ]
+        : []),
       this.prisma.user.update({
         where: { id: user.id },
         data: {
@@ -43,5 +65,8 @@ export class AccountService {
       this.prisma.pushToken.deleteMany({ where: { userId: user.id } }),
       this.prisma.alert.deleteMany({ where: { userId: user.id } }),
     ]);
+    if (dropApplication) {
+      await this.storage.delete(application.user.editorIdentity?.documentKeys ?? []);
+    }
   }
 }

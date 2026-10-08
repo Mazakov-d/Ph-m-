@@ -115,6 +115,11 @@ describe("Account deletion and retention (e2e, SPEC §10)", () => {
     });
 
     const applicant = await createApplicant(app, prisma, "ancien-editeur");
+    // A validated editor keeps the profile of its posts until the purge.
+    await prisma.editorProfile.update({
+      where: { userId: applicant.id },
+      data: { status: "INDEPENDENT" },
+    });
     const identity = await prisma.editorIdentity.findUniqueOrThrow({
       where: { userId: applicant.id },
     });
@@ -131,5 +136,23 @@ describe("Account deletion and retention (e2e, SPEC §10)", () => {
     );
     expect(await prisma.editorIdentity.count()).toBe(0);
     await expect(app.get(StorageService).get(identity.documentKeys[0] ?? "")).rejects.toThrow();
+  });
+
+  it("removes at once an editor application that was never validated (docs/DECISIONS.md)", async () => {
+    const applicant = await createApplicant(app, prisma, "candidat");
+    const identity = await prisma.editorIdentity.findUniqueOrThrow({
+      where: { userId: applicant.id },
+    });
+    await deleteAccount(applicant.accessToken).expect(204);
+
+    expect(await prisma.editorProfile.count({ where: { userId: applicant.id } })).toBe(0);
+    expect(await prisma.editorIdentity.count({ where: { userId: applicant.id } })).toBe(0);
+    await expect(app.get(StorageService).get(identity.documentKeys[0] ?? "")).rejects.toThrow();
+    const moderator = await signUp(app, prisma, "modo", { role: "MODERATOR" });
+    const queue = await server()
+      .get("/moderation/editor-applications")
+      .set("Authorization", `Bearer ${moderator.accessToken}`)
+      .expect(200);
+    expect(queue.body.items).toEqual([]);
   });
 });
