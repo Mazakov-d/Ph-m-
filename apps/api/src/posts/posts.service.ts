@@ -22,6 +22,7 @@ import { type PostImageType, sanitizeImage } from "./post-images.js";
 import { POST_INCLUDE, type PostRecord } from "./post-record.js";
 import { toPostPublic, toPostSummaryPublic } from "./posts.mapper.js";
 import { WeightedFeedService } from "./weighted-feed.service.js";
+import { EditorReliabilityService } from "../reliability/editor-reliability.service.js";
 
 export type UploadedImage = { bytes: Uint8Array; type: PostImageType };
 
@@ -32,6 +33,7 @@ export class PostsService {
     private readonly storage: StorageService,
     private readonly votesService: VotesService,
     private readonly weightedFeed: WeightedFeedService,
+    private readonly reliability: EditorReliabilityService,
   ) {}
 
   /** A full post as seen by `viewerId` (their vote, and the totals if they may see them). */
@@ -46,7 +48,8 @@ export class PostsService {
           select: { id: true },
         })
       : null;
-    return toPostPublic(post, votes, ownReport !== null);
+    const editorReliability = await this.reliability.levelFor(post.authorId);
+    return toPostPublic(post, votes, ownReport !== null, editorReliability);
   }
 
   /** SPEC §3: publishes a post with its sources and images (it cannot be modified afterwards). */

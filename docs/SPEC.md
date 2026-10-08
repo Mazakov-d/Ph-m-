@@ -204,6 +204,7 @@ Les opinions n'ont pas de barre de fiabilité.
 Départ 50/100. Verdicts des 12 derniers mois : `ACCURATE` +2, `MISSING_CONTEXT` −1, `MISLEADING` −5, `FALSE` −10.
 Pénalité divisée par 2 si l'éditeur avait publié une correction **avant** le verdict. Pondération dégressive avec l'ancienneté.
 Affichage en paliers : Très fiable, Fiable, Vigilance, Historique insuffisant (< 3 verdicts).
+Pondération, seuils et affichage : voir `DECISIONS.md`.
 
 ### 5.8 Revue communautaire (post-MVP)
 

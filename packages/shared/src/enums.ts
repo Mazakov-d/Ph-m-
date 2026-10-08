@@ -131,3 +131,12 @@ export type TicketKind = z.infer<typeof TicketKind>;
 
 export const TicketStatus = z.enum(["NEW", "ASSIGNED", "CLOSED"]);
 export type TicketStatus = z.infer<typeof TicketStatus>;
+
+// SPEC §5.7: tiers of the reliability gauge of an editor (the score itself is never shown).
+export const EditorReliabilityLevel = z.enum([
+  "VERY_RELIABLE",
+  "RELIABLE",
+  "VIGILANCE",
+  "INSUFFICIENT_HISTORY",
+]);
+export type EditorReliabilityLevel = z.infer<typeof EditorReliabilityLevel>;

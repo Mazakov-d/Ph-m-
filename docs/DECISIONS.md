@@ -472,3 +472,18 @@ qui la remplace.
   (`*.pheme.example`) changent. Les identifiants techniques internes restent (`@fama/shared`,
   base `fama`, cookie `fama_refresh`, clé `fama.refreshToken`, dossier du dépôt) : invisibles
   pour les utilisateurs, et les changer déconnecterait les sessions en cours.
+
+## 2026-10-08 — Jauge de fiabilité des comptes éditeurs (SPEC §5.7)
+
+- **Question** : la SPEC §5.7 ne fixe ni la pondération par l'ancienneté, ni les seuils des
+  paliers, ni l'effet d'un verdict « invérifiable », ni l'endroit de l'affichage.
+- **Décision** (validée par le porteur du projet) :
+  - ancienneté : poids linéaire de 1 (verdict du jour) à 0,25 (verdict d'il y a 12 mois) ; au-delà,
+    le verdict ne compte plus ;
+  - invérifiable : 0 point, mais compte parmi les 3 verdicts nécessaires ;
+  - paliers : Très fiable ≥ 60, Fiable ≥ 45, Vigilance en dessous ; Historique insuffisant sous
+    3 verdicts ; score borné entre 0 et 100 ;
+  - un article compte une fois, avec son dernier verdict (un verdict en appel remplace le premier) ;
+    la pénalité est divisée par 2 si une correction a été publiée avant le verdict ;
+  - affichage par palier seulement (jamais le score), sur le profil public de l'éditeur et à côté
+    de son nom sur la page d'un post ; pas sur les cartes du fil.

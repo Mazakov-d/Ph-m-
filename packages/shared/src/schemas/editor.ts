@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { EditorStatus } from "../enums.js";
+import { EditorReliabilityLevel, EditorStatus } from "../enums.js";
 import {
   EDITORIAL_LINE_MAX_LENGTH,
   NAME_MAX_LENGTH,
@@ -75,6 +75,8 @@ export const editorPublicSchema = editorSummaryPublicSchema.extend({
   ownerName: z.string(),
   ownerGroup: z.string().nullable(),
   legalIdentity: z.object({ firstName: z.string(), lastName: z.string() }).optional(),
+  // SPEC §5.7: the tier of the reliability gauge, never the score.
+  reliability: EditorReliabilityLevel,
 });
 export type EditorPublic = z.infer<typeof editorPublicSchema>;
 

@@ -127,3 +127,23 @@ export const DELETED_ACCOUNT_PSEUDO = "Compte supprimé";
 
 // SPEC §6 and §10: purge delay for logically deleted content. To be confirmed with a lawyer.
 export const RETENTION_DAYS = 365;
+
+// SPEC §5.7 + docs/DECISIONS.md: reliability gauge of an editor account (post-MVP). The verdicts
+// of the last EDITOR_RELIABILITY_WINDOW_MONTHS move a score that starts at 50 out of 100.
+export const EDITOR_RELIABILITY_START = 50;
+export const EDITOR_RELIABILITY_MAX = 100;
+export const EDITOR_RELIABILITY_WINDOW_MONTHS = 12;
+export const EDITOR_RELIABILITY_POINTS = {
+  ACCURATE: 2,
+  MISSING_CONTEXT: -1,
+  UNVERIFIABLE: 0,
+  MISLEADING: -5,
+  FALSE: -10,
+} as const;
+// A penalty is halved when the editor had published a correction before the verdict.
+export const EDITOR_RELIABILITY_CORRECTION_FACTOR = 0.5;
+// The oldest verdict of the window still counts for a quarter (linear decrease from 1).
+export const EDITOR_RELIABILITY_OLDEST_WEIGHT = 0.25;
+export const EDITOR_RELIABILITY_MIN_VERDICTS = 3;
+export const EDITOR_RELIABILITY_VERY_RELIABLE_MIN = 60;
+export const EDITOR_RELIABILITY_RELIABLE_MIN = 45;

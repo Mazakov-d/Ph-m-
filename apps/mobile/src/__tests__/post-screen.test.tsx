@@ -29,6 +29,7 @@ describe("PostScreen", () => {
 
     expect(await screen.findByText("Texte complet de l'article.")).toBeTruthy();
     expect(screen.getByText("Local · Bretagne · Politique")).toBeTruthy();
+    expect(screen.getByLabelText("Fiabilité de l'éditeur : Fiable")).toBeTruthy();
     expect(screen.getByText("Non examiné")).toBeTruthy();
     // Interface brief: under the article, the sources on the left, then the status on the right.
     const tree = JSON.stringify(screen.toJSON());

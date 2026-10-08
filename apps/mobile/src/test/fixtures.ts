@@ -61,4 +61,5 @@ export const ARTICLE_DETAIL: PostPublic = {
   corrections: [],
   votes: null,
   viewerHasReported: false,
+  editorReliability: "RELIABLE",
 };

@@ -2,6 +2,7 @@ import { Stack, useLocalSearchParams } from "expo-router";
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useEditorProfile } from "../../features/editors/api";
 import { EditorBadge } from "../../features/editors/components/EditorBadge";
+import { ReliabilityGauge } from "../../features/editors/components/ReliabilityGauge";
 import { editorErrorMessage } from "../../features/editors/texts";
 import { EditorPostsList } from "../../features/posts/components/EditorPostsList";
 import { ContactEditor } from "../../features/tickets/components/ContactEditor";
@@ -33,6 +34,7 @@ export default function EditorProfileScreen() {
         <View style={styles.header}>
           <Text style={styles.pseudo}>{editor.pseudo}</Text>
           <EditorBadge status={editor.editorStatus} />
+          <ReliabilityGauge level={editor.reliability} />
         </View>
         <Section title={texts.editorialLine} body={editor.editorialLine} />
         <Section

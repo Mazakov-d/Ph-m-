@@ -8,6 +8,7 @@ const profile = {
   editorialLine: "Quotidien d'information générale.",
   ownerName: "Groupe Le Monde",
   ownerGroup: null,
+  reliability: "INSUFFICIENT_HISTORY",
 };
 
 describe("editorPublicSchema (SPEC §2.2)", () => {

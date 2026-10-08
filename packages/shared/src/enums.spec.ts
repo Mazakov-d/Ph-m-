@@ -21,6 +21,7 @@ describe("enums (SPEC)", () => {
       TicketStatus: enums.TicketStatus.options,
       PostLayout: enums.PostLayout.options,
       Typeface: enums.Typeface.options,
+      EditorReliabilityLevel: enums.EditorReliabilityLevel.options,
     }).toEqual({
       UserRole: ["READER", "EDITOR", "MODERATOR", "ADMIN"],
       EditorStatus: ["PENDING", "INDEPENDENT", "CERTIFIED", "REJECTED"],
@@ -89,6 +90,7 @@ describe("enums (SPEC)", () => {
         "ROBOTO_MONO",
         "SPACE_MONO",
       ],
+      EditorReliabilityLevel: ["VERY_RELIABLE", "RELIABLE", "VIGILANCE", "INSUFFICIENT_HISTORY"],
     });
   });
 

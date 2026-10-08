@@ -9,6 +9,7 @@ import type {
 } from "@fama/shared";
 import { ApiException } from "../common/errors/api.exception.js";
 import { PrismaService } from "../prisma/prisma.service.js";
+import { EditorReliabilityService } from "../reliability/editor-reliability.service.js";
 import { StorageService } from "../storage/storage.service.js";
 import { FILE_EXTENSIONS } from "../common/files/file-type.js";
 import { toEditorApplicationPublic, toEditorPublic } from "./editors.mapper.js";
@@ -23,6 +24,7 @@ export class EditorsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly storage: StorageService,
+    private readonly reliability: EditorReliabilityService,
   ) {}
 
   /**
@@ -133,7 +135,7 @@ export class EditorsService {
     if (!record) {
       throw new ApiException(HttpStatus.NOT_FOUND, "NOT_FOUND", "No such editor");
     }
-    return toEditorPublic(record);
+    return toEditorPublic(record, await this.reliability.levelFor(editorId));
   }
 
   private async storeDocuments(userId: string, documents: IdentityDocument[]): Promise<string[]> {

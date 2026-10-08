@@ -1,5 +1,6 @@
 import {
   bodyExcerpt,
+  type EditorReliabilityLevel,
   feedCardThirdBlock,
   type PostPublic,
   type PostSummaryPublic,
@@ -48,12 +49,14 @@ export function toPostSummaryPublic(post: PostRecord): PostSummaryPublic {
 
 /**
  * `votes` is the reader's view of the vote, for an opinion (null for an article);
- * `viewerHasReported` tells whether the reader already reported the post.
+ * `viewerHasReported` tells whether the reader already reported the post; `editorReliability`
+ * is the gauge of its editor (SPEC §5.7).
  */
 export function toPostPublic(
   post: PostRecord,
   votes: VoteSummaryPublic | null,
   viewerHasReported: boolean,
+  editorReliability: EditorReliabilityLevel,
 ): PostPublic {
   return {
     ...toPostSummaryPublic(post),
@@ -68,5 +71,6 @@ export function toPostPublic(
     })),
     votes,
     viewerHasReported,
+    editorReliability,
   };
 }

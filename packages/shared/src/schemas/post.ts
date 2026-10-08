@@ -1,5 +1,6 @@
 import { z } from "zod";
 import {
+  EditorReliabilityLevel,
   PostKind,
   PostLayout,
   PostReviewStatus,
@@ -159,5 +160,7 @@ export const postPublicSchema = postSummaryPublicSchema.extend({
   votes: voteSummaryPublicSchema.nullable(),
   // SPEC §5.1: one report per account and post (the « Signaler » button shows it).
   viewerHasReported: z.boolean(),
+  // SPEC §5.7 + docs/DECISIONS.md: the editor's gauge, on the full post (not on feed cards).
+  editorReliability: EditorReliabilityLevel,
 });
 export type PostPublic = z.infer<typeof postPublicSchema>;

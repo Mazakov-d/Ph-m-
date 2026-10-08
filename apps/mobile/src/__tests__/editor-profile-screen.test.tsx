@@ -16,6 +16,7 @@ const profile = {
   editorialLine: "Quotidien d'information générale.",
   ownerName: "Société éditrice du Monde",
   ownerGroup: null,
+  reliability: "VERY_RELIABLE",
 };
 
 describe("EditorProfileScreen (SPEC §2.2)", () => {
@@ -33,6 +34,8 @@ describe("EditorProfileScreen (SPEC §2.2)", () => {
     expect(screen.getByText("Certifié")).toBeTruthy();
     expect(screen.getByText("Quotidien d'information générale.")).toBeTruthy();
     expect(screen.queryByText("Identité")).toBeNull();
+    // SPEC §5.7: the tier of the gauge, never a score.
+    expect(screen.getByLabelText("Fiabilité de l'éditeur : Très fiable")).toBeTruthy();
   });
 
   it("shows the identity when the editor made it public", async () => {

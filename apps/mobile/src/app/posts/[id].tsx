@@ -3,6 +3,7 @@ import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-nat
 import { colors, radius, spacing, textSizes } from "../../components/ui/theme";
 import { CommentsSection } from "../../features/comments/components/CommentsSection";
 import { EditorBadge } from "../../features/editors/components/EditorBadge";
+import { ReliabilityGauge } from "../../features/editors/components/ReliabilityGauge";
 import { usePost } from "../../features/posts/api";
 import { PostBlocks } from "../../features/posts/components/PostBlocks";
 import { ReliabilityBar } from "../../features/posts/components/ReliabilityBar";
@@ -52,6 +53,7 @@ export default function PostScreen() {
             {data.editor.pseudo}
           </Link>
           <EditorBadge status={data.editor.editorStatus} />
+          <ReliabilityGauge level={data.editorReliability} />
           <Text style={styles.muted}>{formatPublishedAt(data.createdAt)}</Text>
         </View>
         <Text style={styles.muted}>{`${place} · ${THEME_LABELS[data.theme]}`}</Text>
