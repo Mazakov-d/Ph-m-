@@ -554,3 +554,24 @@ qui la remplace.
   à tout moment, avant ou après un verdict, depuis la page du post (« Publier une correction »),
   sauf sur une opinion retirée. La réponse au verdict et l'appel gardent leur délai de 48 h.
   Remplace, pour les corrections seulement, la règle des 48 h de la décision sur les signalements.
+
+## 2026-10-08 — Revue communautaire par jury tiré au sort (SPEC §5.8)
+
+- **Question** : la SPEC §5.8 tient en une ligne (« jury de 7 contributeurs tirés au sort,
+  comptes anciens, sans sanction, sans lien avec un média, source obligatoire, validation finale
+  par un modérateur »).
+- **Décision** (validée par le porteur du projet, sauf les points marqués) :
+  - un jury de 7 est tiré au sort pour **chaque article mis en examen** ;
+  - jurés : lecteurs **volontaires** (interrupteur « Je veux être juré » dans le compte), inscrits
+    depuis 6 mois, sans sanction sur 12 mois (une sanction annulée en appel ne compte pas, **sans
+    validation**), ni éditeur ni candidat éditeur ni modération, ni suspendus ni bannis, sur un
+    seul jury à la fois ; jamais l'auteur ni un lecteur qui a signalé l'article (une partie au
+    dossier, **sans validation**) ; moins de 7 jurés si trop peu de volontaires ;
+  - chaque juré choisit un des 5 verdicts avec une source obligatoire (et une remarque
+    facultative), sous 48 h, un seul vote ; un juré absent perd sa place, donnée une seule fois à
+    un autre lecteur ; les jurés sont prévenus par notification ;
+  - le modérateur voit chaque vote (pseudo, verdict, source) et rend le verdict final **une fois
+    tous les jurés passés** (votés ou expirés, **sans validation**) ; s'il s'écarte de la majorité
+    (verdict choisi par le plus de jurés, sans égalité), il l'explique : l'explication est publique ;
+  - public : « Avis d'un jury de N lecteurs » et la répartition des votes, dans « Pourquoi ? » ;
+    jamais qui a voté quoi.

@@ -23,6 +23,10 @@ export function reviewErrorMessage(error: unknown): string {
         return "Ce dossier a déjà été traité.";
       case "APPEAL_ALREADY_USED":
         return "L'appel a déjà été utilisé pour cette publication.";
+      case "JURY_IN_PROGRESS":
+        return "Le jury vote encore : attendez la fin de son vote (48 heures au plus).";
+      case "JURY_DISAGREEMENT_REQUIRED":
+        return "Ce verdict s'écarte de la majorité du jury : expliquez pourquoi.";
       case "NETWORK_ERROR":
         return "Impossible de joindre le serveur. Vérifiez votre connexion.";
       default:

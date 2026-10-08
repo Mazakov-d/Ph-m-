@@ -7,14 +7,17 @@ import {
   SOURCES_MAX_COUNT,
 } from "../rules.js";
 import { idSchema, isoDateTimeSchema, sourceSchema } from "./common.js";
+import { juryModerationSchema, juryPublicSchema } from "./jury.js";
 import { postSummaryPublicSchema } from "./post.js";
 import { reportModerationSchema } from "./report.js";
 
-// SPEC §5.5: verdict, mandatory public note and at least one source.
+// SPEC §5.5: verdict, mandatory public note and at least one source. docs/DECISIONS.md (§5.8):
+// `juryDisagreement` explains publicly a verdict other than the jury's majority (required then).
 export const createReviewInputSchema = z.object({
   verdict: Verdict,
   publicNote: z.string().trim().min(1).max(REVIEW_NOTE_MAX_LENGTH),
   sources: z.array(sourceSchema).min(1).max(SOURCES_MAX_COUNT),
+  juryDisagreement: z.string().trim().min(1).max(REVIEW_NOTE_MAX_LENGTH).nullable().default(null),
 });
 export type CreateReviewInput = z.infer<typeof createReviewInputSchema>;
 
@@ -47,6 +50,9 @@ export const reviewPublicSchema = z.object({
   editorReply: z.object({ content: z.string(), createdAt: isoDateTimeSchema }).nullable(),
   // docs/DECISIONS.md: one appeal per post; NONE → PENDING → DECIDED (no further appeal).
   appealState: z.enum(["NONE", "PENDING", "DECIDED"]),
+  // SPEC §5.8: the opinion of the jury (anonymous), and why the verdict departs from it.
+  jury: juryPublicSchema.nullable(),
+  juryDisagreement: z.string().nullable(),
 });
 export type ReviewPublic = z.infer<typeof reviewPublicSchema>;
 
@@ -68,5 +74,7 @@ export const reviewQueueItemModerationSchema = z.object({
   score: z.number().nonnegative(),
   priority: z.number().nonnegative(),
   reports: z.array(reportModerationSchema),
+  // SPEC §5.8: the jury of the article (null when no reader could be drawn).
+  jury: juryModerationSchema.nullable(),
 });
 export type ReviewQueueItemModeration = z.infer<typeof reviewQueueItemModerationSchema>;

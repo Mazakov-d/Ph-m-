@@ -7,6 +7,7 @@ import { colors } from "../../components/ui/theme";
 import { Button } from "../../components/ui/Button";
 import { AuthPanel } from "../../features/auth/components/AuthPanel";
 import { DeleteAccount } from "../../features/auth/components/DeleteAccount";
+import { JurySection } from "../../features/jury/components/JurySection";
 import { LegalLinks } from "../../features/legal/LegalLinks";
 import { useAuth } from "../../providers/AuthProvider";
 
@@ -62,6 +63,7 @@ export default function AccountScreen() {
             onPress={() => router.push("/sanctions")}
           />
           <Button label={texts.alerts} variant="secondary" onPress={() => router.push("/alerts")} />
+          <JurySection />
           <Button label={texts.blocks} variant="secondary" onPress={() => router.push("/blocks")} />
           {can(user, "moderation.queue.read") ? (
             <Button label={texts.moderation} onPress={() => router.push("/moderation/comments")} />

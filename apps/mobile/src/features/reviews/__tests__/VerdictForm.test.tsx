@@ -26,7 +26,23 @@ describe("VerdictForm (SPEC §5.5)", () => {
         verdict: "MISSING_CONTEXT",
         publicNote: "La date du sondage n'est pas précisée.",
         sources: ["https://www.insee.fr"],
+        juryDisagreement: null,
       }),
     );
+  });
+
+  it("asks why the verdict departs from the jury's majority (SPEC §5.8)", async () => {
+    await render(
+      <VerdictForm
+        onSubmit={jest.fn()}
+        loading={false}
+        juryVerdicts={["FALSE", "FALSE", "ACCURATE"]}
+      />,
+    );
+    const label = "Pourquoi ce verdict s'écarte de la majorité du jury (public, obligatoire)";
+    await fireEvent.press(screen.getByText("Faux"));
+    expect(screen.queryByLabelText(label)).toBeNull();
+    await fireEvent.press(screen.getByText("Exact"));
+    expect(screen.getByLabelText(label)).toBeTruthy();
   });
 });

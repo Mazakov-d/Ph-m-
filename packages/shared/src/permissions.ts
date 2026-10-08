@@ -20,6 +20,8 @@ export const PERMISSIONS = [
   "editor.validateCertified",
   "moderator.manage",
   "audit.read",
+  // SPEC §5.8: sit on a jury of the community review (volunteer readers).
+  "jury.serve",
 ] as const;
 export type Permission = (typeof PERMISSIONS)[number];
 
@@ -33,6 +35,8 @@ export const PERMISSION_MATRIX: Record<UserRole, readonly Permission[]> = {
     "support.open",
     "user.block",
     "editor.apply",
+    // docs/DECISIONS.md: jurors are readers, never editors nor moderators (no link to a media).
+    "jury.serve",
   ],
   EDITOR: [
     "post.read",

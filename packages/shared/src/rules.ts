@@ -167,3 +167,13 @@ export const POST_VIDEO_MAX_BYTES = 200 * 1024 * 1024;
 export const POST_VIDEO_MAX_SECONDS = 180;
 export const POST_VIDEO_TYPES = ["video/mp4", "video/quicktime"] as const;
 export const POST_VIDEO_MAX_WIDTH = 1280;
+
+// SPEC §5.8 + docs/DECISIONS.md: community review. A jury of JURY_SIZE volunteer readers is
+// drawn for each article under review; each votes within JURY_VOTE_HOURS (a juror who does not
+// is replaced once); jurors have an account of JURY_MIN_ACCOUNT_MONTHS and no sanction over
+// JURY_SANCTION_FREE_MONTHS.
+export const JURY_SIZE = 7;
+export const JURY_VOTE_HOURS = 48;
+export const JURY_MIN_ACCOUNT_MONTHS = 6;
+export const JURY_SANCTION_FREE_MONTHS = 12;
+export const JURY_NOTE_MAX_LENGTH = 1000;

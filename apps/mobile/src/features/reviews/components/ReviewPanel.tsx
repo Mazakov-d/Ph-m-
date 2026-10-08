@@ -6,6 +6,7 @@ import { SourcesList } from "../../posts/components/SourcesList";
 import { formatPublishedAt } from "../../posts/texts";
 import { useReview } from "../api";
 import { APPEAL_STATE_TEXTS, reviewErrorMessage } from "../texts";
+import { juryOpinionText } from "../../jury/texts";
 import { EditorReviewActions } from "./EditorReviewActions";
 import { colors } from "../../../components/ui/theme";
 
@@ -15,6 +16,7 @@ const texts = {
   verdict: (label: string, date: string) => `Examiné par la modération : ${label} (${date})`,
   sources: "Sources de la modération",
   reply: "Réponse de l'éditeur",
+  disagreement: "Pourquoi le verdict s'écarte de l'avis du jury",
 };
 
 /** SPEC §5.6: the « Pourquoi ? » sheet of a reviewed article (verdict, note, sources, reply). */
@@ -37,6 +39,14 @@ export function ReviewPanel({ post }: { post: PostPublic }) {
           {texts.verdict(VERDICT_LABELS[data.verdict], formatPublishedAt(data.createdAt))}
         </Text>
         <Text>{data.publicNote}</Text>
+        {/* SPEC §5.8: the anonymous opinion of the jury, and why the verdict departs from it. */}
+        {data.jury ? <Text style={styles.muted}>{juryOpinionText(data.jury)}</Text> : null}
+        {data.juryDisagreement ? (
+          <View style={styles.reply}>
+            <Text style={styles.heading}>{texts.disagreement}</Text>
+            <Text>{data.juryDisagreement}</Text>
+          </View>
+        ) : null}
         <Text style={styles.heading}>{texts.sources}</Text>
         <SourcesList sources={data.sources} />
         {appealText ? <Text style={styles.muted}>{appealText}</Text> : null}

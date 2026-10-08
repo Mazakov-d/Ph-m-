@@ -9,18 +9,26 @@ import {
 } from "@fama/shared";
 import { ApiException } from "../common/errors/api.exception.js";
 import { Prisma } from "../generated/prisma/client.js";
+import { JuryService } from "../jury/jury.service.js";
 import { PrismaService } from "../prisma/prisma.service.js";
 import { type ReviewRecord, toReviewPublic } from "./reviews.mapper.js";
 
 /** Public « Pourquoi ? » and the editor's answers to a verdict (SPEC §5.5, docs/DECISIONS.md). */
 @Injectable()
 export class PostReviewEditorService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly jury: JuryService,
+  ) {}
 
   /** SPEC §5.6: the latest verdict of an article, with the editor's reply. */
   async publicReview(postId: string): Promise<ReviewPublic> {
     const review = await this.latestReview(postId);
-    return toReviewPublic(review, await this.appealState(postId));
+    return toReviewPublic(
+      review,
+      await this.appealState(postId),
+      await this.jury.publicView(postId),
+    );
   }
 
   /** SPEC §5.5: one reply per verdict, within EDITOR_REPLY_HOURS. */

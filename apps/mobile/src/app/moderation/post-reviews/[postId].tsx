@@ -3,7 +3,8 @@ import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { StyleSheet, Text } from "react-native";
 import { usePost } from "../../../features/posts/api";
 import { VerdictForm } from "../../../features/reviews/components/VerdictForm";
-import { useGiveVerdict } from "../../../features/reviews/moderationApi";
+import { JuryVotes } from "../../../features/reviews/components/JuryVotes";
+import { useGiveVerdict, useReviewQueue } from "../../../features/reviews/moderationApi";
 import { reviewErrorMessage } from "../../../features/reviews/texts";
 import { CenteredBox } from "../../../components/ui/CenteredBox";
 
@@ -15,6 +16,9 @@ export default function VerdictScreen() {
   const { postId } = useLocalSearchParams<{ postId: string }>();
   const post = usePost(postId);
   const giveVerdict = useGiveVerdict({ kind: "post", id: postId });
+  // SPEC §5.8: the jury of the article, from the review queue.
+  const queueItem = useReviewQueue().data?.find((item) => item.post.id === postId);
+  const juryVerdicts = queueItem?.jury?.votes.map((vote) => vote.verdict) ?? [];
 
   return (
     <CenteredBox size="wide">
@@ -25,7 +29,9 @@ export default function VerdictScreen() {
           <Text>{stripInlineFormatting(post.data.summary)}</Text>
         </>
       ) : null}
+      {queueItem ? <JuryVotes jury={queueItem.jury} /> : null}
       <VerdictForm
+        juryVerdicts={juryVerdicts}
         loading={giveVerdict.isPending}
         error={giveVerdict.error ? reviewErrorMessage(giveVerdict.error) : undefined}
         onSubmit={(input) => giveVerdict.mutate(input, { onSuccess: () => router.back() })}

@@ -58,6 +58,11 @@ export const ErrorCode = z.enum([
   "TICKET_CLOSED",
   // docs/DECISIONS.md (push notifications): ALERTS_MAX alerts per account.
   "ALERTS_LIMIT_REACHED",
+  // SPEC §5.8 (community review)
+  "JURY_IN_PROGRESS",
+  "JURY_DISAGREEMENT_REQUIRED",
+  "JURY_DEADLINE_PASSED",
+  "JURY_ALREADY_VOTED",
 ]);
 export type ErrorCode = z.infer<typeof ErrorCode>;
 

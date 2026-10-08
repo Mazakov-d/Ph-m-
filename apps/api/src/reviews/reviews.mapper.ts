@@ -1,12 +1,13 @@
-import type { ReportModeration, ReviewPublic } from "@fama/shared";
+import type { JuryPublic, ReportModeration, ReviewPublic } from "@fama/shared";
 import type { CommentReport, EditorReply, PostReport, Review } from "../generated/prisma/client.js";
 
 export type ReviewRecord = Review & { editorReply: EditorReply | null };
 
-/** SPEC §5.6: content of the « Pourquoi ? » sheet. */
+/** SPEC §5.6: content of the « Pourquoi ? » sheet, with the anonymous opinion of the jury (§5.8). */
 export function toReviewPublic(
   review: ReviewRecord,
   appealState: ReviewPublic["appealState"],
+  jury: JuryPublic | null,
 ): ReviewPublic {
   return {
     id: review.id,
@@ -22,6 +23,8 @@ export function toReviewPublic(
         }
       : null,
     appealState,
+    jury,
+    juryDisagreement: review.juryDisagreement,
   };
 }
 

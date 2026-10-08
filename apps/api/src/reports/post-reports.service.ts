@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from "@nestjs/common";
+import { HttpStatus, Injectable, Logger } from "@nestjs/common";
 import {
   type AuthUser,
   computeReportWeight,
@@ -9,6 +9,7 @@ import {
 import { ApiException } from "../common/errors/api.exception.js";
 import { Prisma } from "../generated/prisma/client.js";
 import { PrismaService } from "../prisma/prisma.service.js";
+import { JuryService } from "../jury/jury.service.js";
 import { NotificationsService } from "../notifications/notifications.service.js";
 
 @Injectable()
@@ -16,7 +17,10 @@ export class PostReportsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly notifications: NotificationsService,
+    private readonly jury: JuryService,
   ) {}
+
+  private readonly logger = new Logger(PostReportsService.name);
 
   /**
    * SPEC §5.1–§5.3: reports a post with a weight computed now and stored (§5.2), then opens the
@@ -89,6 +93,10 @@ export class PostReportsService {
       // docs/DECISIONS.md (push notifications): the editor hears that the article is examined.
       if (openedReview) {
         this.notifications.fireAndForget(this.notifications.notifyPostUnderReview(openedReview));
+        // SPEC §5.8: the jury of the article is drawn at once; the report never fails for it.
+        await this.jury.drawFor(openedReview).catch((error: unknown) => {
+          this.logger.error("Jury draw failed", error);
+        });
       }
       return report;
     } catch (error) {

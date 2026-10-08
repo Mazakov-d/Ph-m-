@@ -40,6 +40,8 @@ const EXPECTED: Record<Permission, [boolean, boolean, boolean, boolean]> = {
   "editor.validateCertified": [false, false, false, true],
   "moderator.manage": [false, false, false, true],
   "audit.read": [false, false, false, true],
+  // SPEC §5.8 + docs/DECISIONS.md: jurors are volunteer readers.
+  "jury.serve": [true, false, false, false],
 };
 const ROLES: UserRole[] = ["READER", "EDITOR", "MODERATOR", "ADMIN"];
 

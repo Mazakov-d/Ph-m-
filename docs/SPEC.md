@@ -209,7 +209,7 @@ Pondération, seuils et affichage : voir `DECISIONS.md`.
 ### 5.8 Revue communautaire (post-MVP)
 
 Jury de 7 contributeurs tirés au sort (comptes anciens, sans sanction, sans lien avec un média),
-source obligatoire par vote, validation finale par un modérateur.
+source obligatoire par vote, validation finale par un modérateur. Détails : voir `DECISIONS.md`.
 
 ---
 

@@ -15,4 +15,6 @@ export const NOTIFICATION_TEXTS = {
   verdict: (verdict: Verdict) => `Verdict sur votre article : ${VERDICT_LABELS[verdict]}`,
   ticketMessage: "Nouveau message",
   ticketMessageBody: "Une réponse est arrivée dans votre conversation.",
+  juryDuty: "Vous êtes tiré au sort pour un jury",
+  juryDutyBody: "Examinez un article et donnez votre avis sous 48 heures.",
 };

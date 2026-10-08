@@ -148,9 +148,15 @@ export const NotificationKind = z.enum([
   "POST_UNDER_REVIEW",
   "POST_VERDICT",
   "TICKET_MESSAGE",
+  "JURY_DUTY",
 ]);
 export type NotificationKind = z.infer<typeof NotificationKind>;
 
 // docs/DECISIONS.md: push notifications reach the iOS and Android apps (not the web).
 export const PushPlatform = z.enum(["IOS", "ANDROID"]);
 export type PushPlatform = z.infer<typeof PushPlatform>;
+
+// SPEC §5.8 + docs/DECISIONS.md: a seat of a jury — waiting for the vote, voted, or expired
+// (the juror did not vote within JURY_VOTE_HOURS and was replaced).
+export const JuryAssignmentStatus = z.enum(["PENDING", "VOTED", "EXPIRED"]);
+export type JuryAssignmentStatus = z.infer<typeof JuryAssignmentStatus>;

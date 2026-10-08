@@ -47,6 +47,8 @@ export class PostModerationService {
           score,
           priority: score,
           reports: post.reports.map(toReportModeration),
+          // docs/DECISIONS.md: an opinion never gets a reliability verdict, nor a jury.
+          jury: null,
         };
       })
       .sort((a, b) => b.priority - a.priority);

@@ -27,6 +27,7 @@ const queueItem: ReviewQueueItemModeration = {
       createdAt: new Date().toISOString(),
     },
   ],
+  jury: null,
 };
 
 const appeal: AppealModeration = {
@@ -37,6 +38,8 @@ const appeal: AppealModeration = {
     postId: ARTICLE_CARD.id,
     verdict: "FALSE",
     publicNote: "Chiffres erronés.",
+    jury: null,
+    juryDisagreement: null,
     sources: ["https://www.insee.fr"],
     createdAt: new Date().toISOString(),
     editorReply: null,

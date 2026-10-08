@@ -24,6 +24,7 @@ describe("enums (SPEC)", () => {
       EditorReliabilityLevel: enums.EditorReliabilityLevel.options,
       NotificationKind: enums.NotificationKind.options,
       PushPlatform: enums.PushPlatform.options,
+      JuryAssignmentStatus: enums.JuryAssignmentStatus.options,
     }).toEqual({
       UserRole: ["READER", "EDITOR", "MODERATOR", "ADMIN"],
       EditorStatus: ["PENDING", "INDEPENDENT", "CERTIFIED", "REJECTED"],
@@ -99,8 +100,10 @@ describe("enums (SPEC)", () => {
         "POST_UNDER_REVIEW",
         "POST_VERDICT",
         "TICKET_MESSAGE",
+        "JURY_DUTY",
       ],
       PushPlatform: ["IOS", "ANDROID"],
+      JuryAssignmentStatus: ["PENDING", "VOTED", "EXPIRED"],
     });
   });
 

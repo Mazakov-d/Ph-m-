@@ -1,12 +1,13 @@
 import {
   type CreateReviewInput,
   createReviewInputSchema,
+  needsJuryJustification,
   REVIEW_NOTE_MAX_LENGTH,
   Verdict,
   VERDICT_LABELS,
 } from "@fama/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { StyleSheet, Text, View } from "react-native";
 import { Button } from "../../../components/ui/Button";
 import { ChoiceChips } from "../../../components/ui/ChoiceChips";
@@ -30,17 +31,26 @@ const texts = {
   required: "Champ obligatoire.",
   sourcesError: "Ajoutez au moins une source.",
   submit: "Rendre le verdict",
+  disagreement: "Pourquoi ce verdict s'écarte de la majorité du jury (public, obligatoire)",
 };
 
-type Props = { onSubmit: (input: CreateReviewInput) => void; loading: boolean; error?: string };
+type Props = {
+  onSubmit: (input: CreateReviewInput) => void;
+  loading: boolean;
+  error?: string;
+  /** SPEC §5.8: the jury's votes; departing from their majority needs an explanation. */
+  juryVerdicts?: Verdict[];
+};
 
 /** SPEC §5.5: verdict, mandatory public note and at least one source. */
-export function VerdictForm({ onSubmit, loading, error }: Props) {
+export function VerdictForm({ onSubmit, loading, error, juryVerdicts = [] }: Props) {
   const { control, handleSubmit, formState } = useForm({
     resolver: zodResolver(createReviewInputSchema),
     defaultValues: { publicNote: "", sources: [""] },
   });
   const { errors } = formState;
+  const verdict = useWatch({ control, name: "verdict" });
+  const mustExplain = verdict !== undefined && needsJuryJustification(verdict, juryVerdicts);
 
   return (
     <View style={styles.form}>
@@ -84,6 +94,21 @@ export function VerdictForm({ onSubmit, loading, error }: Props) {
           />
         )}
       />
+      {mustExplain ? (
+        <Controller
+          control={control}
+          name="juryDisagreement"
+          render={({ field }) => (
+            <TextField
+              label={texts.disagreement}
+              value={field.value ?? ""}
+              onChangeText={(value) => field.onChange(value === "" ? null : value)}
+              multiline
+              maxLength={REVIEW_NOTE_MAX_LENGTH}
+            />
+          )}
+        />
+      ) : null}
       {error ? (
         <Text accessibilityRole="alert" style={styles.error}>
           {error}

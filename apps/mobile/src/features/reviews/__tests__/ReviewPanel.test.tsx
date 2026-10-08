@@ -24,6 +24,8 @@ function review(hoursAgo: number, overrides: Partial<ReviewPublic> = {}): Review
     createdAt: new Date(Date.now() - hoursAgo * HOUR).toISOString(),
     editorReply: null,
     appealState: "NONE",
+    jury: null,
+    juryDisagreement: null,
     ...overrides,
   };
 }

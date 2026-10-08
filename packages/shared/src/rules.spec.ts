@@ -110,6 +110,11 @@ describe("rules (SPEC §11)", () => {
       POST_VIDEO_MAX_SECONDS: 180,
       POST_VIDEO_TYPES: ["video/mp4", "video/quicktime"],
       POST_VIDEO_MAX_WIDTH: 1280,
+      JURY_SIZE: 7,
+      JURY_VOTE_HOURS: 48,
+      JURY_MIN_ACCOUNT_MONTHS: 6,
+      JURY_SANCTION_FREE_MONTHS: 12,
+      JURY_NOTE_MAX_LENGTH: 1000,
     });
   });
 });

@@ -176,6 +176,8 @@ model User {
   dismissedReportCount Int       @default(0)
   // SPEC §6.3: current restrictions (copied from the latest sanction for fast checks).
   suspendedUntil       DateTime? @db.Timestamptz(3)
+  // SPEC §5.8 + docs/DECISIONS.md: the reader volunteers to sit on juries.
+  juryVolunteer        Boolean   @default(false)
   bannedAt             DateTime? @db.Timestamptz(3)
   // SPEC §2.3: editors a moderator declared a conflict of interest with.
   conflictEditorIds    String[]  @db.Uuid
@@ -185,7 +187,7 @@ model User {
 
   editorProfile    EditorProfile?
   editorIdentity   EditorIdentity?
-  validatedEditors EditorProfile[] @relation("EditorValidatedBy")
+  validatedEditors EditorProfile[]  @relation("EditorValidatedBy")
   posts            Post[]
   postViews        PostView[]
   comments         Comment[]
@@ -194,17 +196,18 @@ model User {
   commentReports   CommentReport[]
   reviews          Review[]
   editorReplies    EditorReply[]
-  appeals          Appeal[]        @relation("AppealAppellant")
-  resolvedAppeals  Appeal[]        @relation("AppealResolvedBy")
-  sanctions        Sanction[]      @relation("SanctionTarget")
-  issuedSanctions  Sanction[]      @relation("SanctionModerator")
-  blocks           Block[]         @relation("Blocker")
-  blockedBy        Block[]         @relation("Blocked")
-  openedTickets    Ticket[]        @relation("TicketOpenedBy")
-  editorTickets    Ticket[]        @relation("TicketEditor")
-  assignedTickets  Ticket[]        @relation("TicketAssignedModerator")
+  appeals          Appeal[]         @relation("AppealAppellant")
+  resolvedAppeals  Appeal[]         @relation("AppealResolvedBy")
+  sanctions        Sanction[]       @relation("SanctionTarget")
+  issuedSanctions  Sanction[]       @relation("SanctionModerator")
+  blocks           Block[]          @relation("Blocker")
+  blockedBy        Block[]          @relation("Blocked")
+  openedTickets    Ticket[]         @relation("TicketOpenedBy")
+  editorTickets    Ticket[]         @relation("TicketEditor")
+  assignedTickets  Ticket[]         @relation("TicketAssignedModerator")
   messages         Message[]
   pushTokens       PushToken[]
+  juryAssignments  JuryAssignment[]
   alerts           Alert[]
   notifications    Notification[]
   auditLogs        AuditLog[]
@@ -281,18 +284,19 @@ model Post {
   removedAt       DateTime?        @db.Timestamptz(3)
   createdAt       DateTime         @default(now()) @db.Timestamptz(3)
 
-  author      User             @relation(fields: [authorId], references: [id])
-  images      PostImage[]
-  video       PostVideo?
-  sources     PostSource[]
-  views       PostView[]
-  corrections PostCorrection[]
-  comments    Comment[]
-  votes       Vote[]
-  voteOptions VoteOption[]
-  reports     PostReport[]
-  reviews     Review[]
-  sanctions   Sanction[]
+  author          User             @relation(fields: [authorId], references: [id])
+  images          PostImage[]
+  video           PostVideo?
+  sources         PostSource[]
+  views           PostView[]
+  corrections     PostCorrection[]
+  comments        Comment[]
+  votes           Vote[]
+  voteOptions     VoteOption[]
+  juryAssignments JuryAssignment[]
+  reports         PostReport[]
+  reviews         Review[]
+  sanctions       Sanction[]
 
   // SPEC §4.1: feed sorted by createdAt with an (createdAt, id) cursor.
   @@index([createdAt, id])
@@ -453,13 +457,15 @@ model CommentReport {
 
 /// SPEC §5.5: a verdict on a post. An accepted appeal leads to a new review by another moderator.
 model Review {
-  id          String   @id @default(uuid()) @db.Uuid
-  postId      String   @db.Uuid
-  moderatorId String   @db.Uuid
-  verdict     Verdict
-  publicNote  String
-  sources     String[]
-  createdAt   DateTime @default(now()) @db.Timestamptz(3)
+  id               String   @id @default(uuid()) @db.Uuid
+  postId           String   @db.Uuid
+  moderatorId      String   @db.Uuid
+  verdict          Verdict
+  publicNote       String
+  sources          String[]
+  // SPEC §5.8 + docs/DECISIONS.md: why the verdict departs from the jury's majority (public).
+  juryDisagreement String?
+  createdAt        DateTime @default(now()) @db.Timestamptz(3)
 
   post        Post         @relation(fields: [postId], references: [id])
   moderator   User         @relation(fields: [moderatorId], references: [id])
@@ -604,6 +610,7 @@ enum NotificationKind {
   POST_UNDER_REVIEW
   POST_VERDICT
   TICKET_MESSAGE
+  JURY_DUTY
 }
 
 /// docs/DECISIONS.md: push notifications reach the iOS and Android apps only.
@@ -666,4 +673,36 @@ model PostVideo {
   createdAt       DateTime @default(now()) @db.Timestamptz(3)
 
   post Post @relation(fields: [postId], references: [id])
+}
+
+/// SPEC §5.8 + docs/DECISIONS.md: status of a seat of a jury.
+enum JuryAssignmentStatus {
+  PENDING
+  VOTED
+  EXPIRED
+}
+
+/// SPEC §5.8: a seat of the jury of an article under review. A juror who does not vote within
+/// JURY_VOTE_HOURS is replaced once (`replacesId` points to the expired seat).
+model JuryAssignment {
+  id         String               @id @default(uuid()) @db.Uuid
+  postId     String               @db.Uuid
+  jurorId    String               @db.Uuid
+  status     JuryAssignmentStatus @default(PENDING)
+  drawnAt    DateTime             @default(now()) @db.Timestamptz(3)
+  deadline   DateTime             @db.Timestamptz(3)
+  verdict    Verdict?
+  source     String?
+  note       String?
+  votedAt    DateTime?            @db.Timestamptz(3)
+  replacesId String?              @unique @db.Uuid
+
+  post       Post            @relation(fields: [postId], references: [id])
+  juror      User            @relation(fields: [jurorId], references: [id])
+  replaces   JuryAssignment? @relation("JuryReplacement", fields: [replacesId], references: [id])
+  replacedBy JuryAssignment? @relation("JuryReplacement")
+
+  @@unique([postId, jurorId])
+  @@index([status, deadline])
+  @@index([jurorId, status])
 }

@@ -20,6 +20,7 @@ const ENUM_PAIRS: Record<string, [Record<string, string>, readonly string[]]> = 
   TicketStatus: [prisma.TicketStatus, shared.TicketStatus.options],
   NotificationKind: [prisma.NotificationKind, shared.NotificationKind.options],
   PushPlatform: [prisma.PushPlatform, shared.PushPlatform.options],
+  JuryAssignmentStatus: [prisma.JuryAssignmentStatus, shared.JuryAssignmentStatus.options],
   PostLayout: [prisma.PostLayout, shared.PostLayout.options],
   Typeface: [prisma.Typeface, shared.Typeface.options],
 };

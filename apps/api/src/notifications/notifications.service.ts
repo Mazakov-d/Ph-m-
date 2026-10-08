@@ -130,6 +130,15 @@ export class NotificationsService {
     });
   }
 
+  /** SPEC §5.8: the readers drawn for the jury of an article (its title is shown in the app). */
+  async notifyJuryDuty(postId: string, jurorIds: string[]): Promise<void> {
+    await this.deliver(jurorIds, "JURY_DUTY", postId, {
+      title: NOTIFICATION_TEXTS.juryDuty,
+      body: NOTIFICATION_TEXTS.juryDutyBody,
+      url: "/jury",
+    });
+  }
+
   /** Records the notification of each recipient and sends it to all their phones. */
   private async deliver(
     userIds: string[],
