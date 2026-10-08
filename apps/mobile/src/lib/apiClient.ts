@@ -164,6 +164,16 @@ export const apiClient = {
   getBlob,
   /** Full address of a resource served by the API (e.g. an image path of a post). */
   url: (path: string) => `${API_URL}${path}`,
+  /**
+   * docs/DECISIONS.md (real-time conversations): the WebSocket address with the current access
+   * token, or null when signed out.
+   */
+  realtimeUrl: () =>
+    accessToken
+      ? `${API_URL.replace(/^http/, "ws")}/ws?token=${encodeURIComponent(accessToken)}`
+      : null,
+  /** A new access token (the WebSocket closes when the current one expires). */
+  renewSession: async () => (await refreshSession()) !== null,
   /** Multipart upload (files). */
   postForm: <T>(path: string, form: FormData, schema: ZodType<T>) =>
     request("POST", path, form, schema),

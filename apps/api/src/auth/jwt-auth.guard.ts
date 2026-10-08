@@ -22,6 +22,10 @@ export class JwtAuthGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    // The WebSocket gateway authenticates its connections itself (no HTTP headers there).
+    if (context.getType() !== "http") {
+      return true;
+    }
     const targets = [context.getHandler(), context.getClass()];
     if (this.reflector.getAllAndOverride<boolean | undefined>(IS_PUBLIC_KEY, targets)) {
       return true;

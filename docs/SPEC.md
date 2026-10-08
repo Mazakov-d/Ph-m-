@@ -282,7 +282,7 @@ Comptées sur les commentaires `REMOVED` des 6 derniers mois (`SANCTION_RESET_MO
   - L'attribution est **atomique** : deux modérateurs qui cliquent en même temps → un seul gagne (update conditionnel `WHERE status = 'NEW'`).
   - Sans message du modérateur depuis `TICKET_ASSIGN_TIMEOUT_HOURS` (24 h) → retour à `NEW` (job planifié).
 - Messages : **ni modification, ni suppression**. Texte uniquement au MVP.
-- Rafraîchissement par polling au MVP (pas de WebSocket).
+- Rafraîchissement par polling au MVP ; depuis, messages en temps réel par WebSocket (voir `DECISIONS.md`).
 - Lecture d'un chat par un `ADMIN` → entrée `AuditLog`.
 
 ---

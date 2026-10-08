@@ -264,5 +264,5 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 - [x] Corrections d'articles publiées par l'éditeur (`PostCorrection`) si non faites avant.
 - [ ] Revue communautaire par jury d'editeurs independent/professionnel tiré au sort (§5.8).
 - [x] Dons aux éditeurs.
-- [ ] Moteur de recherche dédié (Meilisearch) si PostgreSQL ne suffit plus.
-- [ ] Messagerie temps réel (WebSocket) à la place du polling.
+- [ ] Moteur de recherche dédié (Meilisearch) si PostgreSQL ne suffit plus. (Reporté : pas nécessaire aujourd'hui, voir `DECISIONS.md`.)
+- [x] Messagerie temps réel (WebSocket) à la place du polling.

@@ -19,6 +19,8 @@ const WITH_EDITOR_STATUS = { editorProfile: { select: { status: true } } } as co
 /** What the access token carries: only the account id, the rest is read fresh from the database. */
 export type AccessTokenPayload = { sub: string };
 
+const MILLISECONDS_PER_SECOND = 1000;
+
 /** A new session; the controller decides how the refresh token reaches the client. */
 export type IssuedSession = { user: AuthUser; accessToken: string; refreshToken: string };
 
@@ -97,6 +99,22 @@ export class AuthService {
       where: { tokenHash: hashRefreshToken(refreshToken), revokedAt: null },
       data: { revokedAt: new Date() },
     });
+  }
+
+  /**
+   * The account of a valid access token and when the token expires, or null (invalid, expired,
+   * unknown or deleted account). Used by the real-time conversations (docs/DECISIONS.md).
+   */
+  async authenticateAccessToken(
+    token: string,
+  ): Promise<{ user: AuthUser; expiresAt: Date } | null> {
+    try {
+      const payload = await this.jwt.verifyAsync<AccessTokenPayload & { exp: number }>(token);
+      const user = await this.findAuthUser(payload.sub);
+      return user ? { user, expiresAt: new Date(payload.exp * MILLISECONDS_PER_SECOND) } : null;
+    } catch {
+      return null;
+    }
   }
 
   /** The account behind a valid access token, read fresh (role and suspension may have changed). */

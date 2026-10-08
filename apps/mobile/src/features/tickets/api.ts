@@ -1,16 +1,17 @@
 import {
   auditLogModerationSchema,
+  type MessagePublic,
   messagePublicSchema,
   paginated,
   ticketModerationSchema,
   ticketPublicSchema,
 } from "@fama/shared";
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { z } from "zod";
 import { apiClient } from "../../lib/apiClient";
+import { followConversation } from "../../lib/realtime";
 
-// SPEC §8: polling at the MVP (no WebSocket).
-const CONVERSATION_REFRESH_MS = 10_000;
 const FIRST_PAGE: string | null = null;
 
 export const ticketKeys = {
@@ -42,12 +43,33 @@ export function useOpenSupportTicket() {
   });
 }
 
-/** SPEC §8: the conversation, refreshed by polling. */
+/**
+ * SPEC §8: the conversation. docs/DECISIONS.md (real-time conversations): new messages arrive
+ * through the WebSocket as soon as they are sent; after a cut, the conversation is read again.
+ */
 export function useMessages(ticketId: string) {
+  const queryClient = useQueryClient();
+  const queryKey = ticketKeys.messages(ticketId);
+
+  // Following the conversation on the WebSocket: an external system, kept in sync with the screen.
+  useEffect(
+    () =>
+      followConversation(ticketId, {
+        onMessage: (message) =>
+          queryClient.setQueryData<MessagePublic[]>(ticketKeys.messages(ticketId), (current) =>
+            current && !current.some((known) => known.id === message.id)
+              ? [...current, message]
+              : current,
+          ),
+        onReconnect: () =>
+          void queryClient.invalidateQueries({ queryKey: ticketKeys.messages(ticketId) }),
+      }),
+    [ticketId, queryClient],
+  );
+
   return useQuery({
-    queryKey: ticketKeys.messages(ticketId),
+    queryKey,
     queryFn: () => apiClient.get(`/tickets/${ticketId}/messages`, z.array(messagePublicSchema)),
-    refetchInterval: CONVERSATION_REFRESH_MS,
   });
 }
 

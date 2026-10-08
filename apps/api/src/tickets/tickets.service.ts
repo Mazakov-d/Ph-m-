@@ -11,6 +11,7 @@ import { ApiException } from "../common/errors/api.exception.js";
 import type { Ticket } from "../generated/prisma/client.js";
 import { PrismaService } from "../prisma/prisma.service.js";
 import { NotificationsService } from "../notifications/notifications.service.js";
+import { ConversationEvents } from "./conversation-events.js";
 import {
   TICKET_INCLUDE,
   toMessagePublic,
@@ -26,7 +27,23 @@ export class TicketsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly notifications: NotificationsService,
+    private readonly events: ConversationEvents,
   ) {}
+
+  /**
+   * docs/DECISIONS.md (real-time conversations): who may follow a conversation live — the same
+   * people as for reading it over HTTP; an ADMIN outside it is audited (SPEC §2.4).
+   */
+  async canFollow(user: AuthUser, ticketId: string): Promise<boolean> {
+    const ticket = await this.prisma.ticket.findUnique({ where: { id: ticketId } });
+    if (!ticket) return false;
+    if (this.isParticipant(user, ticket)) return true;
+    if (!can(user, "chat.readAll")) return false;
+    await this.prisma.auditLog.create({
+      data: { actorId: user.id, action: "ticket.read", targetType: "Ticket", targetId: ticketId },
+    });
+    return true;
+  }
 
   /** « Parler à l'équipe »: a SUPPORT ticket with its first message. */
   async openSupport(user: AuthUser, content: string): Promise<TicketPublic> {
@@ -201,7 +218,9 @@ export class TicketsService {
         user.id,
       ),
     );
-    return toMessagePublic(message);
+    const published = toMessagePublic(message);
+    this.events.publish(published);
+    return published;
   }
 
   private async findTicket(ticketId: string): Promise<Ticket> {

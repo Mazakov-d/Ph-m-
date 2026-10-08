@@ -587,3 +587,27 @@ qui la remplace.
 - **À vérifier avant la publication sur les stores** : Apple et Google acceptent un lien vers des
   dons à une personne ou un organisme sans leurs achats intégrés tant que l'app ne prend rien
   dessus ; relire leurs règles au moment de la soumission (paiements externes, lien sortant).
+
+## 2026-10-08 — Conversations en temps réel (WebSocket)
+
+- **Question** : la ROADMAP remplace le rafraîchissement périodique des conversations (toutes les
+  10 s) par du temps réel.
+- **Décision** :
+  - WebSocket simple (`/ws`, paquets `@nestjs/websockets`, `@nestjs/platform-ws`, `ws` côté API ;
+    le WebSocket natif de React Native et du navigateur côté app, sans bibliothèque) ;
+  - le jeton d'accès passe dans l'adresse (`/ws?token=…`, un navigateur ne peut pas envoyer
+    d'en-tête) ; l'API ferme la connexion (code 4401) quand il expire et l'app se reconnecte
+    avec un jeton neuf ;
+  - l'app suit les conversations affichées ; les mêmes personnes qu'en HTTP peuvent les suivre,
+    et un ADMIN extérieur à la conversation est journalisé (SPEC §2.4) ; après une coupure, la
+    conversation est relue ;
+  - **une seule instance de l'API** pour l'instant (événements en mémoire), comme la limitation de
+    débit : avec plusieurs instances, il faudra Redis. En production, le proxy doit laisser passer
+    les WebSocket sur `/ws`.
+
+## 2026-10-08 — Moteur de recherche dédié : reporté
+
+- **Question** : la ROADMAP prévoit Meilisearch « si PostgreSQL ne suffit plus ».
+- **Décision** : pas maintenant. Rien n'indique que la recherche PostgreSQL (plein texte français
+  - `pg_trgm`) soit insuffisante ; l'ajouter anticiperait un besoin (CLAUDE.md). À reprendre si les
+    temps de réponse ou la pertinence se dégradent avec le volume.

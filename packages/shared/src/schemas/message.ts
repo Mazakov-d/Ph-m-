@@ -18,3 +18,28 @@ export const messagePublicSchema = z.object({
   createdAt: isoDateTimeSchema,
 });
 export type MessagePublic = z.infer<typeof messagePublicSchema>;
+
+/**
+ * docs/DECISIONS.md (real-time conversations): what the app sends on the WebSocket — follow or
+ * stop following a conversation. The access token goes in the address (`/ws?token=…`).
+ */
+export const realtimeClientMessageSchema = z.discriminatedUnion("event", [
+  z.object({ event: z.literal("subscribe"), data: z.object({ ticketId: idSchema }) }),
+  z.object({ event: z.literal("unsubscribe"), data: z.object({ ticketId: idSchema }) }),
+]);
+export type RealtimeClientMessage = z.infer<typeof realtimeClientMessageSchema>;
+
+/** What the API sends: a new message of a followed conversation, or a refusal. */
+export const realtimeServerMessageSchema = z.discriminatedUnion("event", [
+  z.object({ event: z.literal("message"), data: messagePublicSchema }),
+  z.object({ event: z.literal("subscribed"), data: z.object({ ticketId: idSchema }) }),
+  z.object({
+    event: z.literal("error"),
+    data: z.object({ code: z.enum(["NOT_FOUND", "VALIDATION_ERROR"]) }),
+  }),
+]);
+export type RealtimeServerMessage = z.infer<typeof realtimeServerMessageSchema>;
+
+// docs/DECISIONS.md: the API closes the connection with this code when the access token is
+// missing, invalid or expired; the app refreshes its session and reconnects.
+export const REALTIME_UNAUTHENTICATED_CLOSE_CODE = 4401;
