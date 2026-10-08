@@ -50,9 +50,9 @@ describe("database constraints", () => {
           theme: "POLITICS",
         },
       });
-      await tx.vote.create({ data: { postId: post.id, userId: user.id, value: "AGREE" } });
+      await tx.vote.create({ data: { postId: post.id, userId: user.id } });
       await expect(
-        tx.vote.create({ data: { postId: post.id, userId: user.id, value: "DISAGREE" } }),
+        tx.vote.create({ data: { postId: post.id, userId: user.id, revealedResults: true } }),
       ).rejects.toMatchObject({ code: "P2002" });
     });
   });

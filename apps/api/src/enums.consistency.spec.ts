@@ -15,7 +15,6 @@ const ENUM_PAIRS: Record<string, [Record<string, string>, readonly string[]]> = 
   ReportStatus: [prisma.ReportStatus, shared.ReportStatus.options],
   CommentStatus: [prisma.CommentStatus, shared.CommentStatus.options],
   DeletedBy: [prisma.DeletedBy, shared.DeletedBy.options],
-  VoteValue: [prisma.VoteValue, shared.VoteValue.options],
   SanctionType: [prisma.SanctionType, shared.SanctionType.options],
   TicketKind: [prisma.TicketKind, shared.TicketKind.options],
   TicketStatus: [prisma.TicketStatus, shared.TicketStatus.options],

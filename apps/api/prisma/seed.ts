@@ -5,7 +5,13 @@
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { hash } from "argon2";
-import type { PostKind, Theme, UserRole, Zone } from "@fama/shared";
+import {
+  DEFAULT_VOTE_OPTIONS,
+  type PostKind,
+  type Theme,
+  type UserRole,
+  type Zone,
+} from "@fama/shared";
 import { PrismaClient } from "../src/generated/prisma/client.js";
 import { StorageService } from "../src/storage/storage.service.js";
 
@@ -38,7 +44,7 @@ async function wipeDatabase(): Promise<void> {
   // Child tables first; CASCADE takes care of the remaining foreign keys.
   await prisma.$executeRawUnsafe(`
     TRUNCATE "AuditLog", "Message", "Ticket", "Block", "Appeal", "Sanction", "EditorReply",
-      "Review", "CommentReport", "PostReport", "Vote", "Comment", "PostCorrection", "PostView",
+      "Review", "CommentReport", "PostReport", "Vote", "VoteOption", "Comment", "PostCorrection", "PostView",
       "PostSource", "PostImage", "Post", "EditorIdentity", "EditorProfile", "User" CASCADE
   `);
 }
@@ -323,6 +329,15 @@ const POST_TOPICS: SeedPost[] = [
   },
 ];
 
+// SPEC §7: one opinion shows custom answer choices; the others keep the defaults.
+const CUSTOM_VOTE_OPTIONS: Record<string, string[]> = {
+  "Faut-il rouvrir le débat sur le nucléaire ?": [
+    "Oui, sans attendre",
+    "Non",
+    "Seulement pour la recherche",
+  ],
+};
+
 function postKindOf(title: string): PostKind {
   // Seed convention: questions are opinions.
   return title.endsWith("?") ? "OPINION" : "ARTICLE";
@@ -361,6 +376,14 @@ async function createPosts(authorIds: string[], readerIds: string[]) {
           ],
         },
         views: { create: viewers.map((userId) => ({ userId })) },
+        voteOptions:
+          kind === "OPINION"
+            ? {
+                create: (CUSTOM_VOTE_OPTIONS[topic.title] ?? DEFAULT_VOTE_OPTIONS).map(
+                  (label, position) => ({ label, position }),
+                ),
+              }
+            : undefined,
       },
     });
     posts.push(post);
@@ -415,13 +438,17 @@ async function createComments(postIds: string[], readerIds: string[]) {
 
 async function createVotes(opinionIds: string[], readerIds: string[]) {
   for (const postId of opinionIds) {
+    const options = await prisma.voteOption.findMany({
+      where: { postId },
+      orderBy: { position: "asc" },
+    });
     for (const [index, userId] of readerIds.entries()) {
-      // The last reader only clicked « Voir sans voter ».
-      if (index === readerIds.length - 1) {
-        await prisma.vote.create({ data: { postId, userId, value: null, revealedResults: true } });
+      // The last reader only clicked « Voir sans voter »; the others spread over the choices.
+      const option = options[index % options.length];
+      if (index === readerIds.length - 1 || !option) {
+        await prisma.vote.create({ data: { postId, userId, revealedResults: true } });
       } else {
-        const value = index % 2 === 0 ? "AGREE" : "DISAGREE";
-        await prisma.vote.create({ data: { postId, userId, value } });
+        await prisma.vote.create({ data: { postId, userId, optionId: option.id } });
       }
     }
   }

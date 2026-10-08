@@ -9,6 +9,8 @@ export const POST_INCLUDE = {
   images: { orderBy: { position: "asc" } },
   sources: { orderBy: { position: "asc" } },
   corrections: { orderBy: { createdAt: "asc" } },
+  // SPEC §7: answer choices of an opinion, in the editor's order.
+  voteOptions: { orderBy: { position: "asc" } },
   // SPEC §5.6: the bar shows the verdict of the latest review.
   reviews: { orderBy: { createdAt: "desc" }, take: 1, select: { verdict: true } },
   _count: {

@@ -188,3 +188,19 @@ qui la remplace.
   - un commentaire supprimé garde ses réponses ; il s'affiche « Commentaire supprimé ».
 - **Pourquoi** : liste, message et suppression par un compte suspendu choisis par le porteur du projet ;
   le reste découle de la SPEC.
+
+## 2026-10-08 — Choix de réponse des opinions personnalisables
+
+- **Question** : la SPEC (§7) fixait le vote à `AGREE` / `DISAGREE`.
+- **Décision** (SPEC §3, §7 et §11 mises à jour) :
+  - l'éditeur définit 2 à 4 choix de réponse en publiant une opinion ; « D'accord » et « Pas d'accord »
+    par défaut, renommables ; 1 à 50 caractères chacun, distincts sans tenir compte de la casse ;
+    figés après publication ;
+  - résultats : pourcentage et barre par choix, nombre total de votes, choix de l'utilisateur mis en
+    évidence ; les pourcentages affichés totalisent toujours 100 % ;
+  - l'énumération `VoteValue` disparaît : un vote désigne un choix (`VoteOption`) ; les votes existants
+    sont repris sur les choix par défaut ;
+  - « Voir sans voter » est réservé aux comptes connectés (l'API le mémorise par compte) ; un visiteur
+    anonyme est invité à se connecter pour voter ou voir les résultats ; un compte suspendu peut voir
+    les résultats sans voter (c'est de la lecture) mais ne peut pas voter.
+- **Pourquoi** : demande du porteur du projet ; libellés et affichage choisis par lui.

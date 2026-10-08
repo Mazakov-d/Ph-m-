@@ -43,7 +43,15 @@ export function toPostPublic(post: PostRecord): PostPublic {
       content: correction.content,
       createdAt: correction.createdAt.toISOString(),
     })),
-    // SPEC §7: totals stay hidden until the reader votes (votes arrive in phase 6).
-    votes: post.kind === "OPINION" ? { myVote: null, revealedResults: false, results: null } : null,
+    // SPEC §7: the choices are always sent; totals stay hidden until the reader votes.
+    votes:
+      post.kind === "OPINION"
+        ? {
+            options: post.voteOptions.map((option) => ({ id: option.id, label: option.label })),
+            myOptionId: null,
+            revealedResults: false,
+            results: null,
+          }
+        : null,
   };
 }

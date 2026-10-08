@@ -99,11 +99,6 @@ enum DeletedBy {
   MODERATOR
 }
 
-enum VoteValue {
-  AGREE
-  DISAGREE
-}
-
 enum SanctionType {
   WARNING
   SUSPENSION_24H
@@ -237,6 +232,7 @@ model Post {
   corrections PostCorrection[]
   comments    Comment[]
   votes       Vote[]
+  voteOptions VoteOption[]
   reports     PostReport[]
   reviews     Review[]
   sanctions   Sanction[]
@@ -327,19 +323,33 @@ model Comment {
 
 // ─── Votes (SPEC §7) ──────────────────────────────────────────────────────────
 
-/// One row per account and opinion. `value` is null when the reader only clicked
+/// SPEC §7: an answer choice of an opinion, set by its editor when publishing (2 to 4).
+model VoteOption {
+  id       String @id @default(uuid()) @db.Uuid
+  postId   String @db.Uuid
+  label    String
+  position Int
+
+  post  Post   @relation(fields: [postId], references: [id])
+  votes Vote[]
+
+  @@unique([postId, position])
+}
+
+/// One row per account and opinion. `optionId` is null when the reader only clicked
 /// « Voir sans voter » (revealedResults) without voting.
 model Vote {
-  id              String     @id @default(uuid()) @db.Uuid
-  postId          String     @db.Uuid
-  userId          String     @db.Uuid
-  value           VoteValue?
-  revealedResults Boolean    @default(false)
-  createdAt       DateTime   @default(now()) @db.Timestamptz(3)
-  updatedAt       DateTime   @updatedAt @db.Timestamptz(3)
+  id              String   @id @default(uuid()) @db.Uuid
+  postId          String   @db.Uuid
+  userId          String   @db.Uuid
+  optionId        String?  @db.Uuid
+  revealedResults Boolean  @default(false)
+  createdAt       DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt       DateTime @updatedAt @db.Timestamptz(3)
 
-  post Post @relation(fields: [postId], references: [id])
-  user User @relation(fields: [userId], references: [id])
+  post   Post        @relation(fields: [postId], references: [id])
+  user   User        @relation(fields: [userId], references: [id])
+  option VoteOption? @relation(fields: [optionId], references: [id])
 
   @@unique([postId, userId])
 }

@@ -7,3 +7,4 @@ export * from "./vote-results.js";
 export * from "./reliability-label.js";
 export * from "./time.js";
 export * from "./feed.js";
+export * from "./vote-percentages.js";

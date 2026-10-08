@@ -6,10 +6,12 @@ import {
   POST_TITLE_MAX_LENGTH,
   REGION_MAX_LENGTH,
   SOURCES_MAX_COUNT,
+  VOTE_OPTIONS_MAX,
+  VOTE_OPTIONS_MIN,
 } from "../rules.js";
 import { cursorQuerySchema, idSchema, isoDateTimeSchema, sourceSchema } from "./common.js";
 import { editorSummaryPublicSchema } from "./editor.js";
-import { voteSummaryPublicSchema } from "./vote.js";
+import { voteOptionLabelSchema, voteSummaryPublicSchema } from "./vote.js";
 
 // SPEC §3: title, summary, body, sources (≥ 1), zone, theme and kind are mandatory.
 // Images are uploaded separately. For an OPINION the API forces commentsEnabled to true.
@@ -24,12 +26,31 @@ export const createPostInputSchema = z
     region: z.string().trim().min(1).max(REGION_MAX_LENGTH).nullable(),
     theme: Theme,
     commentsEnabled: z.boolean().default(true),
+    // SPEC §7: answer choices of an opinion; the defaults apply when omitted.
+    voteOptions: z
+      .array(voteOptionLabelSchema)
+      .min(VOTE_OPTIONS_MIN)
+      .max(VOTE_OPTIONS_MAX)
+      .optional(),
   })
   // SPEC §3: a region is given if and only if the zone is LOCAL.
   .refine((post) => (post.zone === "LOCAL") === (post.region !== null), {
     path: ["region"],
     message: "Region is required for a LOCAL zone and forbidden otherwise",
-  });
+  })
+  // SPEC §7: only an opinion has answer choices.
+  .refine((post) => post.kind === "OPINION" || post.voteOptions === undefined, {
+    path: ["voteOptions"],
+    message: "Only an opinion has answer choices",
+  })
+  // SPEC §7: two choices of the same opinion cannot be the same (case ignored).
+  .refine(
+    (post) => {
+      const labels = (post.voteOptions ?? []).map((label) => label.toLocaleLowerCase("fr"));
+      return new Set(labels).size === labels.length;
+    },
+    { path: ["voteOptions"], message: "Answer choices must be distinct" },
+  );
 export type CreatePostInput = z.infer<typeof createPostInputSchema>;
 
 // SPEC §3: the editor chooses commentsEnabled on their articles.

@@ -4,6 +4,7 @@ import {
   type AuthUser,
   type CreatePostInput,
   type CursorQuery,
+  DEFAULT_VOTE_OPTIONS,
   feedWindowStart,
   type Paginated,
   type PostPublic,
@@ -53,6 +54,16 @@ export class PostsService {
           commentsEnabled: input.kind === "OPINION" || input.commentsEnabled,
           sources: { create: input.sources.map((value, position) => ({ value, position })) },
           images: { create: imageKeys.map((storageKey, position) => ({ storageKey, position })) },
+          // SPEC §7: an opinion gets its editor's answer choices, or the default ones.
+          voteOptions:
+            input.kind === "OPINION"
+              ? {
+                  create: (input.voteOptions ?? DEFAULT_VOTE_OPTIONS).map((label, position) => ({
+                    label,
+                    position,
+                  })),
+                }
+              : undefined,
         },
         include: POST_INCLUDE,
       });

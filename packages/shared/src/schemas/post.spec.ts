@@ -58,6 +58,43 @@ describe("createPostInputSchema (SPEC §3)", () => {
   });
 });
 
+describe("createPostInputSchema — answer choices (SPEC §7)", () => {
+  const opinion = { ...validPost, kind: "OPINION" };
+
+  it("lets an opinion omit its choices (the defaults apply)", () => {
+    expect(createPostInputSchema.safeParse(opinion).success).toBe(true);
+  });
+
+  it("accepts 2 to 4 choices of 50 characters at most", () => {
+    const choices = ["Oui", "Non", "Sans avis", "a".repeat(50)];
+    expect(createPostInputSchema.safeParse({ ...opinion, voteOptions: choices }).success).toBe(
+      true,
+    );
+    expect(createPostInputSchema.safeParse({ ...opinion, voteOptions: ["Seul"] }).success).toBe(
+      false,
+    );
+    expect(
+      createPostInputSchema.safeParse({ ...opinion, voteOptions: [...choices, "Cinq"] }).success,
+    ).toBe(false);
+    expect(
+      createPostInputSchema.safeParse({ ...opinion, voteOptions: ["Oui", "a".repeat(51)] }).success,
+    ).toBe(false);
+  });
+
+  it("refuses two identical choices, whatever their case", () => {
+    expect(
+      createPostInputSchema.safeParse({ ...opinion, voteOptions: ["D'accord", "d'ACCORD"] })
+        .success,
+    ).toBe(false);
+  });
+
+  it("refuses choices on an article", () => {
+    expect(
+      createPostInputSchema.safeParse({ ...validPost, voteOptions: ["Oui", "Non"] }).success,
+    ).toBe(false);
+  });
+});
+
 describe("postQuerySchema (SPEC §4.3)", () => {
   it("has no filter by default", () => {
     expect(postQuerySchema.parse({})).toEqual({ limit: 20, today: false });

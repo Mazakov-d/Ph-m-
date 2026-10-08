@@ -65,4 +65,59 @@ describe("PublishForm (SPEC §3)", () => {
       commentsEnabled: true,
     });
   });
+
+  it("lets the editor of an opinion set up to 4 answer choices (SPEC §7)", async () => {
+    fetchMock.mockResolvedValueOnce(jsonResponse(201, ARTICLE_DETAIL));
+    const onPublished = jest.fn();
+    await renderWithProviders(<PublishForm onPublished={onPublished} />);
+    await fireEvent.press(screen.getByText("Opinion"));
+
+    expect(screen.getByLabelText("Choix 1").props.value).toBe("D'accord");
+    expect(screen.getByLabelText("Choix 2").props.value).toBe("Pas d'accord");
+    await fireEvent.changeText(screen.getByLabelText("Choix 1"), "Oui");
+    await fireEvent.press(screen.getByText("Ajouter un choix"));
+    await fireEvent.changeText(screen.getByLabelText("Choix 3"), "Sans avis");
+    await fireEvent.press(screen.getByText("Ajouter un choix"));
+    expect(screen.getByLabelText("Choix 4")).toBeTruthy();
+    expect(screen.queryByText("Ajouter un choix")).toBeNull();
+    await fireEvent.press(screen.getByLabelText("Retirer le choix 4"));
+
+    await fireEvent.changeText(screen.getByLabelText("Titre"), "Faut-il ?");
+    await fireEvent.changeText(screen.getByLabelText("Résumé"), "Une opinion.");
+    await fireEvent.changeText(screen.getByLabelText("Texte"), "Texte.");
+    await fireEvent.changeText(screen.getByLabelText("Source 1"), "Référence");
+    await fireEvent.press(screen.getByText("France"));
+    await fireEvent.press(screen.getByText("Politique"));
+    await fireEvent.press(screen.getByText("Publier"));
+
+    await waitFor(() => expect(onPublished).toHaveBeenCalled());
+    const body = fetchMock.mock.calls[0]?.[1]?.body;
+    const post = body instanceof FormData ? body.get("post") : null;
+    expect(typeof post === "string" ? JSON.parse(post) : null).toMatchObject({
+      kind: "OPINION",
+      voteOptions: ["Oui", "Pas d'accord", "Sans avis"],
+    });
+  });
+
+  it("sends no choices for an article, even after switching back from opinion", async () => {
+    fetchMock.mockResolvedValueOnce(jsonResponse(201, ARTICLE_DETAIL));
+    const onPublished = jest.fn();
+    await renderWithProviders(<PublishForm onPublished={onPublished} />);
+    await fireEvent.press(screen.getByText("Opinion"));
+    await fireEvent.press(screen.getByText("Article"));
+    expect(screen.queryByLabelText("Choix 1")).toBeNull();
+
+    await fireEvent.changeText(screen.getByLabelText("Titre"), "Titre");
+    await fireEvent.changeText(screen.getByLabelText("Résumé"), "Résumé.");
+    await fireEvent.changeText(screen.getByLabelText("Texte"), "Texte.");
+    await fireEvent.changeText(screen.getByLabelText("Source 1"), "Référence");
+    await fireEvent.press(screen.getByText("France"));
+    await fireEvent.press(screen.getByText("Politique"));
+    await fireEvent.press(screen.getByText("Publier"));
+
+    await waitFor(() => expect(onPublished).toHaveBeenCalled());
+    const body = fetchMock.mock.calls[0]?.[1]?.body;
+    const post = body instanceof FormData ? body.get("post") : null;
+    expect(typeof post === "string" ? JSON.parse(post) : {}).not.toHaveProperty("voteOptions");
+  });
 });

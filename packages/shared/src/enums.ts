@@ -75,10 +75,6 @@ export type CommentStatus = z.infer<typeof CommentStatus>;
 export const DeletedBy = z.enum(["AUTHOR", "MODERATOR"]);
 export type DeletedBy = z.infer<typeof DeletedBy>;
 
-// SPEC §7
-export const VoteValue = z.enum(["AGREE", "DISAGREE"]);
-export type VoteValue = z.infer<typeof VoteValue>;
-
 // SPEC §6.3, in escalation order.
 export const SanctionType = z.enum(["WARNING", "SUSPENSION_24H", "SUSPENSION_7D", "PERMANENT_BAN"]);
 export type SanctionType = z.infer<typeof SanctionType>;

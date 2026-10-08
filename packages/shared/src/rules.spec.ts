@@ -53,6 +53,10 @@ describe("rules (SPEC §11)", () => {
       POST_IMAGE_MAX_BYTES: 5 * 1024 * 1024,
       POST_IMAGE_TYPES: ["image/jpeg", "image/png", "image/webp"],
       POST_IMAGE_MAX_WIDTH: 2000,
+      VOTE_OPTIONS_MIN: 2,
+      VOTE_OPTIONS_MAX: 4,
+      VOTE_OPTION_LABEL_MAX_LENGTH: 50,
+      DEFAULT_VOTE_OPTIONS: ["D'accord", "Pas d'accord"],
       RETENTION_DAYS: 365,
     });
   });

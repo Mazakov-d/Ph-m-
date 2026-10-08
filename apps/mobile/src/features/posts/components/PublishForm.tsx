@@ -1,8 +1,8 @@
-import { createPostInputSchema, PostKind } from "@fama/shared";
+import { createPostInputSchema, DEFAULT_VOTE_OPTIONS, PostKind } from "@fama/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { Controller, type FieldError, useForm, useWatch } from "react-hook-form";
-import { StyleSheet, Switch, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { Button } from "../../../components/ui/Button";
 import { ChoiceChips } from "../../../components/ui/ChoiceChips";
 import { TextField } from "../../../components/ui/TextField";
@@ -11,6 +11,7 @@ import { useCreatePost } from "../api";
 import { imagesProblem } from "../images";
 import { postErrorMessage } from "../texts";
 import { ImagesField } from "./ImagesField";
+import { InteractionFields } from "./InteractionFields";
 import { PlacementFields } from "./PlacementFields";
 import { SourcesField } from "./SourcesField";
 
@@ -23,7 +24,6 @@ const TEXT_FIELDS = [
 
 const texts = {
   kind: "Type de publication",
-  comments: "Autoriser les commentaires",
   sourcesError: "Ajoutez au moins une source (lien ou référence).",
   submit: "Publier",
 };
@@ -37,7 +37,7 @@ export function PublishForm({ onPublished }: { onPublished: (postId: string) => 
   const createPost = useCreatePost();
   const [images, setImages] = useState<LocalFile[]>([]);
   const [imagesError, setImagesError] = useState<string | undefined>();
-  const { control, handleSubmit, formState } = useForm({
+  const { control, handleSubmit, formState, setValue } = useForm({
     resolver: zodResolver(createPostInputSchema),
     defaultValues: {
       kind: "ARTICLE",
@@ -72,7 +72,11 @@ export function PublishForm({ onPublished }: { onPublished: (postId: string) => 
             options={PostKind.options}
             labels={KIND_LABELS}
             value={field.value}
-            onChange={field.onChange}
+            onChange={(value) => {
+              field.onChange(value);
+              // SPEC §7: an opinion starts with the default choices; an article has none.
+              setValue("voteOptions", value === "OPINION" ? [...DEFAULT_VOTE_OPTIONS] : undefined);
+            }}
           />
         )}
       />
@@ -105,23 +109,7 @@ export function PublishForm({ onPublished }: { onPublished: (postId: string) => 
         )}
       />
       <PlacementFields control={control} errors={errors} zone={zone} />
-      {/* SPEC §3: comments are always enabled on an opinion. */}
-      {kind === "ARTICLE" ? (
-        <Controller
-          control={control}
-          name="commentsEnabled"
-          render={({ field }) => (
-            <View style={styles.switchRow}>
-              <Text style={styles.switchLabel}>{texts.comments}</Text>
-              <Switch
-                accessibilityLabel={texts.comments}
-                value={field.value ?? true}
-                onValueChange={field.onChange}
-              />
-            </View>
-          )}
-        />
-      ) : null}
+      <InteractionFields control={control} errors={errors} kind={kind} />
       <ImagesField images={images} onChange={setImages} error={imagesError} />
       {createPost.error ? (
         <Text accessibilityRole="alert" style={styles.error}>
@@ -135,7 +123,5 @@ export function PublishForm({ onPublished }: { onPublished: (postId: string) => 
 
 const styles = StyleSheet.create({
   form: { gap: 16 },
-  switchRow: { flexDirection: "row", alignItems: "center", gap: 12 },
-  switchLabel: { flex: 1, fontWeight: "600" },
   error: { color: "#c1121f" },
 });

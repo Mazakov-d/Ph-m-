@@ -66,8 +66,12 @@ describe("createTicketInputSchema (SPEC §8)", () => {
 describe("voteSummaryPublicSchema (SPEC §7)", () => {
   it("allows hidden results", () => {
     expect(
-      voteSummaryPublicSchema.safeParse({ myVote: null, revealedResults: false, results: null })
-        .success,
+      voteSummaryPublicSchema.safeParse({
+        options: [{ id: "0b1e4a3c-6f1d-4d6b-9a52-3c2f0e7d8a11", label: "D'accord" }],
+        myOptionId: null,
+        revealedResults: false,
+        results: null,
+      }).success,
     ).toBe(true);
   });
 });

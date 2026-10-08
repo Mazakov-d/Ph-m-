@@ -91,6 +91,48 @@ describe("Publishing a post (e2e, SPEC §3)", () => {
     });
   });
 
+  describe("answer choices of an opinion (SPEC §7)", () => {
+    const OPINION = { ...ARTICLE, kind: "OPINION" };
+
+    it("gives the default choices when the editor sets none", async () => {
+      const response = await sendPost(app, editorToken, OPINION).expect(201);
+      const post = postPublicSchema.parse(response.body);
+      expect(post.votes?.options.map((option) => option.label)).toEqual([
+        "D'accord",
+        "Pas d'accord",
+      ]);
+    });
+
+    it("keeps the editor's choices, in order", async () => {
+      const choices = ["Oui, sans attendre", "Non", "Seulement pour la recherche", "Sans avis"];
+      const response = await sendPost(app, editorToken, {
+        ...OPINION,
+        voteOptions: choices,
+      }).expect(201);
+      const post = postPublicSchema.parse(response.body);
+      expect(post.votes?.options.map((option) => option.label)).toEqual(choices);
+      expect(post.votes).toMatchObject({ myOptionId: null, results: null });
+    });
+
+    it("refuses a single choice, five choices, or twice the same choice", async () => {
+      await sendPost(app, editorToken, { ...OPINION, voteOptions: ["Oui"] }).expect(400);
+      await sendPost(app, editorToken, {
+        ...OPINION,
+        voteOptions: ["A", "B", "C", "D", "E"],
+      }).expect(400);
+      await sendPost(app, editorToken, { ...OPINION, voteOptions: ["Oui", "OUI"] }).expect(400);
+    });
+
+    it("refuses choices on an article", async () => {
+      const response = await sendPost(app, editorToken, {
+        ...ARTICLE,
+        voteOptions: ["Oui", "Non"],
+      });
+      expect(response.status).toBe(400);
+      expect(response.body).toMatchObject({ issues: [{ path: ["voteOptions"] }] });
+    });
+  });
+
   describe("who may publish", () => {
     it("refuses a reader", async () => {
       const reader = await signUp(app, prisma, "lecteur");

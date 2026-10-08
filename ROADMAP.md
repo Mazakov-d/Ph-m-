@@ -133,10 +133,11 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 
 ## Phase 6 — Votes sur les opinions
 
+- [x] Choix de réponse personnalisables (§7) : 2 à 4 choix définis par l'éditeur à la publication d'une opinion (« D'accord » / « Pas d'accord » par défaut) — modèle, API de publication, formulaire « Publier », seed.
 - [ ] API : voter / changer son vote (§7), un vote par compte et opinion.
 - [ ] API : action « Voir sans voter » (`revealedResults`).
 - [ ] API : les totaux ne sont renvoyés que si `canSeeVoteResults` est vrai.
-- [ ] App : barre de vote D'accord / Pas d'accord ; résultats affichés seulement après vote ou « Voir sans voter ».
+- [ ] App : barre de vote avec les choix de l'opinion ; résultats (pourcentages, total) affichés seulement après vote ou « Voir sans voter ».
 
 **Critères de validation**
 

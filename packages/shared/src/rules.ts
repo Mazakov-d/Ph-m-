@@ -75,5 +75,11 @@ export const POST_IMAGE_MAX_BYTES = 5 * 1024 * 1024;
 export const POST_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"] as const;
 export const POST_IMAGE_MAX_WIDTH = 2000;
 
+// SPEC §7: answer choices of an opinion, set by its editor when publishing.
+export const VOTE_OPTIONS_MIN = 2;
+export const VOTE_OPTIONS_MAX = 4;
+export const VOTE_OPTION_LABEL_MAX_LENGTH = 50;
+export const DEFAULT_VOTE_OPTIONS = ["D'accord", "Pas d'accord"] as const;
+
 // SPEC §6 and §10: purge delay for logically deleted content. To be confirmed with a lawyer.
 export const RETENTION_DAYS = 365;

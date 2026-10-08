@@ -105,7 +105,7 @@ Deux types (`PostKind`) : `ARTICLE` et `OPINION` (case « Opinion » au moment d
 
 |                  | `ARTICLE`                               | `OPINION`                                                               |
 | ---------------- | --------------------------------------- | ----------------------------------------------------------------------- |
-| Indicateur       | Barre de fiabilité                      | Vote `AGREE` / `DISAGREE`                                               |
+| Indicateur       | Barre de fiabilité                      | Vote parmi 2 à 4 choix définis par l'éditeur (§7)                       |
 | Résultat du vote | —                                       | Caché tant que l'utilisateur n'a pas voté ou cliqué « Voir sans voter » |
 | Commentaires     | `commentsEnabled` au choix de l'éditeur | **Toujours** activés (non désactivable)                                 |
 | Signalement      | Oui                                     | Oui                                                                     |
@@ -256,7 +256,12 @@ Comptées sur les commentaires `REMOVED` des 6 derniers mois (`SANCTION_RESET_MO
 
 ## 7. Votes sur les opinions
 
-- Un vote par compte et par opinion (`AGREE` | `DISAGREE`), modifiable.
+- L'éditeur définit les **choix de réponse** en publiant l'opinion : **2 à 4 choix**, « D'accord » et
+  « Pas d'accord » par défaut, renommables (`VOTE_OPTIONS_MIN`, `VOTE_OPTIONS_MAX`,
+  `VOTE_OPTION_LABEL_MAX_LENGTH`, libellés distincts sans tenir compte de la casse). Ils ne sont plus
+  modifiables ensuite (un post publié n'est pas modifiable, §3).
+- Un vote par compte et par opinion (un des choix), modifiable.
+- Résultats : pourcentage et barre par choix, nombre total de votes, choix de l'utilisateur mis en évidence.
 - L'API **ne renvoie pas** les totaux à un utilisateur qui n'a ni voté ni demandé « Voir sans voter » (`revealedResults`).
 - Les votes n'entrent dans aucun calcul de tri.
 
@@ -295,22 +300,24 @@ Comptées sur les commentaires `REMOVED` des 6 derniers mois (`SANCTION_RESET_MO
 
 ## 11. Constantes (source : `packages/shared/src/rules.ts`)
 
-| Constante                     | Valeur    | Remarque                        |
-| ----------------------------- | --------- | ------------------------------- |
-| `FEED_WINDOW_HOURS`           | 48        |                                 |
-| `TODAY_WINDOW_HOURS`          | 24        | Fenêtre glissante               |
-| `COMMENT_REPORT_THRESHOLD`    | 3         | Somme des poids                 |
-| `POST_REPORT_MIN_SCORE`       | 5         |                                 |
-| `POST_REPORT_AUDIENCE_RATIO`  | 0.01      | 1 % des lecteurs                |
-| `NEW_ACCOUNT_DAYS`            | 30        |                                 |
-| `REPORT_WEIGHT_NEW_ACCOUNT`   | 0.2       |                                 |
-| `REPORT_HISTORY_MIN_SAMPLE`   | 5         |                                 |
-| `REPORT_WEIGHT_MIN` / `MAX`   | 0.1 / 2.0 |                                 |
-| `EDITOR_REPLY_HOURS`          | 48        |                                 |
-| `TICKET_ASSIGN_TIMEOUT_HOURS` | 24        |                                 |
-| `SANCTION_RESET_MONTHS`       | 6         |                                 |
-| `FEED_SPACING`                | 4         | Post-MVP                        |
-| `COMMENT_MAX_LENGTH`          | 2000      | Provisoire                      |
-| `POST_TITLE_MAX_LENGTH`       | 200       | Provisoire                      |
-| `POST_SUMMARY_MAX_LENGTH`     | 500       | Provisoire                      |
-| `RETENTION_DAYS`              | 365       | **À confirmer avec un juriste** |
+| Constante                      | Valeur    | Remarque                        |
+| ------------------------------ | --------- | ------------------------------- |
+| `FEED_WINDOW_HOURS`            | 48        |                                 |
+| `TODAY_WINDOW_HOURS`           | 24        | Fenêtre glissante               |
+| `COMMENT_REPORT_THRESHOLD`     | 3         | Somme des poids                 |
+| `POST_REPORT_MIN_SCORE`        | 5         |                                 |
+| `POST_REPORT_AUDIENCE_RATIO`   | 0.01      | 1 % des lecteurs                |
+| `NEW_ACCOUNT_DAYS`             | 30        |                                 |
+| `REPORT_WEIGHT_NEW_ACCOUNT`    | 0.2       |                                 |
+| `REPORT_HISTORY_MIN_SAMPLE`    | 5         |                                 |
+| `REPORT_WEIGHT_MIN` / `MAX`    | 0.1 / 2.0 |                                 |
+| `EDITOR_REPLY_HOURS`           | 48        |                                 |
+| `TICKET_ASSIGN_TIMEOUT_HOURS`  | 24        |                                 |
+| `SANCTION_RESET_MONTHS`        | 6         |                                 |
+| `FEED_SPACING`                 | 4         | Post-MVP                        |
+| `COMMENT_MAX_LENGTH`           | 2000      | Provisoire                      |
+| `POST_TITLE_MAX_LENGTH`        | 200       | Provisoire                      |
+| `POST_SUMMARY_MAX_LENGTH`      | 500       | Provisoire                      |
+| `VOTE_OPTIONS_MIN` / `MAX`     | 2 / 4     | Choix de réponse d'une opinion  |
+| `VOTE_OPTION_LABEL_MAX_LENGTH` | 50        |                                 |
+| `RETENTION_DAYS`               | 365       | **À confirmer avec un juriste** |
