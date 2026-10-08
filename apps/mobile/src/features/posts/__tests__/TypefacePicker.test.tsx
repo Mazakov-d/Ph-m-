@@ -1,5 +1,6 @@
 import { Typeface } from "@fama/shared";
 import { fireEvent, render, screen } from "@testing-library/react-native";
+import { TYPEFACES } from "../../../components/ui/typefaces";
 import { TypefacePicker } from "../components/TypefacePicker";
 
 describe("TypefacePicker (interface brief)", () => {
@@ -11,9 +12,10 @@ describe("TypefacePicker (interface brief)", () => {
     expect(screen.getByText("Sans empattement")).toBeTruthy();
     expect(screen.getByText("Avec empattement")).toBeTruthy();
     expect(screen.getByText("Chasse fixe")).toBeTruthy();
-    expect(screen.getAllByRole("button", { selected: false }).length).toBeGreaterThanOrEqual(
-      Typeface.options.length - 1,
-    );
+    // Every typeface of the list is offered, by its name (the chosen one is also on the button).
+    for (const typeface of Typeface.options) {
+      expect(screen.getAllByText(TYPEFACES[typeface].label).length).toBeGreaterThan(0);
+    }
 
     await fireEvent.press(screen.getByText("EB Garamond"));
     expect(onChange).toHaveBeenCalledWith("EB_GARAMOND");
