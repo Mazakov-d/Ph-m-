@@ -45,7 +45,8 @@ export function FormattedTextField(props: Props) {
         height={props.height}
         onChange={onChange}
         onBlur={onBlur}
-        dom={{ scrollEnabled: false, style: { height: props.height } }}
+        // The web view takes the whole width of the form (it has no size of its own).
+        dom={{ scrollEnabled: false, style: { height: props.height, width: "100%" } }}
       />
       {props.error ? (
         <Text accessibilityRole="alert" style={styles.error}>

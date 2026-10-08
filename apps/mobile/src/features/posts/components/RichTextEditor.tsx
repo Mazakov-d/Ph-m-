@@ -7,6 +7,8 @@ import { colors } from "../../../components/ui/theme";
 import { formattedTextToHtml, richNodesToSegments } from "../richText";
 
 const TOOLBAR_HEIGHT = 40;
+// The page of the web view has browser margins by default: the editor fills it instead.
+const PAGE_CSS = "html, body { margin: 0; padding: 0; width: 100%; }";
 
 const texts = { bold: "Mettre en gras", italic: "Mettre en italique" };
 
@@ -71,7 +73,7 @@ export default function RichTextEditor(props: Props) {
 
   return (
     <div style={{ ...styles.box, height }}>
-      <style>{fontFaceCss}</style>
+      <style>{`${PAGE_CSS}\n${fontFaceCss}`}</style>
       <div style={styles.toolbar}>
         {(["bold", "italic"] as const).map((command) => (
           <button
@@ -129,7 +131,13 @@ export default function RichTextEditor(props: Props) {
 }
 
 const styles: Record<string, CSSProperties> = {
-  box: { display: "flex", flexDirection: "column", boxSizing: "border-box", margin: 0 },
+  box: {
+    display: "flex",
+    flexDirection: "column",
+    boxSizing: "border-box",
+    width: "100%",
+    margin: 0,
+  },
   toolbar: { display: "flex", gap: 8, height: TOOLBAR_HEIGHT, alignItems: "center" },
   button: {
     width: 36,

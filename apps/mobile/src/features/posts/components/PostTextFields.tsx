@@ -1,7 +1,6 @@
-import { type CreatePostInput, DEFAULT_TYPEFACES, PostLayout } from "@fama/shared";
+import { type CreatePostInput, DEFAULT_TYPEFACES } from "@fama/shared";
 import { type Control, Controller, type FieldError, type FieldErrors } from "react-hook-form";
 import { View } from "react-native";
-import { ChoiceChips } from "../../../components/ui/ChoiceChips";
 import { spacing, textSizes } from "../../../components/ui/theme";
 import { FormattedTextField } from "./FormattedTextField";
 import type { PostFormValues } from "./PlacementFields";
@@ -11,13 +10,6 @@ const TEXT_FIELDS = [
   { name: "summary", label: "Résumé", multiline: true, size: textSizes.summary, height: 170 },
   { name: "body", label: "Texte", multiline: true, size: textSizes.body, height: 340 },
 ] as const;
-
-const LAYOUT_LABELS: Record<PostLayout, string> = {
-  TEXT_FIRST: "Titre, résumé, texte, photos",
-  MEDIA_FIRST: "Titre, résumé, photos, texte",
-};
-
-const texts = { layout: "Ordre de la publication" };
 
 function fieldMessage(error: FieldError | undefined): string | undefined {
   if (!error) return undefined;
@@ -29,10 +21,7 @@ type Props = {
   errors: FieldErrors<PostFormValues>;
 };
 
-/**
- * Interface brief: the three text blocks with their typeface, bold and italic, and the order of
- * the blocks (the feed shows the first three).
- */
+/** Interface brief: the three text blocks with their typeface, bold and italic. */
 export function PostTextFields({ control, errors }: Props) {
   return (
     <View style={{ gap: spacing.lg }}>
@@ -63,19 +52,6 @@ export function PostTextFields({ control, errors }: Props) {
           )}
         />
       ))}
-      <Controller
-        control={control}
-        name="layout"
-        render={({ field }) => (
-          <ChoiceChips
-            label={texts.layout}
-            options={PostLayout.options}
-            labels={LAYOUT_LABELS}
-            value={field.value}
-            onChange={field.onChange}
-          />
-        )}
-      />
     </View>
   );
 }

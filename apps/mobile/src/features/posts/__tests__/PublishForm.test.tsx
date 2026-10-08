@@ -124,4 +124,22 @@ describe("PublishForm (SPEC §3)", () => {
     const post = body instanceof FormData ? body.get("post") : null;
     expect(typeof post === "string" ? JSON.parse(post) : {}).not.toHaveProperty("voteOptions");
   });
+
+  it("lists the fields in the owner's order, the order of the blocks last (interface brief)", async () => {
+    await renderWithProviders(<PublishForm onPublished={jest.fn()} />);
+    const labels = [
+      "Titre",
+      "Résumé",
+      "Texte",
+      "Images (facultatif)",
+      "Sources (lien ou référence, au moins une)",
+      "Zone",
+      "Thème",
+      "Ordre de la publication",
+    ];
+    const tree = JSON.stringify(screen.toJSON());
+    const positions = labels.map((label) => tree.indexOf(`"${label}"`));
+    expect(positions.every((position) => position >= 0)).toBe(true);
+    expect([...positions].sort((a, b) => a - b)).toEqual(positions);
+  });
 });

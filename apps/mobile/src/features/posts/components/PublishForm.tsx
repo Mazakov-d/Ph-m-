@@ -18,6 +18,7 @@ import { imagesProblem } from "../images";
 import { postErrorMessage } from "../texts";
 import { ImagesField } from "./ImagesField";
 import { InteractionFields } from "./InteractionFields";
+import { LayoutField } from "./LayoutField";
 import { PlacementFields } from "./PlacementFields";
 import { PostTextFields } from "./PostTextFields";
 import { SourcesField } from "./SourcesField";
@@ -87,7 +88,9 @@ export function PublishForm({ onPublished }: { onPublished: (postId: string) => 
           />
         )}
       />
+      {/* Interface brief: title, summary, article, pictures, sources, zone, theme… order last. */}
       <PostTextFields control={control} errors={errors} />
+      <ImagesField images={images} onChange={setImages} error={imagesError} />
       <Controller
         control={control}
         name="sources"
@@ -102,7 +105,7 @@ export function PublishForm({ onPublished }: { onPublished: (postId: string) => 
       />
       <PlacementFields control={control} errors={errors} zone={zone} />
       <InteractionFields control={control} errors={errors} kind={kind} />
-      <ImagesField images={images} onChange={setImages} error={imagesError} />
+      <LayoutField control={control} />
       {createPost.error ? (
         <Text accessibilityRole="alert" style={styles.error}>
           {postErrorMessage(createPost.error)}
