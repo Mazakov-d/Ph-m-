@@ -4,6 +4,7 @@ import { useEditorProfile } from "../../features/editors/api";
 import { EditorBadge } from "../../features/editors/components/EditorBadge";
 import { editorErrorMessage } from "../../features/editors/texts";
 import { EditorPostsList } from "../../features/posts/components/EditorPostsList";
+import { ContactEditor } from "../../features/tickets/components/ContactEditor";
 import { ApiRequestError } from "../../lib/apiClient";
 
 const texts = {
@@ -45,6 +46,7 @@ export default function EditorProfileScreen() {
             body={`${editor.legalIdentity.firstName} ${editor.legalIdentity.lastName}`}
           />
         ) : null}
+        <ContactEditor editorId={editor.id} />
         <EditorPostsList editorId={editor.id} />
       </>
     );

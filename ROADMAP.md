@@ -192,8 +192,8 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 - [x] API : messages en ajout seul (aucune route de modification ou de suppression).
 - [x] API : job planifié de retour à `NEW` après 24 h sans message du modérateur (§8).
 - [x] API : un `ADMIN` lit tous les tickets ; chaque lecture → `AuditLog`.
-- [ ] App : écran « Parler à l'équipe », écran de conversation (rafraîchi par `refetchInterval`).
-- [ ] App : écrans modérateur « Tickets » (non attribués / les miens) ; écran admin « Toutes les conversations » et « Journal d'audit ».
+- [x] App : écran « Parler à l'équipe », écran de conversation (rafraîchi par `refetchInterval`).
+- [x] App : écrans modérateur « Tickets » (non attribués / les miens) ; écran admin « Toutes les conversations » et « Journal d'audit ».
 
 **Critères de validation**
 

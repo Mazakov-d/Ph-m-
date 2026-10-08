@@ -18,6 +18,10 @@ const texts = {
   moderation: "Commentaires et opinions signalés",
   sanctions: "Mes sanctions",
   blocks: "Comptes bloqués",
+  support: "Parler à l'équipe",
+  tickets: "Tickets",
+  conversations: "Toutes les conversations",
+  audit: "Journal d'audit",
 };
 
 export default function AccountScreen() {

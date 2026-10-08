@@ -5,6 +5,7 @@ import { jsonResponse, renderWithProviders } from "../test/renderWithProviders";
 
 jest.mock("expo-router", () => ({
   useLocalSearchParams: () => ({ id: "0b1e4a3c-6f1d-4d6b-9a52-3c2f0e7d8a11" }),
+  useRouter: () => ({ push: jest.fn() }),
   Stack: { Screen: () => null },
 }));
 

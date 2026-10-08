@@ -1,0 +1,109 @@
+import {
+  auditLogModerationSchema,
+  messagePublicSchema,
+  paginated,
+  ticketModerationSchema,
+  ticketPublicSchema,
+} from "@fama/shared";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { z } from "zod";
+import { apiClient } from "../../lib/apiClient";
+
+// SPEC §8: polling at the MVP (no WebSocket).
+const CONVERSATION_REFRESH_MS = 10_000;
+const FIRST_PAGE: string | null = null;
+
+export const ticketKeys = {
+  all: ["tickets"] as const,
+  mine: () => [...ticketKeys.all, "mine"] as const,
+  moderator: (scope: "unassigned" | "mine") => [...ticketKeys.all, "moderator", scope] as const,
+  admin: () => [...ticketKeys.all, "admin"] as const,
+  messages: (ticketId: string) => [...ticketKeys.all, "messages", ticketId] as const,
+  audit: () => ["audit-logs"] as const,
+};
+
+function useRefreshTickets() {
+  const queryClient = useQueryClient();
+  return () => queryClient.invalidateQueries({ queryKey: ticketKeys.all });
+}
+
+export function useMyTickets() {
+  return useQuery({
+    queryKey: ticketKeys.mine(),
+    queryFn: () => apiClient.get("/tickets/mine", z.array(ticketPublicSchema)),
+  });
+}
+
+export function useOpenSupportTicket() {
+  const refresh = useRefreshTickets();
+  return useMutation({
+    mutationFn: (content: string) => apiClient.post("/tickets", { content }, ticketPublicSchema),
+    onSuccess: refresh,
+  });
+}
+
+/** SPEC §8: the conversation, refreshed by polling. */
+export function useMessages(ticketId: string) {
+  return useQuery({
+    queryKey: ticketKeys.messages(ticketId),
+    queryFn: () => apiClient.get(`/tickets/${ticketId}/messages`, z.array(messagePublicSchema)),
+    refetchInterval: CONVERSATION_REFRESH_MS,
+  });
+}
+
+export function useSendMessage(ticketId: string) {
+  const refresh = useRefreshTickets();
+  return useMutation({
+    mutationFn: (content: string) =>
+      apiClient.post(`/tickets/${ticketId}/messages`, { content }, messagePublicSchema),
+    onSuccess: refresh,
+  });
+}
+
+export function useModeratorTickets(scope: "unassigned" | "mine") {
+  return useQuery({
+    queryKey: ticketKeys.moderator(scope),
+    queryFn: () =>
+      apiClient.get(`/moderation/tickets?scope=${scope}`, z.array(ticketModerationSchema)),
+  });
+}
+
+export function useTicketAction(action: "assign" | "close") {
+  const refresh = useRefreshTickets();
+  return useMutation({
+    mutationFn: (ticketId: string) =>
+      apiClient.post(`/moderation/tickets/${ticketId}/${action}`, {}, ticketModerationSchema),
+    onSuccess: refresh,
+  });
+}
+
+/** SPEC §8: a moderator opens a chat with an editor. */
+export function useOpenEditorChat() {
+  const refresh = useRefreshTickets();
+  return useMutation({
+    mutationFn: ({ editorId, content }: { editorId: string; content: string }) =>
+      apiClient.post("/moderation/editor-chats", { editorId, content }, ticketModerationSchema),
+    onSuccess: refresh,
+  });
+}
+
+export function useAllTickets() {
+  return useQuery({
+    queryKey: ticketKeys.admin(),
+    queryFn: () => apiClient.get("/admin/tickets", z.array(ticketModerationSchema)),
+  });
+}
+
+/** SPEC §2.4: the audit log, newest first, page by page. */
+export function useAuditLogs() {
+  return useInfiniteQuery({
+    queryKey: ticketKeys.audit(),
+    initialPageParam: FIRST_PAGE,
+    queryFn: ({ pageParam }) =>
+      apiClient.get(
+        `/admin/audit-logs${pageParam ? `?cursor=${pageParam}` : ""}`,
+        paginated(auditLogModerationSchema),
+      ),
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
+  });
+}
