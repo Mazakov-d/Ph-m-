@@ -7,6 +7,10 @@ import { type FeedFilters, useFeed } from "../features/posts/api";
 import { FeedFiltersBar } from "../features/posts/components/FeedFiltersBar";
 import { PostCard } from "../features/posts/components/PostCard";
 import { postErrorMessage } from "../features/posts/texts";
+import { isSearchActive } from "../features/search/api";
+import { SearchBar } from "../features/search/components/SearchBar";
+import { SearchResults } from "../features/search/components/SearchResults";
+import { useDebouncedValue } from "../hooks/useDebouncedValue";
 import { useAuth } from "../providers/AuthProvider";
 
 const texts = {
@@ -16,14 +20,19 @@ const texts = {
 };
 
 const NO_FILTERS: FeedFilters = { today: false, zone: null, theme: null };
+const SEARCH_DELAY_MS = 300;
 
-/** SPEC §4: the feed, readable without an account (SPEC §2). */
+/** SPEC §4: the feed (readable without an account, SPEC §2), with the search bar (SPEC §4.4). */
 export default function FeedScreen() {
   const router = useRouter();
   const { user } = useAuth();
   const [filters, setFilters] = useState<FeedFilters>(NO_FILTERS);
+  const [query, setQuery] = useState("");
+  const debouncedQuery = useDebouncedValue(query, SEARCH_DELAY_MS);
+  const searching = isSearchActive(debouncedQuery);
   const feed = useFeed(filters);
   const posts = feed.data?.pages.flatMap((page) => page.items) ?? [];
+  const slogan = <Text style={styles.slogan}>{APP_SLOGAN}</Text>;
 
   return (
     <View style={styles.screen}>
@@ -40,29 +49,37 @@ export default function FeedScreen() {
           ),
         }}
       />
-      <FlatList
-        data={posts}
-        keyExtractor={(post) => post.id}
-        renderItem={({ item }) => <PostCard post={item} />}
-        contentContainerStyle={styles.list}
-        ListHeaderComponent={
-          <View style={styles.listHeader}>
-            <Text style={styles.slogan}>{APP_SLOGAN}</Text>
-            <FeedFiltersBar filters={filters} onChange={setFilters} />
-            {feed.isPending ? <ActivityIndicator /> : null}
-            {feed.error ? <Text style={styles.error}>{postErrorMessage(feed.error)}</Text> : null}
-          </View>
-        }
-        ListEmptyComponent={feed.isSuccess ? <Text style={styles.empty}>{texts.empty}</Text> : null}
-        onEndReached={() => {
-          if (feed.hasNextPage && !feed.isFetchingNextPage) {
-            void feed.fetchNextPage();
+      {/* Above the lists, so that typing never loses the keyboard when the results appear. */}
+      <SearchBar value={query} onChange={setQuery} />
+      <FeedFiltersBar filters={filters} onChange={setFilters} />
+      {searching ? (
+        <SearchResults q={debouncedQuery} filters={filters} header={slogan} />
+      ) : (
+        <FlatList
+          data={posts}
+          keyExtractor={(post) => post.id}
+          renderItem={({ item }) => <PostCard post={item} />}
+          contentContainerStyle={styles.list}
+          ListHeaderComponent={
+            <View>
+              {slogan}
+              {feed.isPending ? <ActivityIndicator /> : null}
+              {feed.error ? <Text style={styles.error}>{postErrorMessage(feed.error)}</Text> : null}
+            </View>
           }
-        }}
-        ListFooterComponent={feed.isFetchingNextPage ? <ActivityIndicator /> : null}
-        onRefresh={() => void feed.refetch()}
-        refreshing={feed.isRefetching && !feed.isFetchingNextPage}
-      />
+          ListEmptyComponent={
+            feed.isSuccess ? <Text style={styles.empty}>{texts.empty}</Text> : null
+          }
+          onEndReached={() => {
+            if (feed.hasNextPage && !feed.isFetchingNextPage) {
+              void feed.fetchNextPage();
+            }
+          }}
+          ListFooterComponent={feed.isFetchingNextPage ? <ActivityIndicator /> : null}
+          onRefresh={() => void feed.refetch()}
+          refreshing={feed.isRefetching && !feed.isFetchingNextPage}
+        />
+      )}
     </View>
   );
 }
@@ -71,8 +88,7 @@ const styles = StyleSheet.create({
   screen: { flex: 1 },
   headerButtons: { flexDirection: "row" },
   list: { gap: 12, paddingBottom: 24, width: "100%", maxWidth: 720, alignSelf: "center" },
-  listHeader: { gap: 4 },
-  slogan: { fontStyle: "italic", textAlign: "center", paddingTop: 12 },
+  slogan: { fontStyle: "italic", textAlign: "center", paddingVertical: 8 },
   empty: { textAlign: "center", padding: 24 },
   error: { color: "#c1121f", textAlign: "center" },
 });
