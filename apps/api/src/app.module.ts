@@ -7,6 +7,7 @@ import { ApiExceptionFilter } from "./common/filters/api-exception.filter.js";
 import { HealthModule } from "./health/health.module.js";
 import { PostsModule } from "./posts/posts.module.js";
 import { PrismaModule } from "./prisma/prisma.module.js";
+import { ReportsModule } from "./reports/reports.module.js";
 import { StorageModule } from "./storage/storage.module.js";
 import { VotesModule } from "./votes/votes.module.js";
 
@@ -20,6 +21,7 @@ import { VotesModule } from "./votes/votes.module.js";
     PostsModule,
     CommentsModule,
     VotesModule,
+    ReportsModule,
   ],
   providers: [{ provide: APP_FILTER, useClass: ApiExceptionFilter }],
 })

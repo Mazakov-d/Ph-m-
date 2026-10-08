@@ -23,6 +23,14 @@ export const createCommentReportInputSchema = z
   .refine(requireDetailsForOther, DETAILS_REQUIRED);
 export type CreateCommentReportInput = z.infer<typeof createCommentReportInputSchema>;
 
+/** What the reporter gets back (the weight stays internal). */
+export const reportPublicSchema = z.object({
+  id: idSchema,
+  reason: z.union([PostReportReason, CommentReportReason]),
+  createdAt: isoDateTimeSchema,
+});
+export type ReportPublic = z.infer<typeof reportPublicSchema>;
+
 /** A report as seen by moderators. The weight is internal (CLAUDE.md §4.3). */
 export const reportModerationSchema = z.object({
   id: idSchema,

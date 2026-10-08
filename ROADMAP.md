@@ -148,8 +148,8 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 
 ## Phase 7 — Signalements et fiabilité des articles
 
-- [ ] API : signaler un post (§5.1) avec poids calculé et stocké (§5.2) ; un signalement par compte et par post ; pas d'auto-signalement.
-- [ ] API : ouverture automatique de la revue au seuil (§5.3).
+- [x] API : signaler un post (§5.1) avec poids calculé et stocké (§5.2) ; un signalement par compte et par post ; pas d'auto-signalement.
+- [x] API : ouverture automatique de la revue au seuil (§5.3).
 - [ ] API : file de revue triée par priorité (§5.4), réservée aux modérateurs, sans les dossiers en conflit d'intérêts.
 - [ ] API : verdict + note publique + sources (§5.5) ; mise à jour des signalements (`UPHELD` / `DISMISSED`) et des compteurs des signaleurs.
 - [ ] API : réponse ou correction de l'éditeur sous 48 h ; appel unique traité par un autre modérateur.

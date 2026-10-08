@@ -38,7 +38,13 @@ export class PostsService {
       post.kind === "OPINION"
         ? await this.votesService.summaryFor(post.id, post.voteOptions, viewerId)
         : null;
-    return toPostPublic(post, votes);
+    const ownReport = viewerId
+      ? await this.prisma.postReport.findUnique({
+          where: { postId_reporterId: { postId: post.id, reporterId: viewerId } },
+          select: { id: true },
+        })
+      : null;
+    return toPostPublic(post, votes, ownReport !== null);
   }
 
   /** SPEC §3: publishes a post with its sources and images (it cannot be modified afterwards). */

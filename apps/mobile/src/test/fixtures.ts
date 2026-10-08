@@ -57,4 +57,5 @@ export const ARTICLE_DETAIL: PostPublic = {
   commentsEnabled: true,
   corrections: [],
   votes: null,
+  viewerHasReported: false,
 };

@@ -224,3 +224,26 @@ qui la remplace.
 - **Décision** : une phase dédiée (« 10 bis ») avant la phase 11 ; une direction visuelle pourra être
   fixée plus tôt pour que les nouveaux écrans la suivent.
 - **Pourquoi** : chaque phase ajoute des écrans ; une refonte immédiate serait à refaire.
+
+## 2026-10-08 — Signalements et revue des articles
+
+- **Question** : la SPEC (§5) ne dit pas ce que devient un signalement d'opinion, si un article examiné
+  peut encore être signalé, ni le délai et les effets d'un appel.
+- **Décision** :
+  - une opinion peut être signalée, mais n'a **jamais de verdict de fiabilité** : ses signalements sont
+    enregistrés (avec leur poids) et n'ouvrent pas de revue ; **leur traitement (retrait, sanction de
+    l'éditeur) reste à définir** avec la modération des posts, qu'aucune phase ne couvre encore ;
+  - un article `REVIEWED` ne peut plus être signalé (`ALREADY_REVIEWED`) ; seul l'éditeur peut contester,
+    par l'appel ;
+  - dans les **48 h** après le verdict (`EDITOR_REPLY_HOURS`, `EDITOR_APPEAL_HOURS`), l'éditeur peut
+    publier **une** réponse (affichée sous la note), des corrections (publiques sous l'article) et faire
+    **un seul** appel ;
+  - l'appel est traité par un autre modérateur (ni l'auteur du premier verdict, ni un modérateur en
+    conflit d'intérêts), qui rend un nouveau verdict, définitif ; si ce verdict fait passer l'article de
+    « exact » à « non exact » (ou l'inverse), les signalements passent de `DISMISSED` à `UPHELD` (ou
+    l'inverse) et les compteurs des signaleurs sont corrigés ;
+  - le verdict d'une revue est rendu par update conditionnel (`UNDER_REVIEW` → `REVIEWED`) : deux
+    modérateurs ne peuvent pas juger le même article ; chaque verdict écrit un `AuditLog` ;
+  - la file de revue n'est pas paginée au MVP (elle reste courte) ; elle est triée par priorité.
+- **Pourquoi** : choix du porteur du projet pour les opinions, l'après-revue et le délai d'appel ; le
+  reste découle de la SPEC.

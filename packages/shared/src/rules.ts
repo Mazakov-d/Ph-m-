@@ -29,6 +29,8 @@ export const REPORT_WEIGHT_MAX = 2.0;
 
 // SPEC §5.5: delay for the editor to reply to or correct a reviewed post.
 export const EDITOR_REPLY_HOURS = 48;
+// docs/DECISIONS.md: delay for the editor to appeal a verdict.
+export const EDITOR_APPEAL_HOURS = 48;
 // SPEC §8: an assigned ticket without a moderator message goes back to NEW after this delay.
 export const TICKET_ASSIGN_TIMEOUT_HOURS = 24;
 // SPEC §6.3: sanctions count REMOVED comments over this many months.

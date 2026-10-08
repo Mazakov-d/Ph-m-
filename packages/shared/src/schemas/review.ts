@@ -45,8 +45,21 @@ export const reviewPublicSchema = z.object({
   sources: z.array(z.string()),
   createdAt: isoDateTimeSchema,
   editorReply: z.object({ content: z.string(), createdAt: isoDateTimeSchema }).nullable(),
+  // docs/DECISIONS.md: one appeal per post; NONE → PENDING → DECIDED (no further appeal).
+  appealState: z.enum(["NONE", "PENDING", "DECIDED"]),
 });
 export type ReviewPublic = z.infer<typeof reviewPublicSchema>;
+
+/** docs/DECISIONS.md: an appeal waiting for another moderator. */
+export const appealModerationSchema = z.object({
+  id: idSchema,
+  post: postSummaryPublicSchema,
+  review: reviewPublicSchema,
+  reviewModeratorId: idSchema,
+  reason: z.string(),
+  createdAt: isoDateTimeSchema,
+});
+export type AppealModeration = z.infer<typeof appealModerationSchema>;
 
 /** SPEC §5.4: an entry of the review queue, sorted by priority. */
 export const reviewQueueItemModerationSchema = z.object({

@@ -119,5 +119,7 @@ export const postPublicSchema = postSummaryPublicSchema.extend({
   commentsEnabled: z.boolean(),
   corrections: z.array(postCorrectionPublicSchema),
   votes: voteSummaryPublicSchema.nullable(),
+  // SPEC §5.1: one report per account and post (the « Signaler » button shows it).
+  viewerHasReported: z.boolean(),
 });
 export type PostPublic = z.infer<typeof postPublicSchema>;

@@ -31,8 +31,15 @@ export function toPostSummaryPublic(post: Omit<PostRecord, "body">): PostSummary
   };
 }
 
-/** `votes` is the reader's view of the vote, for an opinion (null for an article). */
-export function toPostPublic(post: PostRecord, votes: VoteSummaryPublic | null): PostPublic {
+/**
+ * `votes` is the reader's view of the vote, for an opinion (null for an article);
+ * `viewerHasReported` tells whether the reader already reported the post.
+ */
+export function toPostPublic(
+  post: PostRecord,
+  votes: VoteSummaryPublic | null,
+  viewerHasReported: boolean,
+): PostPublic {
   return {
     ...toPostSummaryPublic(post),
     body: post.body,
@@ -45,5 +52,6 @@ export function toPostPublic(post: PostRecord, votes: VoteSummaryPublic | null):
       createdAt: correction.createdAt.toISOString(),
     })),
     votes,
+    viewerHasReported,
   };
 }
