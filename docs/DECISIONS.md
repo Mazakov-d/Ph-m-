@@ -204,3 +204,23 @@ qui la remplace.
     anonyme est invité à se connecter pour voter ou voir les résultats ; un compte suspendu peut voir
     les résultats sans voter (c'est de la lecture) mais ne peut pas voter.
 - **Pourquoi** : demande du porteur du projet ; libellés et affichage choisis par lui.
+
+## 2026-10-08 — Sources facultatives pour les opinions ; vote et « Voir sans voter » définitifs
+
+- **Question** : retours du porteur du projet après la phase 6.
+- **Décision** (SPEC §1, §3 et §7 mises à jour ; remplace « modifiable » de l'entrée précédente) :
+  - une opinion peut être publiée sans source ; un article en garde au moins une ;
+  - le vote est **définitif** : le lecteur sélectionne un choix puis le confirme ; il ne peut plus le
+    changer ;
+  - « Voir sans voter » est **définitif** aussi et demande une confirmation : après avoir vu les
+    résultats, le lecteur ne peut plus voter ; voter ou voir les résultats : une seule action par
+    opinion ;
+  - les votes déjà enregistrés deviennent définitifs.
+- **Pourquoi** : un vote ne doit jamais être influencé par celui des autres, ni par un clic involontaire.
+
+## 2026-10-08 — Phase de refonte de l'interface
+
+- **Question** : quand reprendre l'interface (UI) que le porteur du projet souhaite refaire ?
+- **Décision** : une phase dédiée (« 10 bis ») avant la phase 11 ; une direction visuelle pourra être
+  fixée plus tôt pour que les nouveaux écrans la suivent.
+- **Pourquoi** : chaque phase ajoute des écrans ; une refonte immédiate serait à refaire.

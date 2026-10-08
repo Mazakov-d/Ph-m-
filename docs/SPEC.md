@@ -15,7 +15,7 @@ L'information des médias, sans le bruit des réseaux sociaux. Seules des inform
 
 Principes non négociables :
 
-- Que de l'information : pas de publication sans titre, résumé, texte et source.
+- Que de l'information : pas de publication sans titre, résumé, texte et source (la source est facultative pour une opinion).
 - Transparence : on montre qui publie et ce que la revue a constaté, on ne décrète pas la vérité.
 - Aucun média ne juge un autre média.
 - Le vote sur les opinions n'influence jamais l'affichage.
@@ -97,7 +97,7 @@ N'importe quel compte peut demander le statut éditeur.
 
 Deux types (`PostKind`) : `ARTICLE` et `OPINION` (case « Opinion » au moment de publier).
 
-**Champs obligatoires** : `title`, `summary`, `body`, `sources` (≥ 1 URL ou référence texte),
+**Champs obligatoires** : `title`, `summary`, `body`, `sources` (≥ 1 URL ou référence texte ; facultatives pour une `OPINION`),
 `zone`, `theme`, `kind`. Images optionnelles (toujours rattachées au post). Vidéos : hors MVP.
 
 - `Zone` : `FRANCE`, `EUROPE`, `INTERNATIONAL`, `LOCAL` (+ champ `region` texte si `LOCAL`).
@@ -260,7 +260,10 @@ Comptées sur les commentaires `REMOVED` des 6 derniers mois (`SANCTION_RESET_MO
   « Pas d'accord » par défaut, renommables (`VOTE_OPTIONS_MIN`, `VOTE_OPTIONS_MAX`,
   `VOTE_OPTION_LABEL_MAX_LENGTH`, libellés distincts sans tenir compte de la casse). Ils ne sont plus
   modifiables ensuite (un post publié n'est pas modifiable, §3).
-- Un vote par compte et par opinion (un des choix), modifiable.
+- Un vote par compte et par opinion (un des choix), **définitif** : le lecteur sélectionne un choix puis
+  confirme (« Valider mon vote ») ; il ne peut plus le changer.
+- « Voir sans voter » est aussi **définitif** et demande une confirmation : un lecteur qui a vu les
+  résultats ne peut plus voter. Principe : un vote ne doit jamais être influencé par celui des autres.
 - Résultats : pourcentage et barre par choix, nombre total de votes, choix de l'utilisateur mis en évidence.
 - L'API **ne renvoie pas** les totaux à un utilisateur qui n'a ni voté ni demandé « Voir sans voter » (`revealedResults`).
 - Les votes n'entrent dans aucun calcul de tri.

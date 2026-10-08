@@ -214,6 +214,17 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 
 ---
 
+## Phase 10 bis — Refonte de l'interface
+
+- [ ] Direction visuelle validée par le porteur du projet (couleurs, typographie, composants de base) et appliquée à tous les écrans.
+- [ ] Revue d'ergonomie des parcours (lecture, publication, vote, commentaires, modération) sur mobile et web.
+
+**Critères de validation**
+
+- Le porteur du projet valide l'interface sur mobile et sur le web.
+
+---
+
 ## Phase 11 — Conformité et préparation à la publication
 
 - [ ] Suppression de compte depuis l'app (anonymisation, §10).
