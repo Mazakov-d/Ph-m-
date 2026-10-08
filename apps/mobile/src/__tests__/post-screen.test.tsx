@@ -30,6 +30,13 @@ describe("PostScreen", () => {
     expect(await screen.findByText("Texte complet de l'article.")).toBeTruthy();
     expect(screen.getByText("Local · Bretagne · Politique")).toBeTruthy();
     expect(screen.getByText("Non examiné")).toBeTruthy();
+    // Interface brief: under the article, the sources on the left, then the status on the right.
+    const tree = JSON.stringify(screen.toJSON());
+    const body = tree.indexOf("Texte complet de l'article.");
+    const sources = tree.indexOf("Sources (2)");
+    const status = tree.indexOf("Non examiné");
+    expect(body).toBeLessThan(sources);
+    expect(sources).toBeLessThan(status);
     // Interface brief: the sources stay folded until « Sources » is pressed.
     expect(screen.queryByText("https://www.insee.fr")).toBeNull();
     await fireEvent.press(screen.getByText("Sources (2)"));

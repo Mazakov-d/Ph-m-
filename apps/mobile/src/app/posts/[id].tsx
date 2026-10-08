@@ -55,15 +55,18 @@ export default function PostScreen() {
           <Text style={styles.muted}>{formatPublishedAt(data.createdAt)}</Text>
         </View>
         <Text style={styles.muted}>{`${place} · ${THEME_LABELS[data.theme]}`}</Text>
-        <ReliabilityBar post={data} />
-        <ReviewPanel post={data} />
         <PostBlocks post={data} />
         {/* SPEC §7: an opinion is voted on; votes never change any order. */}
         <VoteBar post={data} />
-        <View style={styles.actions}>
+        {/* Interface brief: the sources at the bottom left, the status at the bottom right. */}
+        <View style={styles.bottomRow}>
           <SourcesButton sources={data.sources} />
-          <ReportButton post={data} />
+          <View style={styles.status}>
+            <ReliabilityBar post={data} />
+          </View>
         </View>
+        <ReviewPanel post={data} />
+        <ReportButton post={data} />
         {data.corrections.length > 0 ? (
           <Text style={styles.heading}>{texts.corrections}</Text>
         ) : null}
@@ -120,7 +123,9 @@ const styles = StyleSheet.create({
   meta: { flexDirection: "row", alignItems: "center", flexWrap: "wrap", gap: spacing.sm },
   editor: { fontWeight: "600", color: colors.brand },
   muted: { color: colors.muted, fontSize: textSizes.meta },
-  actions: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: spacing.md },
+  bottomRow: { flexDirection: "row", alignItems: "center", gap: spacing.md },
+  // Pushed to the right even when there is no « Sources » button (an opinion without sources).
+  status: { marginLeft: "auto" },
   heading: { fontSize: textSizes.cardTitle, fontWeight: "bold", marginTop: spacing.sm },
   correction: {
     gap: 4,
