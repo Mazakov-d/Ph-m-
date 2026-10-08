@@ -86,8 +86,9 @@ export class CommentsService {
 
   /**
    * SPEC §6: the comments of a post by ascending date, as threads (docs/DECISIONS.md): a page of
-   * root comments, each with all its replies. Hidden or deleted comments keep their place with
-   * a null content, so their replies stay readable.
+   * root comments, each with all its replies. Hidden comments keep their place with a null
+   * content, so their replies stay readable. docs/DECISIONS.md: a comment deleted by its author
+   * is no longer sent (it stays in the database), and neither are the replies to it.
    */
   async listForPost(
     viewer: AuthUser | null,
@@ -113,6 +114,7 @@ export class CommentsService {
         postId,
         parentId: null,
         authorId: { notIn: blockedIds },
+        status: { not: "DELETED" },
         ...(after && {
           OR: [
             { createdAt: { gt: after.createdAt } },
@@ -125,7 +127,7 @@ export class CommentsService {
       include: {
         ...WITH_AUTHOR,
         replies: {
-          where: { authorId: { notIn: blockedIds } },
+          where: { authorId: { notIn: blockedIds }, status: { not: "DELETED" } },
           orderBy: [{ createdAt: "asc" }, { id: "asc" }],
           include: WITH_AUTHOR,
         },

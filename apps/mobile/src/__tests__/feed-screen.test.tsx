@@ -1,9 +1,8 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react-native";
 import type { ReactNode } from "react";
-import FeedScreen from "../app/index";
+import FeedScreen from "../app/(tabs)/index";
 import { apiClient } from "../lib/apiClient";
-import { tokenStorage } from "../lib/tokenStorage";
-import { ARTICLE_CARD, OPINION_CARD, sessionFor } from "../test/fixtures";
+import { ARTICLE_CARD, OPINION_CARD } from "../test/fixtures";
 import { jsonResponse, renderWithProviders } from "../test/renderWithProviders";
 
 jest.mock("expo-router", () => ({
@@ -42,25 +41,6 @@ describe("FeedScreen (SPEC §4)", () => {
     expect(screen.getAllByText("il y a 2 h")).toHaveLength(2);
   });
 
-  it("hides « Publier » from a visitor and shows « Compte »", async () => {
-    fetchMock.mockResolvedValue(jsonResponse(200, feedPage));
-    await renderWithProviders(<FeedScreen />);
-    await screen.findByText("Le budget adopté");
-    expect(screen.getByText("Compte")).toBeTruthy();
-    expect(screen.queryByText("Publier")).toBeNull();
-  });
-
-  it("shows « Publier » to a validated editor", async () => {
-    await tokenStorage.save({ accessToken: "access", refreshToken: "refresh" });
-    fetchMock.mockImplementation(async (url) =>
-      String(url).endsWith("/auth/refresh")
-        ? jsonResponse(200, sessionFor("EDITOR", "INDEPENDENT"))
-        : jsonResponse(200, feedPage),
-    );
-    await renderWithProviders(<FeedScreen />);
-    expect(await screen.findByText("Publier")).toBeTruthy();
-  });
-
   it("reloads the feed with the chosen filters", async () => {
     fetchMock.mockResolvedValue(jsonResponse(200, feedPage));
     await renderWithProviders(<FeedScreen />);
@@ -93,6 +73,16 @@ describe("FeedScreen (SPEC §4)", () => {
     expect(screen.getByText(/Filtres : Local · Autre/)).toBeTruthy();
   });
 
+  it("closes the filters with a press outside them (interface brief)", async () => {
+    fetchMock.mockResolvedValue(jsonResponse(200, feedPage));
+    await renderWithProviders(<FeedScreen />);
+    await screen.findByText("Le budget adopté");
+    await fireEvent(screen.getByLabelText(SEARCH_LABEL), "focus");
+    expect(screen.getByText("Période")).toBeTruthy();
+    await fireEvent.press(screen.getByLabelText("Fermer les filtres"));
+    expect(screen.queryByText("Période")).toBeNull();
+  });
+
   it("shows the start of the article on a card whose third block is the text", async () => {
     fetchMock.mockResolvedValue(
       jsonResponse(200, {
@@ -101,6 +91,8 @@ describe("FeedScreen (SPEC §4)", () => {
       }),
     );
     await renderWithProviders(<FeedScreen />);
-    expect(await screen.findByText("commence")).toHaveStyle({ fontStyle: "italic" });
+    expect(await screen.findByText("commence")).toHaveStyle({
+      fontFamily: "Merriweather_400Regular_Italic",
+    });
   });
 });

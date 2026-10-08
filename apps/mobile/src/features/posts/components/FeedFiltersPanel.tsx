@@ -91,6 +91,8 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     borderRadius: radius.md,
     backgroundColor: colors.surface,
+    // Floats over the feed.
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
   },
   hint: { color: colors.muted, fontSize: textSizes.meta },
   group: { gap: spacing.xs, paddingTop: spacing.sm, borderTopWidth: 1, borderColor: colors.border },

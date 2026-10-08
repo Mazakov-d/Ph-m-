@@ -37,8 +37,8 @@ export const PostLayout = z.enum(["TEXT_FIRST", "MEDIA_FIRST"]);
 export type PostLayout = z.infer<typeof PostLayout>;
 
 // docs/DECISIONS.md (interface brief): typeface chosen by the editor for each text block
-// (sizes are fixed by the app). System typefaces, available everywhere without a download.
-export const Typeface = z.enum(["SANS", "SERIF", "MONO"]);
+// (sizes are fixed by the app). The app bundles one font for each (docs/DECISIONS.md).
+export const Typeface = z.enum(["SANS", "SERIF", "MONO", "DISPLAY", "BOOK"]);
 export type Typeface = z.infer<typeof Typeface>;
 
 // SPEC §5.3

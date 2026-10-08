@@ -1,6 +1,6 @@
 import { APP_NAME } from "@fama/shared";
 import { screen } from "@testing-library/react-native";
-import AccountScreen from "../app/account";
+import AccountScreen from "../app/(tabs)/account";
 import { apiClient } from "../lib/apiClient";
 import { renderWithProviders } from "../test/renderWithProviders";
 

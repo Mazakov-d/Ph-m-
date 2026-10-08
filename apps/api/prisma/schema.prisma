@@ -62,6 +62,8 @@ enum Typeface {
   SANS
   SERIF
   MONO
+  DISPLAY
+  BOOK
 }
 
 enum PostReviewStatus {

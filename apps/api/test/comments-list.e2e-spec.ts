@@ -54,7 +54,7 @@ describe("Listing comments (e2e, SPEC §6)", () => {
     expect(page.items[1]?.replies).toEqual([]);
   });
 
-  it.each(["UNDER_REVIEW", "REMOVED", "DELETED"] as const)(
+  it.each(["UNDER_REVIEW", "REMOVED"] as const)(
     "hides the content of a %s comment but keeps its place and replies",
     async (status) => {
       const root = await writeComment(app, reader.accessToken, postId, "Contenu caché");

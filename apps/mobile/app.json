@@ -9,7 +9,7 @@
     "web": {
       "output": "single"
     },
-    "plugins": ["expo-router", "expo-status-bar"],
+    "plugins": ["expo-router", "expo-status-bar", "expo-font"],
     "ios": {
       "bundleIdentifier": "app.fama.mobile",
       "supportsTablet": true

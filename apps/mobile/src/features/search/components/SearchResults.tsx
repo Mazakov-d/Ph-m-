@@ -68,8 +68,6 @@ const styles = StyleSheet.create({
     padding: spacing.lg,
     paddingBottom: spacing.xl,
     width: "100%",
-    maxWidth: 1200,
-    alignSelf: "center",
   },
   row: { gap: spacing.md },
   header: { gap: spacing.sm },

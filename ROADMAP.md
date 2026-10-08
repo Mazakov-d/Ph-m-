@@ -224,6 +224,7 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 - [x] Page d'un post : post encadré, sources repliées derrière « Sources », commentaires accrochés sous le cadre, saisie en bas avec Entrée.
 - [x] Recherche : filtres affichés au toucher de la barre, regroupés (Période, Zone, Thème), thème « Autre ».
 - [x] Web : fil et résultats en plusieurs colonnes sur grand écran.
+- [x] Retours du porteur : éditeur de texte (gras, italique, polices), onglets Fama / Publier / Compte avec « < » sur les sous-pages, menu « ⋯ » des commentaires, commentaires supprimés masqués, filtres au-dessus du clavier, post pleine largeur, mot de passe affichable.
 - [ ] Direction visuelle validée par le porteur du projet (couleurs, typographie, composants de base) et appliquée à tous les écrans.
 - [ ] Revue d'ergonomie des parcours (lecture, publication, vote, commentaires, modération) sur mobile et web.
 

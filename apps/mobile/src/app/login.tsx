@@ -1,4 +1,5 @@
-import { Link, Stack, useRouter } from "expo-router";
+import { Link, Stack } from "expo-router";
+import { useGoToTab } from "../components/navigation/useGoToTab";
 import { ScrollView, StyleSheet } from "react-native";
 import { LoginForm } from "../features/auth/components/LoginForm";
 import { colors } from "../components/ui/theme";
@@ -9,11 +10,11 @@ const texts = {
 };
 
 export default function LoginScreen() {
-  const router = useRouter();
+  const goToTab = useGoToTab();
   return (
     <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
       <Stack.Screen options={{ title: texts.title }} />
-      <LoginForm onSuccess={() => router.replace("/")} />
+      <LoginForm onSuccess={() => goToTab("/")} />
       <Link href="/register" replace style={styles.link}>
         {texts.toRegister}
       </Link>

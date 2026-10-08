@@ -217,7 +217,7 @@ source obligatoire par vote, validation finale par un modérateur.
 - Réponses en **fil** (un niveau de profondeur suffit au MVP : `parentId` pointe vers un commentaire racine).
 - Triés **par date croissante**.
 - **Jamais modifiables.**
-- Suppression **toujours logique** : `deletedAt`, `deletedBy` (`AUTHOR` | `MODERATOR`). Affichage : « Commentaire supprimé ».
+- Suppression **toujours logique** : `deletedAt`, `deletedBy` (`AUTHOR` | `MODERATOR`). Un commentaire supprimé par son auteur n'est plus affiché, ni ses réponses (voir `DECISIONS.md`).
 - L'auteur ne peut **pas** supprimer un commentaire `UNDER_REVIEW`. Vérification et suppression
   dans **une seule transaction** (pas de condition de course).
 - Purge définitive des commentaires supprimés après `RETENTION_DAYS` (valeur à fixer avec un juriste ; job planifié).

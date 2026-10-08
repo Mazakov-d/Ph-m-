@@ -91,14 +91,22 @@ describe("Deleting a comment (e2e, SPEC §6)", () => {
     await remove(author.accessToken, comment.id).expect(200);
   });
 
-  it("keeps the replies of a deleted comment", async () => {
+  it("no longer shows a deleted comment, nor the replies to it (docs/DECISIONS.md)", async () => {
     const root = await writeComment(app, author.accessToken, postId, "Racine");
     const other = await signUp(app, prisma, "hugo");
     await writeComment(app, other.accessToken, postId, "Réponse", root.id);
+    const kept = await writeComment(app, other.accessToken, postId, "Autre fil");
+    const ownReply = await writeComment(app, author.accessToken, postId, "Ma réponse", kept.id);
     await remove(author.accessToken, root.id).expect(200);
+    await remove(author.accessToken, ownReply.id).expect(200);
+
     const list = await request(app.getHttpServer()).get(`/posts/${postId}/comments`).expect(200);
-    expect(list.body.items[0]).toMatchObject({ status: "DELETED", content: null });
-    expect(list.body.items[0].replies[0]).toMatchObject({ content: "Réponse" });
+    expect(list.body.items).toHaveLength(1);
+    expect(list.body.items[0]).toMatchObject({ id: kept.id, replies: [] });
+    // Kept in the database (logical deletion, CLAUDE.md §5.3).
+    expect(await prisma.comment.count({ where: { postId } })).toBe(4);
+    const post = await request(app.getHttpServer()).get(`/posts/${postId}`).expect(200);
+    expect(post.body.commentCount).toBe(1);
   });
 
   it("never deletes a comment that goes under review at the same moment (concurrency)", async () => {

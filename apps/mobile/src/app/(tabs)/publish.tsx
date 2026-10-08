@@ -1,9 +1,9 @@
 import { can } from "@fama/shared";
 import { Stack, useRouter } from "expo-router";
 import { ScrollView, StyleSheet, Text } from "react-native";
-import { PublishForm } from "../features/posts/components/PublishForm";
-import { useAuth } from "../providers/AuthProvider";
-import { colors } from "../components/ui/theme";
+import { PublishForm } from "../../features/posts/components/PublishForm";
+import { useAuth } from "../../providers/AuthProvider";
+import { colors } from "../../components/ui/theme";
 
 const texts = {
   title: "Publier",

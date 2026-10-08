@@ -1,9 +1,6 @@
-import type { Typeface } from "@fama/shared";
-import { Platform } from "react-native";
-
 /**
  * docs/DECISIONS.md (interface brief): the visual base of the app. Text sizes are fixed here
- * (an editor never writes their titles bigger than another one); editors only choose a typeface.
+ * (an editor never writes their titles bigger than another one); typefaces are in typefaces.ts.
  */
 export const colors = {
   brand: "#1d3557",
@@ -36,24 +33,6 @@ export const textSizes = {
   body: 16,
   meta: 13,
 } as const;
-
-/** System typefaces, available without a download on iOS, Android and the web. */
-export const typefaceFamilies: Record<Typeface, string> = Platform.select({
-  ios: { SANS: "System", SERIF: "Georgia", MONO: "Menlo" },
-  android: { SANS: "sans-serif", SERIF: "serif", MONO: "monospace" },
-  default: {
-    SANS: "system-ui, -apple-system, sans-serif",
-    SERIF: "Georgia, 'Times New Roman', serif",
-    MONO: "ui-monospace, Menlo, monospace",
-  },
-});
-
-/** Labels of the typeface choice in the publishing form. */
-export const TYPEFACE_LABELS: Record<Typeface, string> = {
-  SANS: "Sans empattement",
-  SERIF: "Avec empattement",
-  MONO: "Machine à écrire",
-};
 
 /** Two columns from this width, three from the next one (web, tablets). */
 export const gridBreakpoints = { twoColumns: 760, threeColumns: 1140 } as const;

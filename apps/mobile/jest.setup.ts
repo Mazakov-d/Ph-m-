@@ -11,3 +11,25 @@ jest.mock("expo-secure-store", () => {
     },
   };
 });
+
+// The text editor runs in a web view (Expo DOM component), which Jest cannot start: tests type
+// into a plain field instead. The editor's own logic is tested in features/posts/richText.ts.
+jest.mock("./src/features/posts/components/RichTextEditor", () => {
+  const { createElement } = jest.requireActual<typeof import("react")>("react");
+  const { TextInput } = jest.requireActual<typeof import("react-native")>("react-native");
+  return {
+    __esModule: true,
+    default: (props: { label: string; initialValue: string; onChange: (value: string) => void }) =>
+      createElement(TextInput, {
+        accessibilityLabel: props.label,
+        defaultValue: props.initialValue,
+        onChangeText: props.onChange,
+      }),
+  };
+});
+
+// Screen insets of a phone without a notch (the library's own Jest mock).
+jest.mock(
+  "react-native-safe-area-context",
+  () => jest.requireActual<{ default: object }>("react-native-safe-area-context/jest/mock").default,
+);

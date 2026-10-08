@@ -1,7 +1,7 @@
 import type { SearchResultsPublic } from "@fama/shared";
 import { act, fireEvent, screen, waitFor } from "@testing-library/react-native";
 import type { ReactNode } from "react";
-import FeedScreen from "../../../app/index";
+import FeedScreen from "../../../app/(tabs)/index";
 import { apiClient } from "../../../lib/apiClient";
 import { ARTICLE_CARD } from "../../../test/fixtures";
 import { jsonResponse, renderWithProviders } from "../../../test/renderWithProviders";

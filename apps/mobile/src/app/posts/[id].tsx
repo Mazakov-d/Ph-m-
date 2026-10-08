@@ -90,9 +90,8 @@ const styles = StyleSheet.create({
   container: {
     padding: spacing.lg,
     paddingBottom: spacing.xl,
+    // Interface brief: the post takes the whole page.
     width: "100%",
-    maxWidth: 760,
-    alignSelf: "center",
   },
   // The post sits in a frame…
   frame: {

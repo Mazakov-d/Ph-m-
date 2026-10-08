@@ -25,6 +25,12 @@ function at<Element>(elements: Element[], index: number): Element {
   }
   return element;
 }
+/** Interface brief: the actions of a comment are in the « ⋯ » menu next to its author. */
+async function openMenuOf(pseudo: string, index: number) {
+  const menus = await screen.findAllByLabelText(`Actions sur le commentaire de ${pseudo}`);
+  await fireEvent.press(at(menus, index));
+}
+
 const OTHER = "9b1e4a3c-6f1d-4d6b-9a52-3c2f0e7d8a11";
 
 function comment(id: string, overrides: Partial<CommentPublic> = {}): CommentPublic {
@@ -137,8 +143,8 @@ describe("CommentsSection (SPEC §6)", () => {
 
   it("replies to the thread, even from a reply", async () => {
     await renderSection({ signedIn: true });
-    const replyButtons = await screen.findAllByText("Répondre");
-    await fireEvent.press(at(replyButtons, 1)); // « Répondre » under the reply « D'accord. »
+    await openMenuOf("hugo", 1); // the reply « D'accord. »
+    await fireEvent.press(screen.getByText("Répondre"));
     await fireEvent.changeText(screen.getByLabelText("Votre réponse"), "Moi aussi.");
     // The reply form is in the thread, above the comment form at the bottom.
     await fireEvent.press(at(screen.getAllByText("Publier"), 0));
@@ -163,9 +169,11 @@ describe("CommentsSection (SPEC §6)", () => {
 
   it("deletes one's own comment after confirmation only", async () => {
     await renderSection({ signedIn: true });
-    const deleteButtons = await screen.findAllByText("Supprimer");
-    expect(deleteButtons).toHaveLength(1); // only the user's own comment
-    await fireEvent.press(at(deleteButtons, 0));
+    await openMenuOf("hugo", 0);
+    expect(screen.queryByText("Supprimer")).toBeNull(); // only on the user's own comment
+    await fireEvent.press(screen.getByText("Annuler"));
+    await openMenuOf("Testeur", 0);
+    await fireEvent.press(screen.getByText("Supprimer"));
     expect(callsTo("DELETE", "/comments/8b1e4a3c-6f1d-4d6b-9a52-3c2f0e7d8a11")).toHaveLength(0);
     await fireEvent.press(screen.getByText("Confirmer"));
     await waitFor(() =>
@@ -173,7 +181,7 @@ describe("CommentsSection (SPEC §6)", () => {
     );
   });
 
-  it("shows the badge instead of « Signaler » on a verified comment (SPEC §6.2)", async () => {
+  it("shows the badge and no « Signaler » on a verified comment (SPEC §6.2)", async () => {
     const verifiedThreads: CommentThreadPublic[] = [
       {
         ...comment(ROOT_ID, { content: "Merci pour les sources.", status: "VERIFIED" }),
@@ -190,12 +198,15 @@ describe("CommentsSection (SPEC §6)", () => {
     expect(
       await screen.findByText("✓ Examiné par la modération : conforme aux règles"),
     ).toBeTruthy();
+    await openMenuOf("hugo", 0);
     expect(screen.queryByText("Signaler")).toBeNull();
+    expect(screen.getByText("Bloquer cet utilisateur")).toBeTruthy();
   });
 
   it("reports someone else's comment with a reason", async () => {
     await renderSection({ signedIn: true });
-    await fireEvent.press(at(await screen.findAllByText("Signaler"), 0));
+    await openMenuOf("hugo", 0);
+    await fireEvent.press(screen.getByText("Signaler"));
     await fireEvent.press(screen.getByText("Insulte"));
     await fireEvent.press(screen.getByText("Envoyer le signalement"));
     await waitFor(() => expect(callsTo("POST", `/comments/${ROOT_ID}/reports`)).toHaveLength(1));
@@ -203,7 +214,8 @@ describe("CommentsSection (SPEC §6)", () => {
 
   it("blocks the author of a comment after confirmation (SPEC §10)", async () => {
     await renderSection({ signedIn: true });
-    await fireEvent.press(at(await screen.findAllByText("Bloquer cet utilisateur"), 0));
+    await openMenuOf("hugo", 0);
+    await fireEvent.press(screen.getByText("Bloquer cet utilisateur"));
     expect(screen.getByText(/^Bloquer hugo \?/)).toBeTruthy();
     await fireEvent.press(screen.getByText("Confirmer"));
     await waitFor(() => expect(callsTo("POST", `/users/${OTHER}/block`)).toHaveLength(1));

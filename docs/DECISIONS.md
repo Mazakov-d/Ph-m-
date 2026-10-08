@@ -384,3 +384,31 @@ qui la remplace.
     principale, fond gris clair, cartes blanches bordées).
 - **Pourquoi** : suivre le brief au plus près sans ajouter de dépendance (éditeur de texte riche,
   polices téléchargées) ; tout reste réglable dans `theme.ts`.
+
+## 2026-10-08 — Retours du porteur sur la refonte (sans validation pour les points marqués)
+
+- **Question** : retours du porteur après la première refonte (éditeur de texte, navigation,
+  commentaires, recherche).
+- **Décision** :
+  - **Éditeur de texte** : les boutons B et I agissent comme dans un traitement de texte (sur la
+    sélection, ou activés avant de taper), et le texte s'affiche en gras ou en italique pendant la
+    saisie. L'éditeur est un composant DOM d'Expo (une vue web sur iOS et Android, dépendance
+    `@expo/dom-webview`), car un champ natif ne sait pas afficher des mots en gras. Le stockage
+    reste le texte balisé (`**gras**`, `*italique*`, `***les deux***`).
+  - **Polices proposées** (sans validation) : Inter, Merriweather, Playfair Display, Lora,
+    IBM Plex Mono, embarquées dans l'app (`expo-font`, `@expo-google-fonts/*`) en quatre variantes.
+  - **Navigation** : trois onglets dans l'en-tête — « Fama » (le fil, nom de l'app centré sur le
+    web, à gauche sur téléphone), « Publier » (éditeurs) et « Compte » ; l'onglet courant est
+    grisé ; changer d'onglet n'empile pas de page. Un post ou une page ouverte depuis le compte
+    s'ouvre au-dessus, avec « < » pour revenir.
+  - **Commentaires** : « Répondre », « Supprimer » (les siens), « Signaler » et « Bloquer » sont
+    dans un menu « ⋯ » sur la ligne du pseudo.
+  - **Commentaire supprimé par son auteur** : il n'est plus envoyé par l'API (il reste en base,
+    suppression logique) et ne compte plus dans le nombre de commentaires. Remplace l'affichage
+    « Commentaire supprimé » de la SPEC §6. **Sans validation** : les réponses à un commentaire
+    supprimé disparaissent avec lui (elles n'ont plus de commentaire auquel se rattacher).
+  - **Recherche** : les filtres s'ouvrent par-dessus le fil, se ferment par un appui à côté, et
+    défilent au-dessus du clavier.
+  - **Post** : pleine largeur, titre centré ; sur une fenêtre large, le texte et les photos côte à
+    côte (ordre choisi par l'éditeur) ; les cartes du fil grandissent avec la fenêtre.
+  - **Mot de passe** : un bouton « Afficher » / « Masquer » dans chaque champ de mot de passe.

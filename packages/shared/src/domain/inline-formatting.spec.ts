@@ -39,6 +39,22 @@ describe("parseInlineFormatting (docs/DECISIONS.md, interface brief)", () => {
     expect(parseInlineFormatting("** pas gras **")).toEqual([plain("** pas gras **")]);
   });
 
+  it("finds a part in bold and italic at once", () => {
+    expect(parseInlineFormatting("un ***grand*** jour")).toEqual([
+      plain("un "),
+      { text: "grand", bold: true, italic: true },
+      plain(" jour"),
+    ]);
+  });
+
+  it("separates neighbour parts with different styles", () => {
+    expect(parseInlineFormatting("**a*****b****c*")).toEqual([
+      { text: "a", bold: true, italic: false },
+      { text: "b", bold: true, italic: true },
+      { text: "c", bold: false, italic: true },
+    ]);
+  });
+
   it("leaves an unclosed marker as text", () => {
     expect(parseInlineFormatting("un **début")).toEqual([plain("un **début")]);
   });
@@ -46,8 +62,36 @@ describe("parseInlineFormatting (docs/DECISIONS.md, interface brief)", () => {
 
 describe("formatSegments", () => {
   it("is the inverse of parseInlineFormatting", () => {
-    const text = "Un **vote** très *serré* hier";
+    const text = "Un **vote** très *serré*, ***historique*** hier";
     expect(formatSegments(parseInlineFormatting(text))).toBe(text);
+  });
+
+  it("writes the spaces at the edges outside the markers", () => {
+    expect(
+      formatSegments([plain("un"), { text: " vote ", bold: true, italic: false }, plain("ici")]),
+    ).toBe("un **vote** ici");
+  });
+
+  it("merges neighbours with the same style and drops empty ones", () => {
+    expect(
+      formatSegments([
+        { text: "gr", bold: true, italic: false },
+        { text: "", bold: false, italic: false },
+        { text: "and", bold: true, italic: false },
+      ]),
+    ).toBe("**grand**");
+  });
+
+  it("writes a bold segment made only of spaces as plain spaces", () => {
+    expect(formatSegments([plain("a"), { text: " ", bold: true, italic: false }, plain("b")])).toBe(
+      "a b",
+    );
+  });
+
+  it("keeps the line breaks of a formatted part outside its markers", () => {
+    expect(formatSegments([{ text: "titre\n", bold: true, italic: false }, plain("suite")])).toBe(
+      "**titre**\nsuite",
+    );
   });
 });
 

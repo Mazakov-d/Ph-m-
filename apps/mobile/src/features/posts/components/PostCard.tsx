@@ -29,6 +29,7 @@ export function PostCard({ post }: { post: PostSummaryPublic }) {
         text={post.title}
         typeface={post.typefaces.title}
         size={textSizes.cardTitle}
+        alwaysBold
         style={styles.title}
       />
       <FormattedText
@@ -74,7 +75,7 @@ const styles = StyleSheet.create({
   header: { flexDirection: "row", alignItems: "center", flexWrap: "wrap", gap: spacing.sm },
   editor: { fontWeight: "600", color: colors.text },
   date: { color: colors.muted, fontSize: textSizes.meta, marginLeft: "auto" },
-  title: { fontWeight: "bold", color: colors.text },
+  title: { color: colors.text },
   excerpt: { color: colors.text, lineHeight: 22 },
   cover: {
     width: "100%",

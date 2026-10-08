@@ -7,9 +7,9 @@ import { FormattedTextField } from "./FormattedTextField";
 import type { PostFormValues } from "./PlacementFields";
 
 const TEXT_FIELDS = [
-  { name: "title", label: "Titre", multiline: false, size: textSizes.postTitle },
-  { name: "summary", label: "Résumé", multiline: true, size: textSizes.summary },
-  { name: "body", label: "Texte", multiline: true, size: textSizes.body },
+  { name: "title", label: "Titre", multiline: false, size: textSizes.postTitle, height: 140 },
+  { name: "summary", label: "Résumé", multiline: true, size: textSizes.summary, height: 170 },
+  { name: "body", label: "Texte", multiline: true, size: textSizes.body, height: 340 },
 ] as const;
 
 const LAYOUT_LABELS: Record<PostLayout, string> = {
@@ -36,7 +36,7 @@ type Props = {
 export function PostTextFields({ control, errors }: Props) {
   return (
     <View style={{ gap: spacing.lg }}>
-      {TEXT_FIELDS.map(({ name, label, multiline, size }) => (
+      {TEXT_FIELDS.map(({ name, label, multiline, size, height }) => (
         <Controller
           key={name}
           control={control}
@@ -55,6 +55,7 @@ export function PostTextFields({ control, errors }: Props) {
                   onTypefaceChange={typefaceField.onChange}
                   size={size}
                   multiline={multiline}
+                  height={height}
                   error={fieldMessage(errors[name])}
                 />
               )}

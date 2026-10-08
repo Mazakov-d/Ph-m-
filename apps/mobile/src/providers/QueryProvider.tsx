@@ -15,11 +15,16 @@ export function shouldRetry(failureCount: number, error: unknown): boolean {
   return !isClientError && failureCount < MAX_RETRIES;
 }
 
+type DefaultOptions = NonNullable<QueryClientConfig["defaultOptions"]>;
+
 /** The app's query client; tests pass extra options (see renderWithProviders). */
 export function createQueryClient(
-  queries: NonNullable<QueryClientConfig["defaultOptions"]>["queries"] = {},
+  queries: DefaultOptions["queries"] = {},
+  mutations: DefaultOptions["mutations"] = {},
 ) {
-  return new QueryClient({ defaultOptions: { queries: { retry: shouldRetry, ...queries } } });
+  return new QueryClient({
+    defaultOptions: { queries: { retry: shouldRetry, ...queries }, mutations },
+  });
 }
 
 type Props = { children: ReactNode; client?: QueryClient };

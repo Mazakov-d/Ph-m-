@@ -22,4 +22,14 @@ describe("LoginForm", () => {
 
     expect(await screen.findByText("E-mail ou mot de passe incorrect.")).toBeTruthy();
   });
+
+  it("shows the password being typed on demand (interface brief)", async () => {
+    await renderWithProviders(<LoginForm onSuccess={jest.fn()} />);
+    const password = screen.getByLabelText("Mot de passe");
+    expect(password.props.secureTextEntry).toBe(true);
+    await fireEvent.press(screen.getByLabelText("Afficher : Mot de passe"));
+    expect(screen.getByLabelText("Mot de passe").props.secureTextEntry).toBe(false);
+    await fireEvent.press(screen.getByLabelText("Masquer : Mot de passe"));
+    expect(screen.getByLabelText("Mot de passe").props.secureTextEntry).toBe(true);
+  });
 });

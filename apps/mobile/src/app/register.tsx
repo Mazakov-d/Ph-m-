@@ -1,4 +1,5 @@
-import { Link, Stack, useRouter } from "expo-router";
+import { Link, Stack } from "expo-router";
+import { useGoToTab } from "../components/navigation/useGoToTab";
 import { ScrollView, StyleSheet, Text } from "react-native";
 import { RegisterForm } from "../features/auth/components/RegisterForm";
 import { LegalLinks } from "../features/legal/LegalLinks";
@@ -12,12 +13,12 @@ const texts = {
 };
 
 export default function RegisterScreen() {
-  const router = useRouter();
+  const goToTab = useGoToTab();
   return (
     <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
       <Stack.Screen options={{ title: texts.title }} />
       <Text style={styles.consent}>{texts.consent}</Text>
-      <RegisterForm onSuccess={() => router.replace("/")} />
+      <RegisterForm onSuccess={() => goToTab("/")} />
       <Link href="/login" replace style={styles.link}>
         {texts.toLogin}
       </Link>

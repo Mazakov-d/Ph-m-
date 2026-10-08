@@ -16,7 +16,13 @@ export const POST_INCLUDE = {
   _count: {
     select: {
       reports: true,
-      comments: { where: { status: { in: [...DISPLAYED_COMMENT_STATUSES] } } },
+      // docs/DECISIONS.md: the replies to a comment deleted by its author are not shown.
+      comments: {
+        where: {
+          status: { in: [...DISPLAYED_COMMENT_STATUSES] },
+          OR: [{ parentId: null }, { parent: { status: { not: "DELETED" } } }],
+        },
+      },
     },
   },
 } satisfies Prisma.PostInclude;

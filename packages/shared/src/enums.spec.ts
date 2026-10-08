@@ -54,7 +54,7 @@ describe("enums (SPEC)", () => {
       TicketKind: ["SUPPORT", "EDITOR_CHAT"],
       TicketStatus: ["NEW", "ASSIGNED", "CLOSED"],
       PostLayout: ["TEXT_FIRST", "MEDIA_FIRST"],
-      Typeface: ["SANS", "SERIF", "MONO"],
+      Typeface: ["SANS", "SERIF", "MONO", "DISPLAY", "BOOK"],
     });
   });
 

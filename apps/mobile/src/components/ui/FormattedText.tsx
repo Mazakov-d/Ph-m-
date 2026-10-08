@@ -1,33 +1,42 @@
 import { parseInlineFormatting, type Typeface } from "@fama/shared";
-import { StyleSheet, Text, type TextStyle } from "react-native";
-import { typefaceFamilies } from "./theme";
+import { Text, type TextStyle } from "react-native";
+import { fontFamilyOf } from "./typefaces";
 
 type Props = {
   text: string;
   typeface: Typeface;
   size: number;
-  /** Extra style of the whole text (weight of a title, line height of a body). */
+  /** A title is always bold: its words use the bold font. */
+  alwaysBold?: boolean;
+  /** Extra style of the whole text (color, line height); never a weight or a font. */
   style?: TextStyle;
   numberOfLines?: number;
 };
 
 /** A post text with the editor's typeface and their bold or italic words (interface brief). */
-export function FormattedText({ text, typeface, size, style, numberOfLines }: Props) {
+export function FormattedText(props: Props) {
+  const { text, typeface, size, alwaysBold = false, style, numberOfLines } = props;
   return (
     <Text
       numberOfLines={numberOfLines}
-      style={[{ fontFamily: typefaceFamilies[typeface], fontSize: size }, style]}
+      style={[
+        { fontFamily: fontFamilyOf(typeface, { bold: alwaysBold, italic: false }), fontSize: size },
+        style,
+      ]}
     >
       {parseInlineFormatting(text).map((segment, index) => (
-        <Text key={index} style={[segment.bold && styles.bold, segment.italic && styles.italic]}>
+        <Text
+          key={index}
+          style={{
+            fontFamily: fontFamilyOf(typeface, {
+              bold: alwaysBold || segment.bold,
+              italic: segment.italic,
+            }),
+          }}
+        >
           {segment.text}
         </Text>
       ))}
     </Text>
   );
 }
-
-const styles = StyleSheet.create({
-  bold: { fontWeight: "bold" },
-  italic: { fontStyle: "italic" },
-});
