@@ -177,6 +177,11 @@ describe("Article reviews (e2e, SPEC §5.4–§5.6)", () => {
       expect(post.body.corrections).toMatchObject([{ content: "Le chiffre exact est 3,2 %." }]);
     });
 
+    it("still accepts a correction after 48 hours (SPEC §3: at any time)", async () => {
+      await ageVerdict(49);
+      await editorAction("corrections", { content: "Précision tardive." }).expect(201);
+    });
+
     it("closes the window after 48 hours", async () => {
       await ageVerdict(49);
       const reply = await editorAction("review/reply", { content: "Trop tard." }).expect(409);

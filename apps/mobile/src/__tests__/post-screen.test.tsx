@@ -1,7 +1,8 @@
 import { fireEvent, screen } from "@testing-library/react-native";
 import PostScreen from "../app/posts/[id]";
 import { apiClient } from "../lib/apiClient";
-import { ARTICLE_DETAIL, OPINION_CARD } from "../test/fixtures";
+import { tokenStorage } from "../lib/tokenStorage";
+import { ARTICLE_DETAIL, OPINION_CARD, sessionFor } from "../test/fixtures";
 import { jsonResponse, renderWithProviders } from "../test/renderWithProviders";
 
 jest.mock("expo-router", () => ({
@@ -86,6 +87,28 @@ describe("PostScreen", () => {
     );
     await renderWithProviders(<PostScreen />);
     expect(await screen.findByLabelText("Vidéo de la publication")).toBeTruthy();
+  });
+
+  it("offers a correction to the author only (SPEC §3)", async () => {
+    fetchMock.mockResolvedValue(jsonResponse(200, ARTICLE_DETAIL));
+    await renderWithProviders(<PostScreen />);
+    await screen.findByText("Texte complet de l'article.");
+    expect(screen.queryByText("Publier une correction")).toBeNull();
+  });
+
+  it("lets the signed-in author publish a correction at any time (SPEC §3)", async () => {
+    const session = sessionFor("EDITOR", "INDEPENDENT");
+    await tokenStorage.save({ accessToken: "access", refreshToken: "refresh" });
+    fetchMock.mockImplementation(async (url) =>
+      String(url).endsWith("/auth/refresh")
+        ? jsonResponse(200, session)
+        : jsonResponse(200, {
+            ...ARTICLE_DETAIL,
+            editor: { ...ARTICLE_DETAIL.editor, id: session.user.id },
+          }),
+    );
+    await renderWithProviders(<PostScreen />);
+    expect(await screen.findByText("Publier une correction")).toBeTruthy();
   });
 
   it("says when the post does not exist", async () => {

@@ -16,7 +16,9 @@ import {
   ZONE_LABELS,
 } from "../../features/posts/texts";
 import { ReportButton } from "../../features/reports/components/ReportButton";
+import { CorrectionForm } from "../../features/reviews/components/CorrectionForm";
 import { ReviewPanel } from "../../features/reviews/components/ReviewPanel";
+import { useAuth } from "../../providers/AuthProvider";
 import { VoteBar } from "../../features/votes/components/VoteBar";
 
 const texts = {
@@ -29,6 +31,7 @@ const texts = {
 export default function PostScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const post = usePost(id);
+  const { user } = useAuth();
 
   if (post.isPending || post.error) {
     return (
@@ -74,6 +77,8 @@ export default function PostScreen() {
         {data.corrections.length > 0 ? (
           <Text style={styles.heading}>{texts.corrections}</Text>
         ) : null}
+        {/* SPEC §3: only the author corrects the post (the API checks again). */}
+        {user?.id === data.editor.id ? <CorrectionForm postId={data.id} /> : null}
         {data.corrections.map((correction) => (
           <View key={correction.id} style={styles.correction}>
             <Text style={styles.muted}>

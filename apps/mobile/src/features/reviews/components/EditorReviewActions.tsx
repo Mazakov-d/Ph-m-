@@ -13,16 +13,17 @@ import { TextActionForm } from "../../../components/ui/TextActionForm";
 import { colors } from "../../../components/ui/theme";
 
 const texts = {
-  intro:
-    "Vous avez 48 heures après le verdict pour répondre, corriger ou faire appel (une seule fois).",
+  intro: "Vous avez 48 heures après le verdict pour répondre ou faire appel (une seule fois).",
   reply: "Répondre au verdict",
-  correction: "Publier une correction",
   appeal: "Faire appel",
   send: "Publier",
   sendAppeal: "Envoyer l'appel",
 };
 
-/** SPEC §5.5: the author's answers to the verdict, while the 48-hour window is open. */
+/**
+ * SPEC §5.5: the author's answers to the verdict, while the 48-hour window is open (corrections
+ * are open at any time: CorrectionForm).
+ */
 export function EditorReviewActions({ review }: { review: ReviewPublic }) {
   const now = new Date();
   const verdictAt = new Date(review.createdAt);
@@ -40,15 +41,6 @@ export function EditorReviewActions({ review }: { review: ReviewPublic }) {
           postId={review.postId}
           action="reply"
           label={texts.reply}
-          submit={texts.send}
-          max={EDITOR_REPLY_MAX_LENGTH}
-        />
-      ) : null}
-      {canReply ? (
-        <Action
-          postId={review.postId}
-          action="correction"
-          label={texts.correction}
           submit={texts.send}
           max={EDITOR_REPLY_MAX_LENGTH}
         />

@@ -68,11 +68,11 @@ describe("ReviewPanel (SPEC §5.6)", () => {
     expect(screen.queryByText("Faire appel")).toBeNull();
   });
 
-  it("offers the author to reply, correct and appeal within 48 hours", async () => {
+  it("offers the author to reply and appeal within 48 hours (corrections are on the post)", async () => {
     await renderPanel(review(2), true);
     expect(await screen.findByText("Répondre au verdict")).toBeTruthy();
-    expect(screen.getByText("Publier une correction")).toBeTruthy();
     expect(screen.getByText("Faire appel")).toBeTruthy();
+    expect(screen.queryByText("Publier une correction")).toBeNull();
   });
 
   it("offers nothing more after 48 hours", async () => {

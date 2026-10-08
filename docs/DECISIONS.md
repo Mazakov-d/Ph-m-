@@ -544,3 +544,13 @@ qui la remplace.
   - la vidéo est servie par l'API, par morceaux (`Range`), comme l'exigent les lecteurs (iOS) ;
   - sur la carte du fil (ordre « photos d'abord »), l'image d'aperçu avec ▶ et la durée ; la vidéo
     passe avant les images (**sans validation**) ; elle se lit sur la page du post (`expo-video`).
+
+## 2026-10-08 — Corrections à tout moment (SPEC §3)
+
+- **Question** : les corrections n'étaient possibles que dans les 48 h suivant un verdict, alors que
+  la SPEC §3 dit qu'un post publié n'est modifiable que par une correction (sans délai), et que la
+  jauge (§5.7) récompense une correction publiée **avant** le verdict — impossible jusqu'ici.
+- **Décision** (conforme à la SPEC) : l'éditeur peut publier une correction sur ses propres posts
+  à tout moment, avant ou après un verdict, depuis la page du post (« Publier une correction »),
+  sauf sur une opinion retirée. La réponse au verdict et l'appel gardent leur délai de 48 h.
+  Remplace, pour les corrections seulement, la règle des 48 h de la décision sur les signalements.

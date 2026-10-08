@@ -44,9 +44,26 @@ export class PostReviewEditorService {
     return this.publicReview(postId);
   }
 
-  /** SPEC §3 and §5.5: a public correction under the article, within EDITOR_REPLY_HOURS. */
+  /**
+   * SPEC §3 + docs/DECISIONS.md: the editor corrects their own post at any time, before or after
+   * a verdict; the correction shows publicly under it (SPEC §5.7: before a verdict, it halves the
+   * penalty of the gauge).
+   */
   async correct(editor: AuthUser, postId: string, content: string): Promise<PostCorrectionPublic> {
-    await this.reviewOfOwnPost(editor, postId, EDITOR_REPLY_HOURS, "REPLY_WINDOW_CLOSED");
+    const post = await this.prisma.post.findUnique({
+      where: { id: postId },
+      select: { authorId: true, removedAt: true },
+    });
+    if (!post) {
+      throw new ApiException(HttpStatus.NOT_FOUND, "NOT_FOUND", "No such post");
+    }
+    if (post.authorId !== editor.id) {
+      throw new ApiException(HttpStatus.FORBIDDEN, "FORBIDDEN", "Not your post");
+    }
+    // docs/DECISIONS.md: nothing happens any more on a removed opinion.
+    if (post.removedAt) {
+      throw new ApiException(HttpStatus.GONE, "POST_REMOVED", "Removed by moderation");
+    }
     const correction = await this.prisma.postCorrection.create({ data: { postId, content } });
     return {
       id: correction.id,

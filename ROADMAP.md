@@ -261,7 +261,7 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 - [x] « Voir les similaires » et « X autres médias en parlent » (§9).
 - [x] Notifications push. Choix des notifications par filtre ("je veux etre informe des nouveaux post sur la politique") possibilite de creer plusieurs alerte ("je veux etre informe des nouveaux post de sport en France")
 - [x] Vidéos dans les posts.
-- [ ] Corrections d'articles publiées par l'éditeur (`PostCorrection`) si non faites avant.
+- [x] Corrections d'articles publiées par l'éditeur (`PostCorrection`) si non faites avant.
 - [ ] Revue communautaire par jury d'editeurs independent/professionnel tiré au sort (§5.8).
 - [ ] Dons aux éditeurs.
 - [ ] Moteur de recherche dédié (Meilisearch) si PostgreSQL ne suffit plus.
