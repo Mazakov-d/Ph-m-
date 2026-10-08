@@ -230,7 +230,7 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 
 - [x] Suppression de compte depuis l'app (anonymisation, §10).
 - [x] Job planifié de purge selon `RETENTION_DAYS`.
-- [ ] Pages : règles de la communauté, politique de confidentialité, mentions légales (textes fournis par le porteur du projet ; prévoir l'emplacement).
+- [x] Pages : règles de la communauté, politique de confidentialité, mentions légales (textes fournis par le porteur du projet ; prévoir l'emplacement).
 - [ ] Limitation de débit (rate limiting) sur l'inscription, la connexion, les commentaires et les signalements.
 - [ ] Revue de sécurité : aucune donnée privée dans les réponses publiques (test automatisé qui parcourt les schémas publics).
 - [ ] Configuration EAS (builds iOS / Android) et déploiement de l'API (choix consigné dans `DECISIONS.md`).

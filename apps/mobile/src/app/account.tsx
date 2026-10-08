@@ -3,6 +3,7 @@ import { Stack, useRouter } from "expo-router";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { Button } from "../components/ui/Button";
 import { DeleteAccount } from "../features/auth/components/DeleteAccount";
+import { LegalLinks } from "../features/legal/LegalLinks";
 import { useAuth } from "../providers/AuthProvider";
 
 const texts = {
@@ -78,6 +79,7 @@ export default function AccountScreen() {
           <DeleteAccount />
         </>
       ) : null}
+      <LegalLinks />
     </View>
   );
 }
