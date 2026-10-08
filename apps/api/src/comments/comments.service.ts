@@ -3,6 +3,7 @@ import type { AuthUser, CommentPublic, CommentStatus, CreateCommentInput } from 
 import { ApiException } from "../common/errors/api.exception.js";
 import { PrismaService } from "../prisma/prisma.service.js";
 import { toCommentPublic } from "./comments.mapper.js";
+import { ToxicityChecker } from "./toxicity/toxicity-checker.js";
 
 const WITH_AUTHOR = { author: { select: { pseudo: true } } } as const;
 
@@ -11,10 +12,23 @@ const REPLYABLE_STATUSES: CommentStatus[] = ["VISIBLE", "VERIFIED"];
 
 @Injectable()
 export class CommentsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly toxicityChecker: ToxicityChecker,
+  ) {}
 
   /** SPEC §6: a comment, or a reply to a root comment (one level). */
   async create(author: AuthUser, input: CreateCommentInput): Promise<CommentPublic> {
+    // SPEC §6.2 step 1: a blocked comment is not saved. docs/DECISIONS.md: the message stays
+    // generic and never reveals the term found.
+    const verdict = await this.toxicityChecker.check(input.content);
+    if (verdict.blocked) {
+      throw new ApiException(
+        HttpStatus.UNPROCESSABLE_ENTITY,
+        "TOXIC_CONTENT",
+        "The comment contains a term forbidden by the community rules",
+      );
+    }
     return this.prisma.$transaction(async (tx) => {
       const post = await tx.post.findUnique({ where: { id: input.postId } });
       if (!post) {

@@ -109,6 +109,18 @@ describe("Writing comments (e2e, SPEC §6)", () => {
     await sendComment(app, reader.accessToken, postId, "a".repeat(2001)).expect(400);
   });
 
+  it("does not save a comment blocked by the filter, with a generic message (SPEC §6.2)", async () => {
+    const response = await sendComment(app, reader.accessToken, postId, "Quel c0nnard").expect(422);
+    expect(response.body.code).toBe("TOXIC_CONTENT");
+    // docs/DECISIONS.md: the term found is never revealed.
+    expect(JSON.stringify(response.body).toLowerCase()).not.toContain("connard");
+    expect(await prisma.comment.count()).toBe(0);
+  });
+
+  it("lets an ordinary comment containing a listed word as a part through", async () => {
+    await sendComment(app, reader.accessToken, postId, "Le contexte manque.").expect(201);
+  });
+
   it("refuses an anonymous visitor", async () => {
     const { default: request } = await import("supertest");
     await request(app.getHttpServer())
