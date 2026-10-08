@@ -137,7 +137,7 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 - [x] API : voter / changer son vote (§7), un vote par compte et opinion.
 - [x] API : action « Voir sans voter » (`revealedResults`).
 - [x] API : les totaux ne sont renvoyés que si `canSeeVoteResults` est vrai.
-- [ ] App : barre de vote avec les choix de l'opinion ; résultats (pourcentages, total) affichés seulement après vote ou « Voir sans voter ».
+- [x] App : barre de vote avec les choix de l'opinion ; résultats (pourcentages, total) affichés seulement après vote ou « Voir sans voter ».
 
 **Critères de validation**
 

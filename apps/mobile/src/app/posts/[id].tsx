@@ -3,6 +3,7 @@ import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, View } from "re
 import { CommentsSection } from "../../features/comments/components/CommentsSection";
 import { EditorBadge } from "../../features/editors/components/EditorBadge";
 import { usePost } from "../../features/posts/api";
+import { VoteBar } from "../../features/votes/components/VoteBar";
 import { ReliabilityBar } from "../../features/posts/components/ReliabilityBar";
 import { SourcesList } from "../../features/posts/components/SourcesList";
 import {
@@ -62,6 +63,8 @@ export default function PostScreen() {
         />
       ))}
       <Text style={styles.body}>{data.body}</Text>
+      {/* SPEC §7: an opinion is voted on; votes never change any order. */}
+      <VoteBar post={data} />
       <Text style={styles.heading}>{texts.sources}</Text>
       <SourcesList sources={data.sources} />
       {data.corrections.length > 0 ? <Text style={styles.heading}>{texts.corrections}</Text> : null}

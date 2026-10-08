@@ -156,6 +156,7 @@ async function endSession(): Promise<void> {
 export const apiClient = {
   get: <T>(path: string, schema: ZodType<T>) => request("GET", path, undefined, schema),
   post: <T>(path: string, body: unknown, schema: ZodType<T>) => request("POST", path, body, schema),
+  put: <T>(path: string, body: unknown, schema: ZodType<T>) => request("PUT", path, body, schema),
   patch: <T>(path: string, body: unknown, schema: ZodType<T>) =>
     request("PATCH", path, body, schema),
   delete: <T>(path: string, schema: ZodType<T>) => request("DELETE", path, undefined, schema),
