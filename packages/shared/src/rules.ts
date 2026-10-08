@@ -179,3 +179,8 @@ export const JURY_NOTE_MAX_LENGTH = 1000;
 
 // docs/DECISIONS.md (donations): the editor's own donation page (Tipeee, HelloAsso, PayPal…).
 export const DONATION_URL_MAX_LENGTH = 500;
+
+// docs/DECISIONS.md (editor applications): a journalist, an independent editor or a social
+// media account shows at least EDITOR_WORK_LINKS_MIN published works.
+export const EDITOR_WORK_LINKS_MIN = 3;
+export const EDITOR_WORK_LINKS_MAX = 10;

@@ -26,9 +26,15 @@ export async function createApplicant(
         ownerName: `Société ${pseudo}`,
         ownerGroup: null,
         showIdentityPublicly: overrides.showIdentityPublicly ?? false,
+        // docs/DECISIONS.md (editor applications): a journalist with 3 published works.
+        applicantType: "JOURNALIST",
+        workLinks: ["https://exemple.fr/1", "https://exemple.fr/2", "https://exemple.fr/3"],
       }),
     )
     .attach("documents", TEST_PDF, "carte-identite.pdf")
     .expect(201);
   return applicant;
 }
+
+/** docs/DECISIONS.md: the proofs a moderator checks to validate a journalist (see above). */
+export const JOURNALIST_PROOFS = ["IDENTITY", "PUBLISHED_WORKS"];

@@ -1,11 +1,12 @@
 import { randomUUID } from "node:crypto";
 import { HttpStatus, Injectable } from "@nestjs/common";
-import type {
-  CreateEditorApplicationInput,
-  EDITOR_DOCUMENT_TYPES,
-  EditorApplicationPublic,
-  EditorPublic,
-  UpdateEditorProfileInput,
+import {
+  type CreateEditorApplicationInput,
+  type EDITOR_DOCUMENT_TYPES,
+  type EditorApplicationPublic,
+  type EditorPublic,
+  newVerificationCode,
+  type UpdateEditorProfileInput,
 } from "@fama/shared";
 import { ApiException } from "../common/errors/api.exception.js";
 import { PrismaService } from "../prisma/prisma.service.js";
@@ -47,6 +48,19 @@ export class EditorsService {
           ownerName: input.ownerName,
           ownerGroup: input.ownerGroup,
           showIdentityPublicly: input.showIdentityPublicly,
+          // docs/DECISIONS.md (editor applications): the kind of applicant and its proofs; a
+          // new application gets a new code and nothing checked yet.
+          applicantType: input.applicantType,
+          siret: input.siret,
+          websiteUrl: input.websiteUrl,
+          publicationDirector: input.publicationDirector,
+          professionalEmail: input.professionalEmail,
+          cppapNumber: input.cppapNumber,
+          workLinks: [...new Set(input.workLinks)],
+          pressCardNumber: input.pressCardNumber,
+          socialAccountUrl: input.socialAccountUrl,
+          verificationCode: newVerificationCode(Math.random),
+          verifiedProofs: [],
           rejectionReason: null,
           validatedById: null,
           validatedAt: null,

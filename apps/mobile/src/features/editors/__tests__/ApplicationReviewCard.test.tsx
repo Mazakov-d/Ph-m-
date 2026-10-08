@@ -15,6 +15,17 @@ const application: EditorModeration = {
   ownerName: "Association Nouveau Média",
   ownerGroup: null,
   showIdentityPublicly: false,
+  applicantType: "JOURNALIST",
+  siret: null,
+  websiteUrl: null,
+  publicationDirector: null,
+  professionalEmail: null,
+  cppapNumber: null,
+  workLinks: ["https://exemple.fr/1", "https://exemple.fr/2", "https://exemple.fr/3"],
+  pressCardNumber: null,
+  socialAccountUrl: null,
+  verificationCode: "PHEME-ABCDEF",
+  verifiedProofs: [],
   documentCount: 2,
   rejectionReason: null,
   createdAt: "2026-10-07T12:00:00.000Z",
@@ -67,17 +78,45 @@ describe("ApplicationReviewCard (SPEC §2.2)", () => {
     expect(screen.getByText("2 document(s) : à consulter depuis la version web.")).toBeTruthy();
   });
 
+  /** docs/DECISIONS.md (editor applications): the required proofs of a journalist. */
+  async function checkRequiredProofs() {
+    await fireEvent.press(screen.getByText("Pièce d'identité vérifiée"));
+    await fireEvent.press(screen.getByText("Au moins 3 travaux publiés et signés"));
+  }
+
+  it("offers to validate only once every required proof is checked", async () => {
+    await renderAs("MODERATOR");
+    expect(screen.getByText("https://exemple.fr/1")).toBeTruthy();
+    expect(screen.queryByText("Valider (Indépendant)")).toBeNull();
+    await fireEvent.press(screen.getByText("Pièce d'identité vérifiée"));
+    expect(screen.queryByText("Valider (Indépendant)")).toBeNull();
+    await fireEvent.press(screen.getByText("Au moins 3 travaux publiés et signés"));
+    expect(screen.getByText("Valider (Indépendant)")).toBeTruthy();
+  });
+
   it("lets a moderator validate INDEPENDENT but not certify", async () => {
     await renderAs("MODERATOR");
+    await checkRequiredProofs();
     expect(screen.queryByText("Certifier")).toBeNull();
     await fireEvent.press(screen.getByText("Valider (Indépendant)"));
-    await waitFor(() => expect(decisionBody()).toEqual({ status: "INDEPENDENT" }));
+    await waitFor(() =>
+      expect(decisionBody()).toEqual({
+        status: "INDEPENDENT",
+        checkedProofs: ["IDENTITY", "PUBLISHED_WORKS"],
+      }),
+    );
   });
 
   it("lets an admin certify", async () => {
     await renderAs("ADMIN");
+    await checkRequiredProofs();
     await fireEvent.press(screen.getByText("Certifier"));
-    await waitFor(() => expect(decisionBody()).toEqual({ status: "CERTIFIED" }));
+    await waitFor(() =>
+      expect(decisionBody()).toEqual({
+        status: "CERTIFIED",
+        checkedProofs: ["IDENTITY", "PUBLISHED_WORKS"],
+      }),
+    );
   });
 
   it("requires a reason to reject", async () => {

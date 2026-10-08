@@ -4,7 +4,7 @@ import type { App } from "supertest/types.js";
 import type { PrismaService } from "../src/prisma/prisma.service.js";
 import { createTestApp } from "./support/app.js";
 import { truncateAllTables } from "./support/database.js";
-import { createApplicant } from "./support/editor-applications.js";
+import { createApplicant, JOURNALIST_PROOFS } from "./support/editor-applications.js";
 import { GuardTestController } from "./support/guard-test.controller.js";
 import { signUp } from "./support/users.js";
 
@@ -43,7 +43,7 @@ describe("Who may publish after the editor flow (e2e)", () => {
     await request(app.getHttpServer())
       .post(`/moderation/editor-applications/${applicantId}/decision`)
       .set("Authorization", `Bearer ${deciderAccount.accessToken}`)
-      .send({ status })
+      .send({ status, checkedProofs: JOURNALIST_PROOFS })
       .expect(201);
   }
 

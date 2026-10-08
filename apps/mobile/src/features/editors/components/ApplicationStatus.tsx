@@ -8,6 +8,12 @@ export function ApplicationStatus({ application }: { application: EditorApplicat
     <View style={styles.card}>
       <Text style={styles.status}>{APPLICATION_STATUS_TEXTS[application.status]}</Text>
       {application.rejectionReason ? <Text>{`Motif : ${application.rejectionReason}`}</Text> : null}
+      {/* docs/DECISIONS.md (editor applications): the proof that the account is the applicant's. */}
+      {application.applicantType === "SOCIAL_MEDIA" && application.status === "PENDING" ? (
+        <Text style={styles.code}>
+          {`Placez ce code dans la bio de votre compte jusqu'à la validation : ${application.verificationCode}`}
+        </Text>
+      ) : null}
     </View>
   );
 }
@@ -15,4 +21,5 @@ export function ApplicationStatus({ application }: { application: EditorApplicat
 const styles = StyleSheet.create({
   card: { gap: 4, padding: 16, borderRadius: 8, backgroundColor: colors.subtle },
   status: { fontWeight: "600" },
+  code: { fontWeight: "bold", color: colors.brand },
 });

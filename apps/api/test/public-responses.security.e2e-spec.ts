@@ -5,7 +5,7 @@ import type { PrismaService } from "../src/prisma/prisma.service.js";
 import { createTestApp } from "./support/app.js";
 import { writeComment } from "./support/comments.js";
 import { truncateAllTables } from "./support/database.js";
-import { createApplicant } from "./support/editor-applications.js";
+import { createApplicant, JOURNALIST_PROOFS } from "./support/editor-applications.js";
 import { publishPost } from "./support/posts.js";
 import { signUp, TEST_PASSWORD } from "./support/users.js";
 
@@ -37,7 +37,7 @@ describe("Public responses carry no private data (e2e, ROADMAP phase 11)", () =>
     await request(app.getHttpServer())
       .post(`/moderation/editor-applications/${editor.id}/decision`)
       .set("Authorization", `Bearer ${moderator.accessToken}`)
-      .send({ status: "INDEPENDENT" })
+      .send({ status: "INDEPENDENT", checkedProofs: JOURNALIST_PROOFS })
       .expect(201);
     const reader = await signUp(app, prisma, "lecteur");
     const post = await publishPost(app, editor.accessToken);

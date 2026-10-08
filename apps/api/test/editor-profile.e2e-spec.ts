@@ -5,7 +5,7 @@ import type { App } from "supertest/types.js";
 import type { PrismaService } from "../src/prisma/prisma.service.js";
 import { createTestApp } from "./support/app.js";
 import { truncateAllTables } from "./support/database.js";
-import { createApplicant } from "./support/editor-applications.js";
+import { createApplicant, JOURNALIST_PROOFS } from "./support/editor-applications.js";
 import { signUp } from "./support/users.js";
 
 describe("Public editor profile (e2e, SPEC §2.2)", () => {
@@ -30,7 +30,7 @@ describe("Public editor profile (e2e, SPEC §2.2)", () => {
     await request(app.getHttpServer())
       .post(`/moderation/editor-applications/${editor.id}/decision`)
       .set("Authorization", `Bearer ${moderator.accessToken}`)
-      .send({ status: "INDEPENDENT" })
+      .send({ status: "INDEPENDENT", checkedProofs: JOURNALIST_PROOFS })
       .expect(201);
     return editor;
   }

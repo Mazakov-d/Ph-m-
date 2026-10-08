@@ -654,3 +654,42 @@ qui la remplace.
     (éditeur, lecteur) ;
   - les photos d'un post s'agrandissent en plein écran au toucher ; la vidéo a son bouton plein
     écran ; la barre de recherche du fil est plus petite et centrée.
+
+## 2026-10-09 — Demandes d'éditeur par type, et leur traitement (todo.txt)
+
+- **Question** : le porteur veut que chacun choisisse sa forme d'éditeur (groupe média,
+  journaliste, indépendant, média réseaux sociaux), chacune avec ses justificatifs, que les
+  demandes soient traitées correctement, sans ouvrir la porte aux usages malveillants ; il m'a
+  demandé de comparer plusieurs façons de faire et de choisir.
+- **Options comparées** :
+  1. **Documents libres** (l'existant) : simple, mais chaque modérateur juge à sa façon et rien
+     ne garantit que les justificatifs exigés ont été vus.
+  2. **Demande structurée par type + liste de contrôle imposée + vérifications automatiques
+     gratuites** : champs propres à chaque type ; le modérateur coche ce qu'il a vérifié et l'API
+     refuse de valider tant qu'un justificatif obligatoire n'est pas coché ; l'app vérifie ce qui
+     peut l'être sans service externe (clé du SIRET, e-mail sur le domaine du site, 3 travaux
+     distincts) ; un code unique « PHEME-XXXXXX » à placer dans la bio prouve la propriété d'un
+     compte social ; tout est tracé dans le journal d'audit.
+  3. **Vérifications externes automatisées** (API Sirene/annuaire, e-mail de confirmation, API
+     des réseaux sociaux) : plus forte, mais demande un service d'envoi d'e-mails et des clés
+     d'API que le projet n'a pas ; les API des réseaux sont très restreintes.
+  4. **Prestataire KYC payant** : ne prouve que l'identité d'une personne, pas qu'elle est un média
+     crédible ; coût par vérification.
+- **Décision** : l'option 2, la meilleure aujourd'hui (aucune dépendance ni service, contrôle
+  explicite et traçable, extensible vers l'option 3) :
+  - **Groupe média** : SIRET valide, site, directeur de publication, e-mail professionnel sur le
+    domaine du site, Kbis et attestation signée en pièces jointes ; CPPAP facultatif. À vérifier :
+    identité, SIRET (lien direct vers l'annuaire des entreprises), mentions légales, directeur de
+    publication, représentation du groupe.
+  - **Journaliste** : 3 travaux publiés et signés au moins ; carte de presse facultative. À
+    vérifier : identité, travaux.
+  - **Indépendant** : 3 travaux publiés au moins ; carte de presse et SIRET facultatifs. À
+    vérifier : identité, travaux.
+  - **Média réseaux sociaux** : lien du compte, 3 publications au moins, code à placer dans la bio
+    (affiché au demandeur). À vérifier : identité, code dans la bio, publications.
+  - les justificatifs vérifiés sont enregistrés avec la décision ; une certification (admin) part
+    de ceux déjà vérifiés ;
+  - contre les usages malveillants, après la validation : signalements pondérés, jauge de
+    fiabilité, jury, sanctions et retrait du statut restent les garde-fous ;
+  - le formulaire propose « Contacter Phémé » (motif « Ouvrir un compte éditeur ») pour toute
+    question.

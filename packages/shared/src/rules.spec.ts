@@ -115,6 +115,8 @@ describe("rules (SPEC §11)", () => {
       JURY_SANCTION_FREE_MONTHS: 12,
       JURY_NOTE_MAX_LENGTH: 1000,
       DONATION_URL_MAX_LENGTH: 500,
+      EDITOR_WORK_LINKS_MIN: 3,
+      EDITOR_WORK_LINKS_MAX: 10,
     });
   });
 });

@@ -5,7 +5,7 @@ import type { App } from "supertest/types.js";
 import type { PrismaService } from "../src/prisma/prisma.service.js";
 import { createTestApp } from "./support/app.js";
 import { truncateAllTables } from "./support/database.js";
-import { createApplicant, TEST_PDF } from "./support/editor-applications.js";
+import { createApplicant, JOURNALIST_PROOFS, TEST_PDF } from "./support/editor-applications.js";
 import { signUp } from "./support/users.js";
 
 const editorPage = paginated(editorModerationSchema);
@@ -35,7 +35,8 @@ describe("Moderation of editor applications (e2e, SPEC §2.2)", () => {
     server()
       .post(`/moderation/editor-applications/${userId}/decision`)
       .set("Authorization", `Bearer ${token}`)
-      .send(decision);
+      // The proofs of a journalist are checked unless a test says otherwise.
+      .send({ checkedProofs: JOURNALIST_PROOFS, ...decision });
 
   describe("list", () => {
     it("shows pending applications with the legal identity to a moderator", async () => {
@@ -85,6 +86,61 @@ describe("Moderation of editor applications (e2e, SPEC §2.2)", () => {
   });
 
   describe("decisions", () => {
+    it("refuses a validation until every required proof is checked (docs/DECISIONS.md)", async () => {
+      const applicant = await createApplicant(app, prisma, "clara");
+      const refused = await decide(moderator.accessToken, applicant.id, {
+        status: "INDEPENDENT",
+        checkedProofs: ["IDENTITY"],
+      }).expect(400);
+      expect(refused.body.code).toBe("PROOFS_MISSING");
+      await decide(moderator.accessToken, applicant.id, { status: "INDEPENDENT" }).expect(201);
+      const profile = await prisma.editorProfile.findUniqueOrThrow({
+        where: { userId: applicant.id },
+      });
+      expect([...profile.verifiedProofs].sort()).toEqual(["IDENTITY", "PUBLISHED_WORKS"]);
+    });
+
+    it("shows the proofs of a media group to the moderator, with its verification code", async () => {
+      const applicant = await signUp(app, prisma, "le-media");
+      await server()
+        .post("/editors/application")
+        .set("Authorization", `Bearer ${applicant.accessToken}`)
+        .field(
+          "application",
+          JSON.stringify({
+            applicantType: "MEDIA_GROUP",
+            legalFirstName: "Jeanne",
+            legalLastName: "Martin",
+            editorialLine: "Quotidien régional.",
+            ownerName: "Le Média SA",
+            ownerGroup: null,
+            siret: "73282932000074",
+            websiteUrl: "https://www.lemedia.fr",
+            publicationDirector: "Jeanne Martin",
+            professionalEmail: "jeanne@lemedia.fr",
+          }),
+        )
+        .attach("documents", TEST_PDF, "kbis.pdf")
+        .expect(201);
+      const list = await server()
+        .get("/moderation/editor-applications")
+        .set("Authorization", `Bearer ${moderator.accessToken}`)
+        .expect(200);
+      expect(list.body.items[0]).toMatchObject({
+        applicantType: "MEDIA_GROUP",
+        siret: "73282932000074",
+        websiteUrl: "https://www.lemedia.fr",
+        professionalEmail: "jeanne@lemedia.fr",
+        verifiedProofs: [],
+      });
+      expect(list.body.items[0].verificationCode).toMatch(/^PHEME-[A-Z0-9]{6}$/);
+      // The proofs of a journalist are not enough for a media group.
+      const refused = await decide(moderator.accessToken, applicant.id, {
+        status: "INDEPENDENT",
+      }).expect(400);
+      expect(refused.body.code).toBe("PROOFS_MISSING");
+    });
+
     it("a moderator validates INDEPENDENT: the account becomes EDITOR and can publish", async () => {
       const applicant = await createApplicant(app, prisma, "clara");
       const response = await decide(moderator.accessToken, applicant.id, {
@@ -114,10 +170,16 @@ describe("Moderation of editor applications (e2e, SPEC §2.2)", () => {
 
     it("an admin certifies a pending applicant or an independent editor", async () => {
       const pending = await createApplicant(app, prisma, "attente");
-      await decide(admin.accessToken, pending.id, { status: "CERTIFIED" }).expect(201);
+      await decide(admin.accessToken, pending.id, {
+        status: "CERTIFIED",
+        checkedProofs: JOURNALIST_PROOFS,
+      }).expect(201);
 
       const independent = await createApplicant(app, prisma, "independant");
-      await decide(moderator.accessToken, independent.id, { status: "INDEPENDENT" }).expect(201);
+      await decide(moderator.accessToken, independent.id, {
+        status: "INDEPENDENT",
+        checkedProofs: JOURNALIST_PROOFS,
+      }).expect(201);
       const response = await decide(admin.accessToken, independent.id, {
         status: "CERTIFIED",
       }).expect(201);
@@ -155,7 +217,10 @@ describe("Moderation of editor applications (e2e, SPEC §2.2)", () => {
       const applicant = await createApplicant(app, prisma, "clara");
       const otherModerator = await signUp(app, prisma, "modo2", { role: "MODERATOR" });
       const statuses = await Promise.all([
-        decide(moderator.accessToken, applicant.id, { status: "INDEPENDENT" }),
+        decide(moderator.accessToken, applicant.id, {
+          status: "INDEPENDENT",
+          checkedProofs: JOURNALIST_PROOFS,
+        }),
         decide(otherModerator.accessToken, applicant.id, {
           status: "REJECTED",
           rejectionReason: "Doublon",
@@ -166,7 +231,10 @@ describe("Moderation of editor applications (e2e, SPEC §2.2)", () => {
 
     it("writes every decision to the audit log (SPEC §2.4)", async () => {
       const applicant = await createApplicant(app, prisma, "clara");
-      await decide(moderator.accessToken, applicant.id, { status: "INDEPENDENT" }).expect(201);
+      await decide(moderator.accessToken, applicant.id, {
+        status: "INDEPENDENT",
+        checkedProofs: JOURNALIST_PROOFS,
+      }).expect(201);
       const logs = await prisma.auditLog.findMany({ where: { action: "editor.decision" } });
       expect(logs).toHaveLength(1);
       expect(logs[0]).toMatchObject({

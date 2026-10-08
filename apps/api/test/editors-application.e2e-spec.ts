@@ -17,6 +17,8 @@ const APPLICATION = {
   ownerName: "Clara Martin",
   ownerGroup: null,
   showIdentityPublicly: false,
+  applicantType: "INDEPENDENT",
+  workLinks: ["https://exemple.fr/1", "https://exemple.fr/2", "https://exemple.fr/3"],
 };
 
 describe("Editor application (e2e, SPEC §2.2)", () => {

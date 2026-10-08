@@ -74,6 +74,28 @@ enum Locality {
   NIMES
 }
 
+/// docs/DECISIONS.md (editor applications): who applies for the editor status.
+enum EditorApplicantType {
+  MEDIA_GROUP
+  JOURNALIST
+  INDEPENDENT
+  SOCIAL_MEDIA
+}
+
+/// docs/DECISIONS.md (editor applications): the proofs a moderator checks.
+enum EditorProof {
+  IDENTITY
+  SIRET
+  LEGAL_NOTICE
+  PUBLICATION_DIRECTOR
+  REPRESENTATION
+  PUBLISHED_WORKS
+  ACCOUNT_OWNERSHIP
+  PUBLICATION_LINKS
+  PRESS_CARD
+  CPPAP
+}
+
 enum Zone {
   FRANCE
   EUROPE
@@ -272,19 +294,33 @@ model RefreshToken {
 
 /// SPEC §2.2: public side of an editor.
 model EditorProfile {
-  userId               String       @id @db.Uuid
-  status               EditorStatus @default(PENDING)
+  userId               String              @id @db.Uuid
+  status               EditorStatus        @default(PENDING)
   editorialLine        String
   ownerName            String
   ownerGroup           String?
-  showIdentityPublicly Boolean      @default(false)
+  showIdentityPublicly Boolean             @default(false)
+  // docs/DECISIONS.md (editor applications): the kind of applicant and its proofs.
+  applicantType        EditorApplicantType @default(INDEPENDENT)
+  siret                String?
+  websiteUrl           String?
+  publicationDirector  String?
+  professionalEmail    String?
+  cppapNumber          String?
+  workLinks            String[]
+  pressCardNumber      String?
+  socialAccountUrl     String?
+  // The code a social media account places in its bio (PHEME-XXXXXX).
+  verificationCode     String              @default(dbgenerated("('PHEME-'::text || upper(substr(md5((random())::text), 1, 6)))"))
+  // What the validating moderator checked (every required proof of the kind).
+  verifiedProofs       EditorProof[]
   // docs/DECISIONS.md (donations): the editor's own donation page (https), shown as « Soutenir ».
   donationUrl          String?
   rejectionReason      String?
-  validatedById        String?      @db.Uuid
-  validatedAt          DateTime?    @db.Timestamptz(3)
-  createdAt            DateTime     @default(now()) @db.Timestamptz(3)
-  updatedAt            DateTime     @updatedAt @db.Timestamptz(3)
+  validatedById        String?             @db.Uuid
+  validatedAt          DateTime?           @db.Timestamptz(3)
+  createdAt            DateTime            @default(now()) @db.Timestamptz(3)
+  updatedAt            DateTime            @updatedAt @db.Timestamptz(3)
 
   user        User  @relation(fields: [userId], references: [id])
   validatedBy User? @relation("EditorValidatedBy", fields: [validatedById], references: [id])

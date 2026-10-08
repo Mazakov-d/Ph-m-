@@ -5,7 +5,7 @@ import type { App } from "supertest/types.js";
 import type { PrismaService } from "../src/prisma/prisma.service.js";
 import { createTestApp } from "./support/app.js";
 import { truncateAllTables } from "./support/database.js";
-import { createApplicant } from "./support/editor-applications.js";
+import { createApplicant, JOURNALIST_PROOFS } from "./support/editor-applications.js";
 import { publishPost } from "./support/posts.js";
 import { signUp } from "./support/users.js";
 
@@ -32,7 +32,7 @@ describe("Donation link of an editor (e2e, docs/DECISIONS.md)", () => {
     await request(app.getHttpServer())
       .post(`/moderation/editor-applications/${editor.id}/decision`)
       .set("Authorization", `Bearer ${moderator.accessToken}`)
-      .send({ status: "INDEPENDENT" })
+      .send({ status: "INDEPENDENT", checkedProofs: JOURNALIST_PROOFS })
       .expect(201);
     return editor;
   }

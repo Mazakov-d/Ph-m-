@@ -5,6 +5,14 @@ import { jsonResponse, renderWithProviders } from "../../../test/renderWithProvi
 import { EditorApplicationForm } from "../components/EditorApplicationForm";
 
 jest.mock("expo-document-picker", () => ({ getDocumentAsync: jest.fn() }));
+jest.mock("expo-router", () => ({
+  // A link is a Text in React Native.
+  Link: ({ children }: { children: string }) => {
+    const { createElement } = jest.requireActual<typeof import("react")>("react");
+    const { Text } = jest.requireActual<typeof import("react-native")>("react-native");
+    return createElement(Text, null, children);
+  },
+}));
 
 const pickedPdf = {
   canceled: false as const,
@@ -20,6 +28,14 @@ const pickedPdf = {
 };
 
 async function fillIdentity() {
+  // docs/DECISIONS.md (editor applications): a journalist with 3 published works.
+  await fireEvent.press(screen.getByText("Journaliste"));
+  for (const index of [1, 2, 3]) {
+    await fireEvent.changeText(
+      screen.getByLabelText(`Lien ${index}`),
+      `https://exemple.fr/${index}`,
+    );
+  }
   await fireEvent.changeText(screen.getByLabelText("Prénom (identité légale)"), "Clara");
   await fireEvent.changeText(screen.getByLabelText("Nom (identité légale)"), "Martin");
   await fireEvent.changeText(screen.getByLabelText("Ligne éditoriale"), "Enquêtes.");
@@ -39,6 +55,7 @@ describe("EditorApplicationForm", () => {
     await renderWithProviders(<EditorApplicationForm />);
     await fireEvent.press(screen.getByText("Envoyer ma demande"));
     expect((await screen.findAllByText("Champ obligatoire.")).length).toBeGreaterThanOrEqual(4);
+    expect(screen.getByText("Choisissez votre profil.")).toBeTruthy();
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
@@ -60,6 +77,8 @@ describe("EditorApplicationForm", () => {
         ownerGroup: null,
         showIdentityPublicly: false,
         documentCount: 1,
+        applicantType: "JOURNALIST",
+        verificationCode: "PHEME-ABCDEF",
         donationUrl: null,
         createdAt: "2026-10-07T12:00:00.000Z",
       }),
@@ -80,9 +99,18 @@ describe("EditorApplicationForm", () => {
         legalLastName: "Martin",
         editorialLine: "Enquêtes.",
         ownerName: "Clara Martin",
-        // The empty optional field is sent as null.
+        // The empty optional fields are sent as null.
         ownerGroup: null,
         showIdentityPublicly: false,
+        applicantType: "JOURNALIST",
+        siret: null,
+        websiteUrl: null,
+        publicationDirector: null,
+        professionalEmail: null,
+        cppapNumber: null,
+        workLinks: ["https://exemple.fr/1", "https://exemple.fr/2", "https://exemple.fr/3"],
+        pressCardNumber: null,
+        socialAccountUrl: null,
       });
       expect(body.getAll("documents")).toHaveLength(1);
     }
@@ -100,5 +128,14 @@ describe("EditorApplicationForm", () => {
     expect(
       await screen.findByText("Un document est invalide : PDF, JPEG ou PNG de 10 Mo maximum."),
     ).toBeTruthy();
+  });
+
+  it("asks a media group for its own proofs (docs/DECISIONS.md: editor applications)", async () => {
+    await renderWithProviders(<EditorApplicationForm />);
+    await fireEvent.press(screen.getByText("Groupe média"));
+    expect(screen.getByLabelText("SIRET (14 chiffres)")).toBeTruthy();
+    expect(screen.getByLabelText("Directeur de publication")).toBeTruthy();
+    expect(screen.queryByLabelText("Lien 1")).toBeNull();
+    expect(screen.getByText(/le Kbis du média et l'attestation signée/)).toBeTruthy();
   });
 });

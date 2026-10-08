@@ -26,6 +26,8 @@ describe("enums (SPEC)", () => {
       NotificationKind: enums.NotificationKind.options,
       PushPlatform: enums.PushPlatform.options,
       JuryAssignmentStatus: enums.JuryAssignmentStatus.options,
+      EditorApplicantType: enums.EditorApplicantType.options,
+      EditorProof: enums.EditorProof.options,
     }).toEqual({
       UserRole: ["READER", "EDITOR", "MODERATOR", "ADMIN"],
       EditorStatus: ["PENDING", "INDEPENDENT", "CERTIFIED", "REJECTED"],
@@ -145,6 +147,19 @@ describe("enums (SPEC)", () => {
       ],
       PushPlatform: ["IOS", "ANDROID"],
       JuryAssignmentStatus: ["PENDING", "VOTED", "EXPIRED"],
+      EditorApplicantType: ["MEDIA_GROUP", "JOURNALIST", "INDEPENDENT", "SOCIAL_MEDIA"],
+      EditorProof: [
+        "IDENTITY",
+        "SIRET",
+        "LEGAL_NOTICE",
+        "PUBLICATION_DIRECTOR",
+        "REPRESENTATION",
+        "PUBLISHED_WORKS",
+        "ACCOUNT_OWNERSHIP",
+        "PUBLICATION_LINKS",
+        "PRESS_CARD",
+        "CPPAP",
+      ],
     });
   });
 

@@ -204,3 +204,27 @@ export type PushPlatform = z.infer<typeof PushPlatform>;
 // (the juror did not vote within JURY_VOTE_HOURS and was replaced).
 export const JuryAssignmentStatus = z.enum(["PENDING", "VOTED", "EXPIRED"]);
 export type JuryAssignmentStatus = z.infer<typeof JuryAssignmentStatus>;
+
+// docs/DECISIONS.md (editor applications): who applies for the editor status.
+export const EditorApplicantType = z.enum([
+  "MEDIA_GROUP",
+  "JOURNALIST",
+  "INDEPENDENT",
+  "SOCIAL_MEDIA",
+]);
+export type EditorApplicantType = z.infer<typeof EditorApplicantType>;
+
+// docs/DECISIONS.md (editor applications): the proofs a moderator checks before validating.
+export const EditorProof = z.enum([
+  "IDENTITY",
+  "SIRET",
+  "LEGAL_NOTICE",
+  "PUBLICATION_DIRECTOR",
+  "REPRESENTATION",
+  "PUBLISHED_WORKS",
+  "ACCOUNT_OWNERSHIP",
+  "PUBLICATION_LINKS",
+  "PRESS_CARD",
+  "CPPAP",
+]);
+export type EditorProof = z.infer<typeof EditorProof>;

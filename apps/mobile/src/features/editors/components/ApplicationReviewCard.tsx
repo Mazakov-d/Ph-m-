@@ -1,4 +1,10 @@
-import { can, type EditorDecisionInput, type EditorModeration } from "@fama/shared";
+import {
+  can,
+  type EditorDecisionInput,
+  type EditorModeration,
+  type EditorProof,
+  missingRequiredProofs,
+} from "@fama/shared";
 import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Button } from "../../../components/ui/Button";
@@ -9,6 +15,7 @@ import {
   useDecideEditorApplication,
 } from "../moderationApi";
 import { editorErrorMessage } from "../texts";
+import { ApplicationProofs } from "./ApplicationProofs";
 import { EditorBadge } from "./EditorBadge";
 import { RejectionForm } from "./RejectionForm";
 import { colors } from "../../../components/ui/theme";
@@ -24,6 +31,8 @@ const texts = {
   certify: "Certifier",
   reject: "Refuser",
   documentError: "Impossible d'ouvrir le document.",
+  missing: (count: number) =>
+    `Cochez les justificatifs obligatoires vérifiés pour pouvoir valider (${count} restant${count > 1 ? "s" : ""}).`,
 };
 
 export function ApplicationReviewCard({ application }: { application: EditorModeration }) {
@@ -31,6 +40,13 @@ export function ApplicationReviewCard({ application }: { application: EditorMode
   const decide = useDecideEditorApplication();
   const [isRejecting, setIsRejecting] = useState(false);
   const [documentError, setDocumentError] = useState(false);
+  // docs/DECISIONS.md (editor applications): the proofs the moderator has checked.
+  const [checked, setChecked] = useState<EditorProof[]>(application.verifiedProofs);
+  const missing = missingRequiredProofs(application.applicantType, checked);
+  const toggle = (proof: EditorProof) =>
+    setChecked((current) =>
+      current.includes(proof) ? current.filter((other) => other !== proof) : [...current, proof],
+    );
   const isPending = application.editorStatus === "PENDING";
 
   const submit = (decision: EditorDecisionInput) =>
@@ -51,6 +67,7 @@ export function ApplicationReviewCard({ application }: { application: EditorMode
       <Text style={styles.muted}>{texts.visibility(application.showIdentityPublicly)}</Text>
       <Text>{texts.owner(application.ownerName, application.ownerGroup)}</Text>
       <Text>{application.editorialLine}</Text>
+      <ApplicationProofs application={application} checked={checked} onToggle={toggle} />
 
       {CAN_OPEN_DOCUMENTS ? (
         <View style={styles.documents}>
@@ -76,16 +93,22 @@ export function ApplicationReviewCard({ application }: { application: EditorMode
         />
       ) : (
         <View style={styles.actions}>
-          {isPending ? (
+          {missing.length > 0 ? (
+            <Text style={styles.muted}>{texts.missing(missing.length)}</Text>
+          ) : null}
+          {isPending && missing.length === 0 ? (
             <Button
               label={texts.validate}
               loading={decide.isPending}
-              onPress={() => submit({ status: "INDEPENDENT" })}
+              onPress={() => submit({ status: "INDEPENDENT", checkedProofs: checked })}
             />
           ) : null}
           {/* SPEC §2.2: only an admin certifies (the API checks again). */}
-          {can(user, "editor.validateCertified") ? (
-            <Button label={texts.certify} onPress={() => submit({ status: "CERTIFIED" })} />
+          {can(user, "editor.validateCertified") && missing.length === 0 ? (
+            <Button
+              label={texts.certify}
+              onPress={() => submit({ status: "CERTIFIED", checkedProofs: checked })}
+            />
           ) : null}
           {isPending ? (
             <Button label={texts.reject} variant="secondary" onPress={() => setIsRejecting(true)} />

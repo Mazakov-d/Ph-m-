@@ -6,19 +6,21 @@ import { type PickedDocument, toPickedDocument } from "../documents";
 import { colors } from "../../../components/ui/theme";
 
 const texts = {
-  label: "Documents d'identité",
+  label: "Justificatifs",
   hint: `PDF, JPEG ou PNG, 10 Mo maximum chacun, ${EDITOR_DOCUMENTS_MAX_COUNT} au plus.`,
   add: "Ajouter des documents",
   remove: (name: string) => `Retirer ${name}`,
 };
 
 type Props = {
+  /** What to upload for the chosen kind of applicant. */
+  what: string;
   documents: PickedDocument[];
   onChange: (documents: PickedDocument[]) => void;
   error?: string;
 };
 
-export function DocumentPickerField({ documents, onChange, error }: Props) {
+export function DocumentPickerField({ what, documents, onChange, error }: Props) {
   const pickDocuments = async () => {
     const result = await getDocumentAsync({
       type: [...EDITOR_DOCUMENT_TYPES],
@@ -33,6 +35,7 @@ export function DocumentPickerField({ documents, onChange, error }: Props) {
   return (
     <View style={styles.field}>
       <Text style={styles.label}>{texts.label}</Text>
+      <Text style={styles.hint}>{what}</Text>
       <Text style={styles.hint}>{texts.hint}</Text>
       {documents.map((document, index) => (
         <View key={`${document.uri}-${index}`} style={styles.document}>

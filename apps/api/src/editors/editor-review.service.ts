@@ -6,6 +6,7 @@ import {
   type EditorDecisionInput,
   type EditorModeration,
   type EditorStatus,
+  missingRequiredProofs,
   type Paginated,
 } from "@fama/shared";
 import { ApiException } from "../common/errors/api.exception.js";
@@ -80,6 +81,21 @@ export class EditorReviewService {
         throw new ApiException(HttpStatus.NOT_FOUND, "NOT_FOUND", "No editor application");
       }
       const isValidation = decision.status !== "REJECTED";
+      // docs/DECISIONS.md (editor applications): every required proof of the applicant's kind
+      // is checked, now or at an earlier validation, before the editor status is given.
+      const verifiedProofs = isValidation
+        ? [...new Set([...current.verifiedProofs, ...decision.checkedProofs])]
+        : current.verifiedProofs;
+      const missing = isValidation
+        ? missingRequiredProofs(current.applicantType, verifiedProofs)
+        : [];
+      if (missing.length > 0) {
+        throw new ApiException(
+          HttpStatus.BAD_REQUEST,
+          "PROOFS_MISSING",
+          `Proofs not checked: ${missing.join(", ")}`,
+        );
+      }
       // Conditional update (CLAUDE.md §5.3): two moderators cannot both decide.
       const updated = await tx.editorProfile.updateMany({
         where: {
@@ -91,6 +107,7 @@ export class EditorReviewService {
           rejectionReason: decision.status === "REJECTED" ? decision.rejectionReason : null,
           validatedById: isValidation ? moderator.id : null,
           validatedAt: isValidation ? new Date() : null,
+          verifiedProofs,
         },
       });
       if (updated.count !== 1) {
@@ -114,6 +131,7 @@ export class EditorReviewService {
           metadata: {
             from: current.status,
             to: decision.status,
+            ...(isValidation && { verifiedProofs }),
             ...(decision.status === "REJECTED" && { rejectionReason: decision.rejectionReason }),
           },
         },
