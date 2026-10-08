@@ -1,4 +1,4 @@
-import type { PostPublic, PostSummaryPublic } from "@fama/shared";
+import type { PostPublic, PostSummaryPublic, VoteSummaryPublic } from "@fama/shared";
 import type { PostImage } from "../generated/prisma/client.js";
 import type { PostRecord } from "./post-record.js";
 
@@ -31,7 +31,8 @@ export function toPostSummaryPublic(post: Omit<PostRecord, "body">): PostSummary
   };
 }
 
-export function toPostPublic(post: PostRecord): PostPublic {
+/** `votes` is the reader's view of the vote, for an opinion (null for an article). */
+export function toPostPublic(post: PostRecord, votes: VoteSummaryPublic | null): PostPublic {
   return {
     ...toPostSummaryPublic(post),
     body: post.body,
@@ -43,15 +44,6 @@ export function toPostPublic(post: PostRecord): PostPublic {
       content: correction.content,
       createdAt: correction.createdAt.toISOString(),
     })),
-    // SPEC §7: the choices are always sent; totals stay hidden until the reader votes.
-    votes:
-      post.kind === "OPINION"
-        ? {
-            options: post.voteOptions.map((option) => ({ id: option.id, label: option.label })),
-            myOptionId: null,
-            revealedResults: false,
-            results: null,
-          }
-        : null,
+    votes,
   };
 }

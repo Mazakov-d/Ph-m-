@@ -17,8 +17,9 @@ import { FILE_EXTENSIONS } from "../common/files/file-type.js";
 import { decodeCursor, toPage } from "../common/pagination/cursor.js";
 import { PrismaService } from "../prisma/prisma.service.js";
 import { type StoredObject, StorageService } from "../storage/storage.service.js";
+import { VotesService } from "../votes/votes.service.js";
 import { type PostImageType, sanitizeImage } from "./post-images.js";
-import { POST_INCLUDE } from "./post-record.js";
+import { POST_INCLUDE, type PostRecord } from "./post-record.js";
 import { toPostPublic, toPostSummaryPublic } from "./posts.mapper.js";
 
 export type UploadedImage = { bytes: Uint8Array; type: PostImageType };
@@ -28,7 +29,17 @@ export class PostsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly storage: StorageService,
+    private readonly votesService: VotesService,
   ) {}
+
+  /** A full post as seen by `viewerId` (their vote, and the totals if they may see them). */
+  private async toPublic(post: PostRecord, viewerId: string | null): Promise<PostPublic> {
+    const votes =
+      post.kind === "OPINION"
+        ? await this.votesService.summaryFor(post.id, post.voteOptions, viewerId)
+        : null;
+    return toPostPublic(post, votes);
+  }
 
   /** SPEC §3: publishes a post with its sources and images (it cannot be modified afterwards). */
   async create(
@@ -67,7 +78,7 @@ export class PostsService {
         },
         include: POST_INCLUDE,
       });
-      return toPostPublic(post);
+      return await this.toPublic(post, author.id);
     } catch (error) {
       // The post was not saved: its images must not stay in storage.
       await this.storage.delete(imageKeys);
@@ -133,7 +144,7 @@ export class PostsService {
         viewer ? { userId: viewer.id } : sessionId ? { sessionId } : null,
       );
     }
-    return toPostPublic(post);
+    return this.toPublic(post, viewer?.id ?? null);
   }
 
   /** All the publications of an editor, newest first (SPEC §2.2: public profile). */
@@ -211,7 +222,7 @@ export class PostsService {
       include: POST_INCLUDE,
     });
     if (updated.count === 1 && post) {
-      return toPostPublic(post);
+      return this.toPublic(post, editor.id);
     }
     // Nothing was updated: explain why.
     if (!post) {
@@ -228,7 +239,7 @@ export class PostsService {
       );
     }
     // Turning comments on for an opinion: they already are.
-    return toPostPublic(post);
+    return this.toPublic(post, editor.id);
   }
 
   private async storeImages(postId: string, images: UploadedImage[]): Promise<string[]> {
