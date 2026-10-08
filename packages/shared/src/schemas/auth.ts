@@ -80,3 +80,16 @@ export const deleteAccountInputSchema = z.object({
   password: z.string().min(1).max(PASSWORD_MAX_LENGTH),
 });
 export type DeleteAccountInput = z.infer<typeof deleteAccountInputSchema>;
+
+// docs/DECISIONS.md (moderators): an ADMIN creates a moderator account (pseudo, e-mail, password).
+export const createModeratorInputSchema = registerInputSchema;
+export type CreateModeratorInput = z.infer<typeof createModeratorInputSchema>;
+
+/** A moderator account as the ADMIN lists them. */
+export const moderatorModerationSchema = z.object({
+  id: z.uuid(),
+  pseudo: z.string(),
+  email: z.string(),
+  createdAt: z.iso.datetime(),
+});
+export type ModeratorModeration = z.infer<typeof moderatorModerationSchema>;

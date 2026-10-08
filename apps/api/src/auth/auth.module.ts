@@ -7,6 +7,7 @@ import { requireEnv } from "../config/env.js";
 import { AuthController } from "./auth.controller.js";
 import { AuthService } from "./auth.service.js";
 import { JwtAuthGuard } from "./jwt-auth.guard.js";
+import { ModeratorsController } from "./moderators.controller.js";
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { JwtAuthGuard } from "./jwt-auth.guard.js";
       }),
     }),
   ],
-  controllers: [AuthController],
+  controllers: [AuthController, ModeratorsController],
   providers: [
     AuthService,
     // Global guards, in this order: authenticate, then authorize.

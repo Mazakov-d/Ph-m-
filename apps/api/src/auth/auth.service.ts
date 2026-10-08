@@ -2,14 +2,16 @@ import { HttpStatus, Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import {
   type AuthUser,
+  type CreateModeratorInput,
   type LoginInput,
   MILLISECONDS_PER_DAY,
   REFRESH_TOKEN_TTL_DAYS,
+  type ModeratorModeration,
   type RegisterInput,
 } from "@fama/shared";
 import { hash, verify } from "argon2";
 import { ApiException } from "../common/errors/api.exception.js";
-import { Prisma } from "../generated/prisma/client.js";
+import { Prisma, type User } from "../generated/prisma/client.js";
 import { PrismaService } from "../prisma/prisma.service.js";
 import { toAuthUser, type UserWithEditorProfile } from "./auth.mapper.js";
 import { generateRefreshToken, hashRefreshToken } from "./refresh-token.js";
@@ -46,6 +48,48 @@ export class AuthService {
       }
       throw error;
     }
+  }
+
+  /**
+   * docs/DECISIONS.md (moderators): an ADMIN creates a moderator account; the creation is
+   * audited in the same transaction (SPEC §2.4).
+   */
+  async createModerator(
+    admin: AuthUser,
+    input: CreateModeratorInput,
+  ): Promise<ModeratorModeration> {
+    const passwordHash = await hash(input.password);
+    try {
+      const moderator = await this.prisma.$transaction(async (tx) => {
+        const created = await tx.user.create({
+          data: { email: input.email, pseudo: input.pseudo, passwordHash, role: "MODERATOR" },
+        });
+        await tx.auditLog.create({
+          data: {
+            actorId: admin.id,
+            action: "moderator.create",
+            targetType: "User",
+            targetId: created.id,
+          },
+        });
+        return created;
+      });
+      return toModeratorModeration(moderator);
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+        throw await this.duplicateAccountError(input.email);
+      }
+      throw error;
+    }
+  }
+
+  /** The moderator accounts, for the ADMIN (deleted accounts left out). */
+  async moderators(): Promise<ModeratorModeration[]> {
+    const moderators = await this.prisma.user.findMany({
+      where: { role: "MODERATOR", deletedAt: null },
+      orderBy: { createdAt: "asc" },
+    });
+    return moderators.map(toModeratorModeration);
   }
 
   async login(input: LoginInput): Promise<IssuedSession> {
@@ -147,4 +191,15 @@ export class AuthService {
       ? new ApiException(HttpStatus.CONFLICT, "EMAIL_TAKEN", "This e-mail is already registered")
       : new ApiException(HttpStatus.CONFLICT, "PSEUDO_TAKEN", "This pseudo is already taken");
   }
+}
+
+function toModeratorModeration(
+  user: Pick<User, "id" | "pseudo" | "email" | "createdAt">,
+): ModeratorModeration {
+  return {
+    id: user.id,
+    pseudo: user.pseudo,
+    email: user.email,
+    createdAt: user.createdAt.toISOString(),
+  };
 }

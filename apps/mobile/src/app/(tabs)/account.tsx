@@ -8,7 +8,7 @@ import { Button } from "../../components/ui/Button";
 import { AuthPanel } from "../../features/auth/components/AuthPanel";
 import { DeleteAccount } from "../../features/auth/components/DeleteAccount";
 import { JurySection } from "../../features/jury/components/JurySection";
-import { ConversationsSection } from "../../features/tickets/components/ConversationsSection";
+import { TeamAccount } from "../../features/account/components/TeamAccount";
 import { LegalLinks } from "../../features/legal/LegalLinks";
 import { useAuth } from "../../providers/AuthProvider";
 
@@ -18,16 +18,10 @@ const texts = {
   signOut: "Se déconnecter",
   becomeEditor: "Devenir éditeur",
   editorSpace: "Mon espace éditeur",
-  editorApplications: "Demandes éditeurs",
-  postReviews: "Articles signalés",
-  moderation: "Commentaires et opinions signalés",
   sanctions: "Mes sanctions",
   blocks: "Comptes bloqués",
   alerts: "Mes alertes",
   support: "Contacter Phémé",
-  tickets: "Tickets",
-  conversations: "Toutes les conversations",
-  audit: "Journal d'audit",
 };
 
 export default function AccountScreen() {
@@ -43,21 +37,18 @@ export default function AccountScreen() {
       {status === "anonymous" ? (
         <AuthPanel initialMode="choice" onSuccess={() => goToTab("/")} />
       ) : null}
-      {status === "authenticated" && user ? (
+      {status === "authenticated" &&
+      user &&
+      (user.role === "MODERATOR" || user.role === "ADMIN") ? (
+        <TeamAccount user={user} onSignOut={signOut} />
+      ) : null}
+      {status === "authenticated" && user && (user.role === "READER" || user.role === "EDITOR") ? (
         <>
           <Text style={styles.text}>{texts.signedInAs(user.pseudo)}</Text>
-          {user.role === "READER" || user.role === "EDITOR" ? (
-            <Button
-              label={user.role === "EDITOR" ? texts.editorSpace : texts.becomeEditor}
-              onPress={() => router.push("/editor")}
-            />
-          ) : null}
-          {can(user, "editor.validateIndependent") ? (
-            <Button
-              label={texts.editorApplications}
-              onPress={() => router.push("/moderation/editor-applications")}
-            />
-          ) : null}
+          <Button
+            label={user.role === "EDITOR" ? texts.editorSpace : texts.becomeEditor}
+            onPress={() => router.push("/editor")}
+          />
           <Button
             label={texts.sanctions}
             variant="secondary"
@@ -66,20 +57,10 @@ export default function AccountScreen() {
           <Button label={texts.alerts} variant="secondary" onPress={() => router.push("/alerts")} />
           <JurySection />
           <Button label={texts.blocks} variant="secondary" onPress={() => router.push("/blocks")} />
-          {can(user, "moderation.queue.read") ? (
-            <Button label={texts.moderation} onPress={() => router.push("/moderation/comments")} />
-          ) : null}
-          {can(user, "moderation.queue.read") ? (
-            <Button
-              label={texts.postReviews}
-              onPress={() => router.push("/moderation/post-reviews")}
-            />
-          ) : null}
           {/* docs/DECISIONS.md (contact): readers and editors write to the team. */}
           {can(user, "support.open") ? (
             <Button label={texts.support} onPress={() => router.push("/support")} />
           ) : null}
-          <ConversationsSection />
           <Button label={texts.signOut} variant="secondary" onPress={signOut} />
           <DeleteAccount />
         </>

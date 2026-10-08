@@ -702,3 +702,19 @@ qui la remplace.
   Côté modération, les tickets sont rangés en « Éditeurs » (chats avec un éditeur, ou éditeur qui
   écrit à l'équipe) et « Lecteurs », avec leur motif et qui les a pris en charge (l'admin voit
   tout).
+
+## 2026-10-09 — Comptes modérateurs et Compte de l'équipe (todo.txt)
+
+- **Question** : comment l'admin crée-t-il un modérateur, et comment ranger le Compte de l'équipe ?
+- **Décision** :
+  - Dans Compte › Administration › Modérateurs, le bouton « + Modérateur » crée un compte
+    (pseudo, e-mail, mot de passe, mêmes règles qu'une inscription) avec le rôle `MODERATOR`.
+    Réservé à la permission `moderator.manage` (ADMIN), écrit dans le journal d'audit
+    (`moderator.create`) dans la même transaction. L'admin transmet lui-même les identifiants ;
+    le modérateur peut ensuite changer son mot de passe comme tout compte.
+  - Le Compte d'un modérateur ou d'un admin est découpé en onglets : **Conversations** (ouvert
+    par défaut : à prendre en charge et les siennes ; tout pour l'admin), **Modération**
+    (demandes éditeurs, commentaires et articles signalés), **Administration** (admin seulement :
+    modérateurs, journal d'audit), **Mon compte** (alertes, blocages, sanctions, déconnexion,
+    suppression). Les outils sont des cartes en grille (2 colonnes dès 600 px de large).
+  - Le Compte d'un lecteur ou d'un éditeur reste une colonne de boutons, avec « Contacter Phémé ».
