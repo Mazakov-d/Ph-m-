@@ -8,7 +8,7 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
-import { colors, gridBreakpoints, radius, spacing } from "../../components/ui/theme";
+import { colors, gridBreakpoints, layout, radius, spacing } from "../../components/ui/theme";
 import { useEditorProfile } from "../../features/editors/api";
 import { EditorBadge } from "../../features/editors/components/EditorBadge";
 import { ReliabilityGauge } from "../../features/editors/components/ReliabilityGauge";
@@ -107,7 +107,14 @@ function Section({ title, body }: { title: string; body: string }) {
 const DETAILS_MAX_WIDTH = 420;
 
 const styles = StyleSheet.create({
-  container: { padding: spacing.lg, gap: spacing.xl, width: "100%" },
+  // Interface brief: the same width as the feed's grid, so the posts look the same.
+  container: {
+    padding: spacing.lg,
+    gap: spacing.xl,
+    width: "100%",
+    maxWidth: layout.maxGridWidth,
+    alignSelf: "center",
+  },
   top: { flexDirection: "row", alignItems: "flex-start", gap: spacing.xl },
   stack: { gap: spacing.lg },
   side: { flex: 1 },

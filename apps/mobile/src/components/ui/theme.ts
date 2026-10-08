@@ -36,3 +36,6 @@ export const textSizes = {
 
 /** Two columns from this width, three from the next one (web, tablets). */
 export const gridBreakpoints = { twoColumns: 760, threeColumns: 1140 } as const;
+
+/** Interface brief: past this width a grid of posts stops growing and stays centred. */
+export const layout = { maxGridWidth: 1400 } as const;

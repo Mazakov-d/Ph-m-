@@ -1,13 +1,17 @@
 import { APP_SLOGAN } from "@fama/shared";
 import { useState } from "react";
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from "react-native";
-import { colors, spacing } from "../../components/ui/theme";
+import { colors, layout, spacing } from "../../components/ui/theme";
 import { useGridColumns } from "../../components/ui/useGridColumns";
 import { randomUUID } from "expo-crypto";
 import { type FeedFilters, NO_FILTERS, useFeed } from "../../features/posts/api";
 import { ActiveFilters } from "../../features/posts/components/ActiveFilters";
 import { FiltersOverlay } from "../../features/posts/components/FiltersOverlay";
-import { PostCard } from "../../features/posts/components/PostCard";
+import {
+  gridCellKey,
+  PostGridCellView,
+  toGridCells,
+} from "../../features/posts/components/PostGridCell";
 import { postErrorMessage } from "../../features/posts/texts";
 import { isSearchActive } from "../../features/search/api";
 import { SearchBar } from "../../features/search/components/SearchBar";
@@ -48,9 +52,9 @@ export default function FeedScreen() {
             key={columns}
             numColumns={columns}
             columnWrapperStyle={columns > 1 ? styles.row : undefined}
-            data={posts}
-            keyExtractor={(post) => post.id}
-            renderItem={({ item }) => <PostCard post={item} fill={columns > 1} />}
+            data={toGridCells(posts, columns)}
+            keyExtractor={gridCellKey}
+            renderItem={({ item }) => <PostGridCellView cell={item} columns={columns} />}
             contentContainerStyle={styles.list}
             ListHeaderComponent={
               <View>
@@ -97,6 +101,9 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.xl,
     // Interface brief: on the web, the posts grow with the window.
     width: "100%",
+    // Interface brief: on a very wide window the columns stop growing, centred.
+    maxWidth: layout.maxGridWidth,
+    alignSelf: "center",
   },
   row: { gap: spacing.md },
   slogan: { fontStyle: "italic", textAlign: "center", paddingVertical: 8 },

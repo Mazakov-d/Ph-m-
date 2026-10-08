@@ -1,10 +1,10 @@
 import { useRouter } from "expo-router";
 import type { ReactElement } from "react";
 import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from "react-native";
-import { colors, radius, spacing } from "../../../components/ui/theme";
+import { colors, layout, radius, spacing } from "../../../components/ui/theme";
 import { EditorBadge } from "../../editors/components/EditorBadge";
 import type { FeedFilters } from "../../posts/api";
-import { PostCard } from "../../posts/components/PostCard";
+import { gridCellKey, PostGridCellView, toGridCells } from "../../posts/components/PostGridCell";
 import { postErrorMessage } from "../../posts/texts";
 import { useSearch } from "../api";
 
@@ -29,9 +29,9 @@ export function SearchResults({ q, filters, header, columns }: Props) {
       key={columns}
       numColumns={columns}
       columnWrapperStyle={columns > 1 ? styles.row : undefined}
-      data={posts}
-      keyExtractor={(post) => post.id}
-      renderItem={({ item }) => <PostCard post={item} fill={columns > 1} />}
+      data={toGridCells(posts, columns)}
+      keyExtractor={gridCellKey}
+      renderItem={({ item }) => <PostGridCellView cell={item} columns={columns} />}
       contentContainerStyle={styles.list}
       ListHeaderComponent={
         <View style={styles.header}>
@@ -68,6 +68,9 @@ const styles = StyleSheet.create({
     padding: spacing.lg,
     paddingBottom: spacing.xl,
     width: "100%",
+    // Interface brief: on a very wide window the columns stop growing, centred.
+    maxWidth: layout.maxGridWidth,
+    alignSelf: "center",
   },
   row: { gap: spacing.md },
   header: { gap: spacing.sm },
