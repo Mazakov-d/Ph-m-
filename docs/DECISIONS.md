@@ -165,3 +165,26 @@ qui la remplace.
     « Culture », « Sport ».
 - **Pourquoi** : limites et traitement des images choisis par le porteur du projet ; le reste découle de
   la SPEC ou relève de choix techniques simples.
+
+## 2026-10-08 — Commentaires
+
+- **Question** : la SPEC (§6) ne fixe ni la liste des termes du filtre automatique, ni ce que voit
+  l'auteur bloqué, ni plusieurs détails des réponses et de la suppression.
+- **Décision** :
+  - filtre automatique (`ToxicityChecker`) : liste initiale de termes rédigée par l'équipe technique,
+    **à relire et compléter par le porteur du projet avant le lancement**
+    (`apps/api/src/comments/toxicity/forbidden-terms.ts`) ; comparaison sur des mots entiers après
+    normalisation (casse, accents, chiffres et symboles de substitution, lettres répétées, lettres
+    séparées par des espaces ou des points), pour ne jamais bloquer « contexte » à cause de « con » ;
+  - un commentaire bloqué n'est pas enregistré ; l'auteur voit un message **générique** (« terme
+    interdit par les règles de la communauté »), sans le terme trouvé, pour ne pas dévoiler la liste ;
+  - réponses : un seul niveau ; le parent doit être un commentaire racine du même post, `VISIBLE` ou
+    `VERIFIED` ; dans l'app, « Répondre » sous une réponse répond au fil (au commentaire racine) ;
+  - liste : les commentaires racines par date croissante, page par page, chacun avec toutes ses
+    réponses (date croissante) ;
+  - suppression : par l'auteur seulement, d'un commentaire `VISIBLE` ou `VERIFIED` ; refusée s'il est
+    `UNDER_REVIEW` (SPEC) ou déjà `REMOVED` / `DELETED` ; **permise à un compte suspendu ou banni**
+    (supprimer ses propres propos n'est pas publier) ;
+  - un commentaire supprimé garde ses réponses ; il s'affiche « Commentaire supprimé ».
+- **Pourquoi** : liste, message et suppression par un compte suspendu choisis par le porteur du projet ;
+  le reste découle de la SPEC.

@@ -25,6 +25,12 @@ export const commentPublicSchema = z.object({
 });
 export type CommentPublic = z.infer<typeof commentPublicSchema>;
 
+/** SPEC §6: a root comment and its replies (one level), as listed under a post. */
+export const commentThreadPublicSchema = commentPublicSchema.extend({
+  replies: z.array(commentPublicSchema),
+});
+export type CommentThreadPublic = z.infer<typeof commentThreadPublicSchema>;
+
 /** Comment as seen by moderators: content always visible, plus the report score. */
 export const commentModerationSchema = commentPublicSchema.extend({
   content: z.string(),
