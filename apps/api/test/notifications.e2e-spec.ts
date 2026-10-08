@@ -73,7 +73,7 @@ describe("Push notifications (e2e, docs/DECISIONS.md)", () => {
           await addAlert(reader.accessToken, {
             theme: "SPORT",
             zone: "FRANCE",
-            region: null,
+            locality: null,
           }).expect(201)
         ).body,
       );
@@ -97,25 +97,25 @@ describe("Push notifications (e2e, docs/DECISIONS.md)", () => {
       const themes = ["POLITICS", "ECONOMY", "SOCIAL_MOVEMENTS", "ENVIRONMENT", "SCIENCE_HEALTH"];
       for (const theme of themes) {
         for (const zone of [null, "FRANCE"]) {
-          await addAlert(reader.accessToken, { theme, zone, region: null }).expect(201);
+          await addAlert(reader.accessToken, { theme, zone, locality: null }).expect(201);
         }
       }
       const response = await addAlert(reader.accessToken, {
         theme: "SPORT",
         zone: null,
-        region: null,
+        locality: null,
       });
       expect(response.status).toBe(409);
       expect(response.body.code).toBe("ALERTS_LIMIT_REACHED");
     });
 
-    it("need a theme or a zone, and a region only with LOCAL", async () => {
+    it("need a theme or a zone, and a locality only with LOCAL", async () => {
       const reader = await signUp(app, prisma, "lecteur");
-      await addAlert(reader.accessToken, { theme: null, zone: null, region: null }).expect(400);
+      await addAlert(reader.accessToken, { theme: null, zone: null, locality: null }).expect(400);
       await addAlert(reader.accessToken, {
         theme: null,
         zone: "FRANCE",
-        region: "Bretagne",
+        locality: "BRETAGNE",
       }).expect(400);
     });
   });
@@ -132,14 +132,16 @@ describe("Push notifications (e2e, docs/DECISIONS.md)", () => {
           ownerName: "Nom",
         },
       });
-      await addAlert(editor.accessToken, { theme: "POLITICS", zone: null, region: null }).expect(
+      await addAlert(editor.accessToken, { theme: "POLITICS", zone: null, locality: null }).expect(
         201,
       );
       const fan = await readerWithPhone("fan");
-      await addAlert(fan.accessToken, { theme: "POLITICS", zone: null, region: null }).expect(201);
-      await addAlert(fan.accessToken, { theme: null, zone: "FRANCE", region: null }).expect(201);
+      await addAlert(fan.accessToken, { theme: "POLITICS", zone: null, locality: null }).expect(
+        201,
+      );
+      await addAlert(fan.accessToken, { theme: null, zone: "FRANCE", locality: null }).expect(201);
       const sport = await readerWithPhone("sportif");
-      await addAlert(sport.accessToken, { theme: "SPORT", zone: "FRANCE", region: null }).expect(
+      await addAlert(sport.accessToken, { theme: "SPORT", zone: "FRANCE", locality: null }).expect(
         201,
       );
 
@@ -167,7 +169,7 @@ describe("Push notifications (e2e, docs/DECISIONS.md)", () => {
         editorStatus: "INDEPENDENT",
       });
       const reader = await readerWithPhone("lecteur");
-      await addAlert(reader.accessToken, { theme: "POLITICS", zone: null, region: null }).expect(
+      await addAlert(reader.accessToken, { theme: "POLITICS", zone: null, locality: null }).expect(
         201,
       );
       await request(server())
@@ -185,7 +187,7 @@ describe("Push notifications (e2e, docs/DECISIONS.md)", () => {
         editorStatus: "INDEPENDENT",
       });
       const reader = await readerWithPhone("lecteur");
-      await addAlert(reader.accessToken, { theme: "POLITICS", zone: null, region: null }).expect(
+      await addAlert(reader.accessToken, { theme: "POLITICS", zone: null, locality: null }).expect(
         201,
       );
       await prisma.notification.createMany({
@@ -202,7 +204,7 @@ describe("Push notifications (e2e, docs/DECISIONS.md)", () => {
         editorStatus: "INDEPENDENT",
       });
       const reader = await readerWithPhone("lecteur");
-      await addAlert(reader.accessToken, { theme: "POLITICS", zone: null, region: null }).expect(
+      await addAlert(reader.accessToken, { theme: "POLITICS", zone: null, locality: null }).expect(
         201,
       );
       await request(server())

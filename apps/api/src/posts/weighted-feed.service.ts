@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { Injectable } from "@nestjs/common";
 import {
   feedWindowStart,
+  localitiesWithin,
   type Paginated,
   type PostQuery,
   type PostSummaryPublic,
@@ -39,6 +40,7 @@ export class WeightedFeedService {
         createdAt: { gte: feedWindowStart(cursor.asOf, query.today), lte: cursor.asOf },
         removedAt: null,
         zone: query.zone,
+        locality: query.locality ? { in: localitiesWithin(query.locality) } : undefined,
         theme: query.theme,
         authorId: { notIn: blockedIds },
       },

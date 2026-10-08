@@ -8,7 +8,7 @@ const validPost = {
   body: "Texte de l'article.",
   sources: ["https://www.assemblee-nationale.fr"],
   zone: "FRANCE",
-  region: null,
+  locality: null,
   theme: "POLITICS",
 };
 
@@ -50,15 +50,19 @@ describe("createPostInputSchema (SPEC §3)", () => {
     ).toBe(false);
   });
 
-  it("requires a region for a LOCAL zone", () => {
+  it("requires a region or a city of the list for a LOCAL zone (docs/DECISIONS.md: places)", () => {
     expect(createPostInputSchema.safeParse({ ...validPost, zone: "LOCAL" }).success).toBe(false);
     expect(
-      createPostInputSchema.safeParse({ ...validPost, zone: "LOCAL", region: "Bretagne" }).success,
+      createPostInputSchema.safeParse({ ...validPost, zone: "LOCAL", locality: "BRETAGNE" })
+        .success,
     ).toBe(true);
   });
 
-  it("forbids a region outside the LOCAL zone", () => {
-    expect(createPostInputSchema.safeParse({ ...validPost, region: "Bretagne" }).success).toBe(
+  it("forbids a locality outside the LOCAL zone, and a place out of the list", () => {
+    expect(
+      createPostInputSchema.safeParse({ ...validPost, zone: "LOCAL", locality: "Brest" }).success,
+    ).toBe(false);
+    expect(createPostInputSchema.safeParse({ ...validPost, locality: "BRETAGNE" }).success).toBe(
       false,
     );
   });

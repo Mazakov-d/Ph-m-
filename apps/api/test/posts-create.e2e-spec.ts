@@ -93,9 +93,9 @@ describe("Publishing a post (e2e, SPEC §3)", () => {
       expect(response.body).toMatchObject({ sources: [] });
     });
 
-    it("requires a region for a LOCAL post", async () => {
+    it("requires a region or a city of the list for a LOCAL post", async () => {
       await sendPost(app, editorToken, { ...ARTICLE, zone: "LOCAL" }).expect(400);
-      await sendPost(app, editorToken, { ...ARTICLE, zone: "LOCAL", region: "Bretagne" }).expect(
+      await sendPost(app, editorToken, { ...ARTICLE, zone: "LOCAL", locality: "BRETAGNE" }).expect(
         201,
       );
     });

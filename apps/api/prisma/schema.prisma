@@ -32,6 +32,48 @@ enum PostKind {
   OPINION
 }
 
+/// docs/DECISIONS.md (places): the 18 regions of France and its 20 most populated cities.
+enum Locality {
+  AUVERGNE_RHONE_ALPES
+  BOURGOGNE_FRANCHE_COMTE
+  BRETAGNE
+  CENTRE_VAL_DE_LOIRE
+  CORSE
+  GRAND_EST
+  HAUTS_DE_FRANCE
+  ILE_DE_FRANCE
+  NORMANDIE
+  NOUVELLE_AQUITAINE
+  OCCITANIE
+  PAYS_DE_LA_LOIRE
+  PROVENCE_ALPES_COTE_D_AZUR
+  GUADELOUPE
+  MARTINIQUE
+  GUYANE
+  LA_REUNION
+  MAYOTTE
+  PARIS
+  MARSEILLE
+  LYON
+  TOULOUSE
+  NICE
+  NANTES
+  MONTPELLIER
+  STRASBOURG
+  BORDEAUX
+  LILLE
+  RENNES
+  TOULON
+  REIMS
+  SAINT_ETIENNE
+  LE_HAVRE
+  DIJON
+  VILLEURBANNE
+  ANGERS
+  GRENOBLE
+  NIMES
+}
+
 enum Zone {
   FRANCE
   EUROPE
@@ -270,8 +312,8 @@ model Post {
   summary         String
   body            String
   zone            Zone
-  // SPEC §3: only for a LOCAL zone.
-  region          String?
+  // SPEC §3 + docs/DECISIONS.md (places): a region or a city, only for a LOCAL zone.
+  locality        Locality?
   theme           Theme
   // SPEC §3: always true for an OPINION.
   commentsEnabled Boolean          @default(true)
@@ -636,12 +678,12 @@ model PushToken {
 
 /// docs/DECISIONS.md: an alert on new posts, by theme and/or zone (ALERTS_MAX per account).
 model Alert {
-  id        String   @id @default(uuid()) @db.Uuid
-  userId    String   @db.Uuid
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @db.Uuid
   theme     Theme?
   zone      Zone?
-  region    String?
-  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  locality  Locality?
+  createdAt DateTime  @default(now()) @db.Timestamptz(3)
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 

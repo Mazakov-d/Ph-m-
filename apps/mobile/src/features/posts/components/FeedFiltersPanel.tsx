@@ -1,19 +1,20 @@
-import { Theme, Zone } from "@fama/shared";
+import { Theme } from "@fama/shared";
 import type { ReactNode } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Chip } from "../../../components/ui/Chip";
 import { colors, radius, spacing, textSizes } from "../../../components/ui/theme";
 import { type FeedFilters, NO_FILTERS } from "../api";
-import { THEME_LABELS, ZONE_LABELS } from "../texts";
+import { THEME_LABELS } from "../texts";
+import { PlacePicker } from "./PlacePicker";
 
 const texts = {
-  hint: "Combinez une période, une zone et un thème.",
+  hint: "Combinez une période, un lieu et un thème.",
   order: "Ordre",
   recent: "Plus récents",
   weighted: "À la une",
   period: "Période",
   today: "Aujourd'hui",
-  zone: "Zone",
+  zone: "Lieu",
   theme: "Thème",
   close: "Masquer les filtres",
   reset: "Tout effacer",
@@ -54,14 +55,7 @@ export function FeedFiltersPanel({ filters, onChange, onClose }: Props) {
         />
       </FilterGroup>
       <FilterGroup title={texts.zone}>
-        {Zone.options.map((zone) => (
-          <Chip
-            key={zone}
-            label={ZONE_LABELS[zone]}
-            selected={filters.zone === zone}
-            onPress={() => onChange({ ...filters, zone: filters.zone === zone ? null : zone })}
-          />
-        ))}
+        <PlacePicker value={filters.place} onChange={(place) => onChange({ ...filters, place })} />
       </FilterGroup>
       <FilterGroup title={texts.theme}>
         {Theme.options.map((theme) => (

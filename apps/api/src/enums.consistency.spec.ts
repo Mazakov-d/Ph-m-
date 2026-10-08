@@ -7,6 +7,7 @@ const ENUM_PAIRS: Record<string, [Record<string, string>, readonly string[]]> = 
   EditorStatus: [prisma.EditorStatus, shared.EditorStatus.options],
   PostKind: [prisma.PostKind, shared.PostKind.options],
   Zone: [prisma.Zone, shared.Zone.options],
+  Locality: [prisma.Locality, shared.Locality.options],
   Theme: [prisma.Theme, shared.Theme.options],
   PostReviewStatus: [prisma.PostReviewStatus, shared.PostReviewStatus.options],
   Verdict: [prisma.Verdict, shared.Verdict.options],

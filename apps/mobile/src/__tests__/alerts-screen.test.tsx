@@ -9,7 +9,7 @@ const SPORT_FRANCE = {
   id: "5b1e4a3c-6f1d-4d6b-9a52-3c2f0e7d8a11",
   theme: "SPORT",
   zone: "FRANCE",
-  region: null,
+  locality: null,
   createdAt: new Date().toISOString(),
 };
 
@@ -35,15 +35,15 @@ describe("AlertsScreen (docs/DECISIONS.md: push notifications)", () => {
     await waitFor(() => expect(calls("DELETE", `/alerts/${SPORT_FRANCE.id}`)).toHaveLength(1));
   });
 
-  it("creates an alert from a theme and a local zone with its region", async () => {
+  it("creates an alert from a theme and a city", async () => {
     fetchMock.mockImplementation(async (_url, init) =>
       init?.method === "POST" ? jsonResponse(201, SPORT_FRANCE) : jsonResponse(200, []),
     );
     await renderWithProviders(<AlertsScreen />);
     await screen.findByText("Aucune alerte pour l'instant.");
     await fireEvent.press(screen.getByText("Sport"));
-    await fireEvent.press(screen.getByText("Local"));
-    await fireEvent.changeText(screen.getByLabelText("Région (facultatif)"), "Bretagne");
+    await fireEvent.press(screen.getByText("▸ Villes"));
+    await fireEvent.press(screen.getByText("Rennes"));
     await fireEvent.press(screen.getByText("Créer l'alerte"));
 
     await waitFor(() => expect(calls("POST", "/alerts")).toHaveLength(1));
@@ -51,7 +51,7 @@ describe("AlertsScreen (docs/DECISIONS.md: push notifications)", () => {
     expect(typeof body === "string" ? JSON.parse(body) : null).toEqual({
       theme: "SPORT",
       zone: "LOCAL",
-      region: "Bretagne",
+      locality: "RENNES",
     });
   });
 

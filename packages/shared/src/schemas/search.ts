@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Theme, Zone } from "../enums.js";
+import { Locality, Theme, Zone } from "../enums.js";
 import { SEARCH_QUERY_MAX_LENGTH, SEARCH_QUERY_MIN_LENGTH } from "../rules.js";
 import { editorSummaryPublicSchema } from "./editor.js";
 import { postSummaryPublicSchema } from "./post.js";
@@ -9,6 +9,7 @@ export const searchQuerySchema = z.object({
   q: z.string().trim().min(SEARCH_QUERY_MIN_LENGTH).max(SEARCH_QUERY_MAX_LENGTH),
   today: z.stringbool().default(false),
   zone: Zone.optional(),
+  locality: Locality.optional(),
   theme: Theme.optional(),
 });
 export type SearchQuery = z.infer<typeof searchQuerySchema>;

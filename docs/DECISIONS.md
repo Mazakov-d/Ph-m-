@@ -611,3 +611,19 @@ qui la remplace.
 - **Décision** : pas maintenant. Rien n'indique que la recherche PostgreSQL (plein texte français
   - `pg_trgm`) soit insuffisante ; l'ajouter anticiperait un besoin (CLAUDE.md). À reprendre si les
     temps de réponse ou la pertinence se dégradent avec le volume.
+
+## 2026-10-08 — Lieux : régions et grandes villes
+
+- **Question** : le porteur veut des lieux précis (régions et villes de France) à la place de la
+  région saisie librement.
+- **Décision** (validée par le porteur du projet, sauf le point marqué) :
+  - un lieu se choisit dans **une seule liste**, dans cet ordre : International, Europe, France,
+    puis les **18 régions** (repliées) et les **20 plus grandes villes** (repliées) ;
+  - une région ou une ville fait de la publication une publication locale (zone `LOCAL`) ; pas de
+    thème « actualité locale » : le lecteur garde les thèmes habituels ;
+  - le filtre du fil, de la recherche et des alertes sur une région couvre aussi ses villes ;
+  - liste des villes (**sans validation**, à ajuster) : Paris, Marseille, Lyon, Toulouse, Nice,
+    Nantes, Montpellier, Strasbourg, Bordeaux, Lille, Rennes, Toulon, Reims, Saint-Étienne,
+    Le Havre, Dijon, Villeurbanne, Angers, Grenoble, Nîmes ;
+  - les publications locales existantes gardent leur lieu quand le nom saisi correspond à la liste ;
+    sinon elles passent en « France » (les alertes locales sans correspondance sont supprimées).

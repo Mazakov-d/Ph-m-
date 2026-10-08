@@ -1,6 +1,7 @@
 import { z } from "zod";
 import {
   EditorReliabilityLevel,
+  Locality,
   PostKind,
   PostLayout,
   PostReviewStatus,
@@ -16,7 +17,6 @@ import {
   POST_BODY_MAX_LENGTH,
   POST_SUMMARY_MAX_LENGTH,
   POST_TITLE_MAX_LENGTH,
-  REGION_MAX_LENGTH,
   SOURCES_MAX_COUNT,
   VOTE_OPTIONS_MAX,
   VOTE_OPTIONS_MIN,
@@ -44,7 +44,8 @@ export const createPostInputSchema = z
     // SPEC §3: at least one source for an article, optional for an opinion (see below).
     sources: z.array(sourceSchema).max(SOURCES_MAX_COUNT),
     zone: Zone,
-    region: z.string().trim().min(1).max(REGION_MAX_LENGTH).nullable(),
+    // docs/DECISIONS.md (places): a region or a city of the list, for a LOCAL post only.
+    locality: Locality.nullable(),
     theme: Theme,
     commentsEnabled: z.boolean().default(true),
     // docs/DECISIONS.md (interface brief): the editor chooses the order of the blocks and the
@@ -58,10 +59,10 @@ export const createPostInputSchema = z
       .max(VOTE_OPTIONS_MAX)
       .optional(),
   })
-  // SPEC §3: a region is given if and only if the zone is LOCAL.
-  .refine((post) => (post.zone === "LOCAL") === (post.region !== null), {
-    path: ["region"],
-    message: "Region is required for a LOCAL zone and forbidden otherwise",
+  // SPEC §3: a locality is given if and only if the zone is LOCAL.
+  .refine((post) => (post.zone === "LOCAL") === (post.locality !== null), {
+    path: ["locality"],
+    message: "A locality is required for a LOCAL zone and forbidden otherwise",
   })
   // SPEC §1 and §3: an article always cites at least one source.
   .refine((post) => post.kind === "OPINION" || post.sources.length > 0, {
@@ -103,6 +104,8 @@ export type FeedSort = z.infer<typeof FeedSort>;
 export const postQuerySchema = cursorQuerySchema.extend({
   today: z.stringbool().default(false),
   zone: Zone.optional(),
+  // docs/DECISIONS.md (places): a region covers its cities.
+  locality: Locality.optional(),
   theme: Theme.optional(),
   sort: FeedSort.default("RECENT"),
   seed: z.string().min(1).max(FEED_SEED_MAX_LENGTH).optional(),
@@ -145,7 +148,7 @@ export const postSummaryPublicSchema = z.object({
   layout: PostLayout,
   typefaces: postTypefacesSchema,
   zone: Zone,
-  region: z.string().nullable(),
+  locality: Locality.nullable(),
   theme: Theme,
   editor: editorSummaryPublicSchema,
   coverImage: postImagePublicSchema.nullable(),

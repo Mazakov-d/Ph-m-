@@ -11,7 +11,7 @@ export const ARTICLE = {
   body: "Texte complet de l'article.",
   sources: ["https://www.assemblee-nationale.fr", "Compte rendu de séance"],
   zone: "FRANCE",
-  region: null,
+  locality: null,
   theme: "POLITICS",
   commentsEnabled: true,
 };

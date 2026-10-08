@@ -17,6 +17,50 @@ export type PostKind = z.infer<typeof PostKind>;
 export const Zone = z.enum(["FRANCE", "EUROPE", "INTERNATIONAL", "LOCAL"]);
 export type Zone = z.infer<typeof Zone>;
 
+// docs/DECISIONS.md (places): where a LOCAL post happens — one of the 18 regions of France or
+// of its 20 most populated cities (metadata in domain/localities.ts).
+export const Locality = z.enum([
+  "AUVERGNE_RHONE_ALPES",
+  "BOURGOGNE_FRANCHE_COMTE",
+  "BRETAGNE",
+  "CENTRE_VAL_DE_LOIRE",
+  "CORSE",
+  "GRAND_EST",
+  "HAUTS_DE_FRANCE",
+  "ILE_DE_FRANCE",
+  "NORMANDIE",
+  "NOUVELLE_AQUITAINE",
+  "OCCITANIE",
+  "PAYS_DE_LA_LOIRE",
+  "PROVENCE_ALPES_COTE_D_AZUR",
+  "GUADELOUPE",
+  "MARTINIQUE",
+  "GUYANE",
+  "LA_REUNION",
+  "MAYOTTE",
+  "PARIS",
+  "MARSEILLE",
+  "LYON",
+  "TOULOUSE",
+  "NICE",
+  "NANTES",
+  "MONTPELLIER",
+  "STRASBOURG",
+  "BORDEAUX",
+  "LILLE",
+  "RENNES",
+  "TOULON",
+  "REIMS",
+  "SAINT_ETIENNE",
+  "LE_HAVRE",
+  "DIJON",
+  "VILLEURBANNE",
+  "ANGERS",
+  "GRENOBLE",
+  "NIMES",
+]);
+export type Locality = z.infer<typeof Locality>;
+
 export const Theme = z.enum([
   "POLITICS",
   "ECONOMY",

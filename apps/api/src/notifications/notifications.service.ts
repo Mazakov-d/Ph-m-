@@ -2,6 +2,7 @@ import { Injectable, Logger } from "@nestjs/common";
 import {
   ALERT_NOTIFICATIONS_PER_DAY,
   alertMatchesPost,
+  type Locality,
   type NotificationKind,
   stripInlineFormatting,
   type Theme,
@@ -19,7 +20,7 @@ type PublishedPost = {
   title: string;
   theme: Theme;
   zone: Zone;
-  region: string | null;
+  locality: Locality | null;
 };
 
 /**
@@ -47,7 +48,7 @@ export class NotificationsService {
    * never a reader who blocked the author (SPEC §10).
    */
   async notifyNewPost(post: PublishedPost, now: Date = new Date()): Promise<void> {
-    // The database narrows to the theme and zone; alertMatchesPost decides (region included).
+    // The database narrows to the theme and zone; alertMatchesPost decides (locality included).
     const alerts = await this.prisma.alert.findMany({
       where: {
         userId: { not: post.authorId },
@@ -61,7 +62,7 @@ export class NotificationsService {
           blocks: { none: { blockedId: post.authorId } },
         },
       },
-      select: { userId: true, theme: true, zone: true, region: true },
+      select: { userId: true, theme: true, zone: true, locality: true },
     });
     const readerIds = [
       ...new Set(alerts.filter((alert) => alertMatchesPost(alert, post)).map((a) => a.userId)),

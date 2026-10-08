@@ -1,13 +1,12 @@
 import { ALERTS_MAX, type AlertPublic } from "@fama/shared";
 import { ApiRequestError } from "../../lib/apiClient";
-import { THEME_LABELS, ZONE_LABELS } from "../posts/texts";
+import { THEME_LABELS, zonePlaceLabel } from "../posts/texts";
 
-/** « Sport · France », « Politique », « Local · Bretagne ». */
-export function alertLabel(alert: Pick<AlertPublic, "theme" | "zone" | "region">): string {
+/** « Sport · France », « Politique », « Rennes ». */
+export function alertLabel(alert: Pick<AlertPublic, "theme" | "zone" | "locality">): string {
   return [
     alert.theme ? THEME_LABELS[alert.theme] : null,
-    alert.zone ? ZONE_LABELS[alert.zone] : null,
-    alert.region,
+    alert.zone ? zonePlaceLabel(alert.zone, alert.locality) : null,
   ]
     .filter((part) => part !== null)
     .join(" · ");

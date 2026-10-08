@@ -46,7 +46,7 @@ export function toPostSummaryPublic(post: PostRecord): PostSummaryPublic {
       body: post.bodyTypeface,
     },
     zone: post.zone,
-    region: post.region,
+    locality: post.locality,
     theme: post.theme,
     editor: { id: post.author.id, pseudo: post.author.pseudo, editorStatus },
     coverImage: cover ? { id: cover.id, path: imagePath(cover) } : null,

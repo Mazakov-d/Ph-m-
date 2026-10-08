@@ -6,6 +6,7 @@ import {
   type CursorQuery,
   DEFAULT_VOTE_OPTIONS,
   feedWindowStart,
+  localitiesWithin,
   type Paginated,
   type PostPublic,
   type PostQuery,
@@ -99,7 +100,7 @@ export class PostsService {
           summary: input.summary,
           body: input.body,
           zone: input.zone,
-          region: input.region,
+          locality: input.locality,
           theme: input.theme,
           // SPEC §3: comments are always enabled on an opinion.
           commentsEnabled: input.kind === "OPINION" || input.commentsEnabled,
@@ -155,6 +156,8 @@ export class PostsService {
         // docs/DECISIONS.md: an opinion removed by moderation leaves the feed.
         removedAt: null,
         zone: query.zone,
+        // docs/DECISIONS.md (places): a region covers its cities.
+        locality: query.locality ? { in: localitiesWithin(query.locality) } : undefined,
         theme: query.theme,
         authorId: { notIn: blockedIds },
         ...(after && {

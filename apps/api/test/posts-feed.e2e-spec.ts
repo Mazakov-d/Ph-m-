@@ -106,6 +106,16 @@ describe("Public feed (e2e, SPEC §4)", () => {
     ]);
   });
 
+  it("filters by a region with its cities, or by a city (docs/DECISIONS.md: places)", async () => {
+    const local = (title: string, locality: string) =>
+      publishPost(app, editor.accessToken, { ...ARTICLE, title, zone: "LOCAL", locality });
+    await local("Bretagne", "BRETAGNE");
+    await local("Rennes", "RENNES");
+    await local("Nantes", "NANTES");
+    expect((await feedTitles("?locality=BRETAGNE")).sort()).toEqual(["Bretagne", "Rennes"]);
+    expect(await feedTitles("?locality=RENNES")).toEqual(["Rennes"]);
+  });
+
   it("hides the authors the reader blocked, for that reader only (SPEC §10)", async () => {
     const other = await signUp(app, prisma, "autre", { role: "EDITOR", editorStatus: "CERTIFIED" });
     await publishAged("De Clara", 1);

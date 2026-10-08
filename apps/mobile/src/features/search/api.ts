@@ -1,7 +1,7 @@
 import { SEARCH_QUERY_MIN_LENGTH, searchResultsPublicSchema } from "@fama/shared";
 import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "../../lib/apiClient";
-import type { FeedFilters } from "../posts/api";
+import { type FeedFilters, setPlaceParams } from "../posts/api";
 
 export const searchKeys = {
   all: ["search"] as const,
@@ -20,7 +20,7 @@ export function useSearch(q: string, filters: FeedFilters) {
     queryFn: () => {
       const params = new URLSearchParams({ q: text });
       if (filters.today) params.set("today", "true");
-      if (filters.zone) params.set("zone", filters.zone);
+      setPlaceParams(params, filters.place);
       if (filters.theme) params.set("theme", filters.theme);
       return apiClient.get(`/search?${params}`, searchResultsPublicSchema);
     },

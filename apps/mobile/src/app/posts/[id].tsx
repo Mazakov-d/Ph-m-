@@ -14,7 +14,7 @@ import {
   formatPublishedAt,
   postErrorMessage,
   THEME_LABELS,
-  ZONE_LABELS,
+  zonePlaceLabel,
 } from "../../features/posts/texts";
 import { ReportButton } from "../../features/reports/components/ReportButton";
 import { CorrectionForm } from "../../features/reviews/components/CorrectionForm";
@@ -47,7 +47,7 @@ export default function PostScreen() {
     );
   }
   const data = post.data;
-  const place = data.region ? `${ZONE_LABELS[data.zone]} · ${data.region}` : ZONE_LABELS[data.zone];
+  const place = zonePlaceLabel(data.zone, data.locality);
 
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.container}>

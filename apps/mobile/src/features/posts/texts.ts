@@ -1,4 +1,11 @@
-import type { Theme, Zone } from "@fama/shared";
+import {
+  isLocality,
+  LOCALITIES,
+  type Locality,
+  type Place,
+  type Theme,
+  type Zone,
+} from "@fama/shared";
 import { ApiRequestError } from "../../lib/apiClient";
 
 // docs/DECISIONS.md: French labels of the zones and themes (SPEC §3).
@@ -86,4 +93,14 @@ export function formatDuration(totalSeconds: number): string {
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
   return `${minutes}:${String(seconds).padStart(2, "0")}`;
+}
+
+/** « France », « Bretagne », « Rennes »: the name of a place (docs/DECISIONS.md: places). */
+export function placeLabel(place: Place): string {
+  return isLocality(place) ? LOCALITIES[place].label : ZONE_LABELS[place];
+}
+
+/** The place of a stored post or alert: its locality when LOCAL, else its zone. */
+export function zonePlaceLabel(zone: Zone, locality: Locality | null): string {
+  return locality ? LOCALITIES[locality].label : ZONE_LABELS[zone];
 }

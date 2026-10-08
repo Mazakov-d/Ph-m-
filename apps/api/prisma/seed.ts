@@ -7,6 +7,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { hash } from "argon2";
 import {
   DEFAULT_VOTE_OPTIONS,
+  type Locality,
   type PostKind,
   type Theme,
   Typeface,
@@ -184,14 +185,20 @@ async function storeDemoDocument(userId: string): Promise<string> {
   return key;
 }
 
-type SeedPost = { title: string; summary: string; zone: Zone; region: string | null; theme: Theme };
+type SeedPost = {
+  title: string;
+  summary: string;
+  zone: Zone;
+  locality: Locality | null;
+  theme: Theme;
+};
 
 const POST_TOPICS: SeedPost[] = [
   {
     title: "Le budget de l'État adopté en première lecture",
     summary: "Les députés ont voté le projet de loi de finances après trois semaines de débats.",
     zone: "FRANCE",
-    region: null,
+    locality: null,
     theme: "POLITICS",
   },
   {
@@ -199,133 +206,133 @@ const POST_TOPICS: SeedPost[] = [
     summary:
       "Les prix à la consommation progressent moins vite, selon les derniers chiffres publiés.",
     zone: "FRANCE",
-    region: null,
+    locality: null,
     theme: "ECONOMY",
   },
   {
     title: "Grève dans les transports régionaux",
     summary: "Les syndicats appellent à une journée de mobilisation sur les salaires.",
     zone: "FRANCE",
-    region: null,
+    locality: null,
     theme: "SOCIAL_MOVEMENTS",
   },
   {
     title: "Faut-il interdire les jets privés ?",
     summary: "Une tribune pour une taxation plus forte des vols privés.",
     zone: "EUROPE",
-    region: null,
+    locality: null,
     theme: "ENVIRONMENT",
   },
   {
     title: "Un nouveau traitement contre la maladie d'Alzheimer évalué",
     summary: "Une étude européenne publie des résultats préliminaires encourageants.",
     zone: "EUROPE",
-    region: null,
+    locality: null,
     theme: "SCIENCE_HEALTH",
   },
   {
     title: "Le Parlement européen encadre l'intelligence artificielle",
     summary: "Le texte fixe des obligations de transparence pour les modèles d'IA.",
     zone: "EUROPE",
-    region: null,
+    locality: null,
     theme: "TECH",
   },
   {
     title: "Rennes inaugure sa nouvelle médiathèque",
     summary: "Le bâtiment de quatre étages ouvre ses portes au public ce week-end.",
     zone: "LOCAL",
-    region: "Bretagne",
+    locality: "RENNES",
     theme: "CULTURE",
   },
   {
     title: "Le télétravail doit-il devenir un droit ?",
     summary: "Une opinion sur l'organisation du travail après la pandémie.",
     zone: "FRANCE",
-    region: null,
+    locality: null,
     theme: "SOCIAL_MOVEMENTS",
   },
   {
     title: "Sommet climatique : un accord a minima",
     summary: "Les pays participants s'engagent sur une feuille de route sans objectifs chiffrés.",
     zone: "INTERNATIONAL",
-    region: null,
+    locality: null,
     theme: "ENVIRONMENT",
   },
   {
     title: "Élections législatives au Canada",
     summary: "Le scrutin s'annonce serré selon les derniers sondages.",
     zone: "INTERNATIONAL",
-    region: null,
+    locality: null,
     theme: "POLITICS",
   },
   {
     title: "Le prix de l'électricité en hausse au 1er février",
     summary: "Le tarif réglementé augmente, selon la commission de régulation.",
     zone: "FRANCE",
-    region: null,
+    locality: null,
     theme: "ECONOMY",
   },
   {
     title: "Les Jeux paralympiques battent un record d'audience",
     summary: "Les retransmissions ont réuni un public inédit.",
     zone: "INTERNATIONAL",
-    region: null,
+    locality: null,
     theme: "SPORT",
   },
   {
     title: "La semaine de quatre jours, une fausse bonne idée ?",
     summary: "Une opinion sur les limites de la réduction du temps de travail.",
     zone: "FRANCE",
-    region: null,
+    locality: null,
     theme: "ECONOMY",
   },
   {
     title: "Lyon : la ligne de tramway T10 mise en service",
     summary: "La nouvelle ligne relie le sud de l'agglomération en vingt minutes.",
     zone: "LOCAL",
-    region: "Auvergne-Rhône-Alpes",
+    locality: "LYON",
     theme: "POLITICS",
   },
   {
     title: "Un satellite européen d'observation lancé avec succès",
     summary: "Il surveillera l'évolution des glaciers pendant sept ans.",
     zone: "EUROPE",
-    region: null,
+    locality: null,
     theme: "SCIENCE_HEALTH",
   },
   {
     title: "Les réseaux sociaux devraient-ils être interdits aux moins de 15 ans ?",
     summary: "Une opinion en faveur d'une majorité numérique.",
     zone: "FRANCE",
-    region: null,
+    locality: null,
     theme: "TECH",
   },
   {
     title: "Le festival d'Avignon dévoile sa programmation",
     summary: "Quarante spectacles seront présentés dans la cour d'honneur et hors les murs.",
     zone: "FRANCE",
-    region: null,
+    locality: null,
     theme: "CULTURE",
   },
   {
     title: "Football : la finale de la coupe d'Europe à Paris",
     summary: "Le Stade de France accueillera la rencontre au printemps.",
     zone: "EUROPE",
-    region: null,
+    locality: null,
     theme: "SPORT",
   },
   {
     title: "Mobilisation des agriculteurs contre les accords commerciaux",
     summary: "Des rassemblements sont prévus dans plusieurs préfectures.",
     zone: "FRANCE",
-    region: null,
+    locality: null,
     theme: "SOCIAL_MOVEMENTS",
   },
   {
     title: "Faut-il rouvrir le débat sur le nucléaire ?",
     summary: "Une opinion sur la place de l'atome dans la transition énergétique.",
     zone: "FRANCE",
-    region: null,
+    locality: null,
     theme: "ENVIRONMENT",
   },
 ];
@@ -366,7 +373,7 @@ async function createPosts(authorIds: string[], readerIds: string[]) {
         body: `${topic.summary}\n\nTexte de **démonstration** de l'article « *${topic.title}* ».`,
         titleTypeface: Typeface.options[index % Typeface.options.length],
         zone: topic.zone,
-        region: topic.region,
+        locality: topic.locality,
         theme: topic.theme,
         // SPEC §3: always true for an opinion; one article with comments disabled.
         commentsEnabled: kind === "OPINION" || index !== 1,

@@ -6,7 +6,7 @@ export function toAlertPublic(alert: Alert): AlertPublic {
     id: alert.id,
     theme: alert.theme,
     zone: alert.zone,
-    region: alert.region,
+    locality: alert.locality,
     createdAt: alert.createdAt.toISOString(),
   };
 }

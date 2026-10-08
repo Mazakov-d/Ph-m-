@@ -23,11 +23,15 @@ describe("PublishForm (SPEC §3)", () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it("asks for a region only for a local post", async () => {
+  it("offers the regions and the cities, folded until opened (docs/DECISIONS.md: places)", async () => {
     await renderWithProviders(<PublishForm onPublished={jest.fn()} />);
-    expect(screen.queryByLabelText("Région")).toBeNull();
-    await fireEvent.press(screen.getByText("Local"));
-    expect(screen.getByLabelText("Région")).toBeTruthy();
+    expect(screen.getByText("International")).toBeTruthy();
+    expect(screen.queryByText("Bretagne")).toBeNull();
+    await fireEvent.press(screen.getByText("▸ Régions"));
+    expect(screen.getByText("Bretagne")).toBeTruthy();
+    expect(screen.queryByText("Rennes")).toBeNull();
+    await fireEvent.press(screen.getByText("▸ Villes"));
+    expect(screen.getByText("Rennes")).toBeTruthy();
   });
 
   it("does not offer to disable comments on an opinion", async () => {
@@ -60,7 +64,7 @@ describe("PublishForm (SPEC §3)", () => {
       body: "Texte complet.",
       sources: ["https://www.insee.fr"],
       zone: "FRANCE",
-      region: null,
+      locality: null,
       theme: "POLITICS",
       commentsEnabled: true,
       layout: "TEXT_FIRST",

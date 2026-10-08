@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import {
   type AuthUser,
   feedWindowStart,
+  localitiesWithin,
   SEARCH_EDITORS_MAX,
   SEARCH_POSTS_MAX,
   type SearchQuery,
@@ -63,6 +64,8 @@ export class SearchService {
         )
       : [];
     const since = query.today ? feedWindowStart(now, true) : null;
+    // docs/DECISIONS.md (places): a region covers its cities.
+    const localities = query.locality ? localitiesWithin(query.locality) : null;
     const rows = await this.prisma.$queryRaw<{ id: string }[]>`
       SELECT p."id"
       FROM "Post" p, plainto_tsquery('french', f_unaccent(${query.q})) AS tsq
@@ -75,6 +78,7 @@ export class SearchService {
         )
         AND (${since}::timestamptz IS NULL OR p."createdAt" >= ${since}::timestamptz)
         AND (${query.zone ?? null}::text IS NULL OR p."zone"::text = ${query.zone ?? null}::text)
+        AND (${localities}::text[] IS NULL OR p."locality"::text = ANY(${localities}::text[]))
         AND (${query.theme ?? null}::text IS NULL OR p."theme"::text = ${query.theme ?? null}::text)
         AND NOT (p."authorId" = ANY(${blockedIds}::uuid[]))
       ORDER BY

@@ -1,20 +1,19 @@
-import { REGION_MAX_LENGTH, Theme, Zone } from "@fama/shared";
+import { type Place, placeToZone, Theme } from "@fama/shared";
 import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Button } from "../../../components/ui/Button";
 import { Chip } from "../../../components/ui/Chip";
-import { TextField } from "../../../components/ui/TextField";
 import { colors, spacing } from "../../../components/ui/theme";
-import { THEME_LABELS, ZONE_LABELS } from "../../posts/texts";
+import { PlacePicker } from "../../posts/components/PlacePicker";
+import { THEME_LABELS } from "../../posts/texts";
 import { useCreateAlert } from "../api";
 import { alertErrorMessage } from "../texts";
 
 const texts = {
   title: "Nouvelle alerte",
-  hint: "Choisissez un thème, une zone, ou les deux (ex. Sport · France).",
+  hint: "Choisissez un thème, un lieu, ou les deux (ex. Sport · Lyon).",
   theme: "Thème",
-  zone: "Zone",
-  region: "Région (facultatif)",
+  zone: "Lieu",
   create: "Créer l'alerte",
 };
 
@@ -22,20 +21,20 @@ const texts = {
 export function AlertForm() {
   const createAlert = useCreateAlert();
   const [theme, setTheme] = useState<Theme | null>(null);
-  const [zone, setZone] = useState<Zone | null>(null);
-  const [region, setRegion] = useState("");
+  const [place, setPlace] = useState<Place | null>(null);
 
-  const submit = () =>
+  const submit = () => {
+    const stored = place ? placeToZone(place) : { zone: null, locality: null };
     createAlert.mutate(
-      { theme, zone, region: zone === "LOCAL" && region.trim() !== "" ? region.trim() : null },
+      { theme, ...stored },
       {
         onSuccess: () => {
           setTheme(null);
-          setZone(null);
-          setRegion("");
+          setPlace(null);
         },
       },
     );
+  };
 
   return (
     <View style={styles.form}>
@@ -52,25 +51,7 @@ export function AlertForm() {
           />
         ))}
       </View>
-      <Text style={styles.label}>{texts.zone}</Text>
-      <View style={styles.chips}>
-        {Zone.options.map((option) => (
-          <Chip
-            key={option}
-            label={ZONE_LABELS[option]}
-            selected={zone === option}
-            onPress={() => setZone(zone === option ? null : option)}
-          />
-        ))}
-      </View>
-      {zone === "LOCAL" ? (
-        <TextField
-          label={texts.region}
-          value={region}
-          onChangeText={setRegion}
-          maxLength={REGION_MAX_LENGTH}
-        />
-      ) : null}
+      <PlacePicker label={texts.zone} value={place} onChange={setPlace} />
       {createAlert.error ? (
         <Text accessibilityRole="alert" style={styles.error}>
           {alertErrorMessage(createAlert.error)}

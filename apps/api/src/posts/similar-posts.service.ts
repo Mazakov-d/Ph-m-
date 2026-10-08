@@ -16,7 +16,7 @@ type SimilarRow = { id: string; authorId: string; sharedWords: number };
 
 /**
  * SPEC §9 + docs/DECISIONS.md: posts of other editors on the same subject — same zone (and
- * region), same theme, at least two significant words in common in the title and summary
+ * locality), same theme, at least two significant words in common in the title and summary
  * (French full-text dictionary, accents ignored), published within 7 days of the post.
  */
 @Injectable()
@@ -38,7 +38,7 @@ export class SimilarPostsService {
         : Prisma.empty;
     const rows = await this.prisma.$queryRaw<SimilarRow[]>`
       WITH target AS (
-        SELECT p."authorId", p."zone", p."region", p."theme", p."createdAt",
+        SELECT p."authorId", p."zone", p."locality", p."theme", p."createdAt",
                tsvector_to_array(to_tsvector('french', f_unaccent(p."title" || ' ' || p."summary"))) AS words
         FROM "Post" p WHERE p."id" = ${postId}::uuid
       )
@@ -55,7 +55,7 @@ export class SimilarPostsService {
       WHERE c."authorId" <> t."authorId"
         AND c."removedAt" IS NULL
         AND c."zone" = t."zone"
-        AND c."region" IS NOT DISTINCT FROM t."region"
+        AND c."locality" IS NOT DISTINCT FROM t."locality"
         AND c."theme" = t."theme"
         AND c."createdAt" BETWEEN t."createdAt" - make_interval(days => ${SIMILAR_POSTS_WINDOW_DAYS})
                               AND t."createdAt" + make_interval(days => ${SIMILAR_POSTS_WINDOW_DAYS})

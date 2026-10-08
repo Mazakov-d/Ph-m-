@@ -4,9 +4,9 @@ import { createAlertInputSchema } from "./notification.js";
 describe("createAlertInputSchema (push notifications)", () => {
   it("accepts a theme, a zone, or both", () => {
     for (const alert of [
-      { theme: "SPORT", zone: null, region: null },
-      { theme: null, zone: "FRANCE", region: null },
-      { theme: "SPORT", zone: "FRANCE", region: null },
+      { theme: "SPORT", zone: null, locality: null },
+      { theme: null, zone: "FRANCE", locality: null },
+      { theme: "SPORT", zone: "FRANCE", locality: null },
     ]) {
       expect(createAlertInputSchema.safeParse(alert).success).toBe(true);
     }
@@ -14,16 +14,18 @@ describe("createAlertInputSchema (push notifications)", () => {
 
   it("refuses an alert without theme nor zone", () => {
     expect(
-      createAlertInputSchema.safeParse({ theme: null, zone: null, region: null }).success,
+      createAlertInputSchema.safeParse({ theme: null, zone: null, locality: null }).success,
     ).toBe(false);
   });
 
-  it("accepts a region only with the LOCAL zone", () => {
+  it("names a region or a city with the LOCAL zone, and only with it", () => {
     expect(
-      createAlertInputSchema.safeParse({ theme: null, zone: "LOCAL", region: "Bretagne" }).success,
+      createAlertInputSchema.safeParse({ theme: null, zone: "LOCAL", locality: "BRETAGNE" })
+        .success,
     ).toBe(true);
     expect(
-      createAlertInputSchema.safeParse({ theme: null, zone: "FRANCE", region: "Bretagne" }).success,
+      createAlertInputSchema.safeParse({ theme: null, zone: "FRANCE", locality: "BRETAGNE" })
+        .success,
     ).toBe(false);
   });
 });

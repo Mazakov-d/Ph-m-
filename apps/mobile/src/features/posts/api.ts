@@ -6,7 +6,8 @@ import {
   postSummaryPublicSchema,
   similarPostsPublicSchema,
   type Theme,
-  type Zone,
+  type Place,
+  placeToZone,
 } from "@fama/shared";
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "../../lib/apiClient";
@@ -18,13 +19,22 @@ const FIRST_PAGE: string | null = null;
 
 export type FeedFilters = {
   today: boolean;
-  zone: Zone | null;
+  /** docs/DECISIONS.md (places): International, Europe, France, a region or a city. */
+  place: Place | null;
   theme: Theme | null;
   /** docs/DECISIONS.md (SPEC §4.2): newest first, or the weighted « À la une » draw. */
   sort: FeedSort;
 };
 
-export const NO_FILTERS: FeedFilters = { today: false, zone: null, theme: null, sort: "RECENT" };
+export const NO_FILTERS: FeedFilters = { today: false, place: null, theme: null, sort: "RECENT" };
+
+/** The query parameters of the place filter: a wide zone, or a locality (its region covers its cities). */
+export function setPlaceParams(params: URLSearchParams, place: Place | null): void {
+  if (!place) return;
+  const { zone, locality } = placeToZone(place);
+  if (locality) params.set("locality", locality);
+  else params.set("zone", zone);
+}
 
 export const postKeys = {
   all: ["posts"] as const,
@@ -47,7 +57,7 @@ export function useFeed(filters: FeedFilters, seed: string) {
     queryFn: ({ pageParam }) => {
       const params = new URLSearchParams();
       if (filters.today) params.set("today", "true");
-      if (filters.zone) params.set("zone", filters.zone);
+      setPlaceParams(params, filters.place);
       if (filters.theme) params.set("theme", filters.theme);
       if (weighted) params.set("sort", "WEIGHTED");
       if (pageParam) params.set("cursor", pageParam);

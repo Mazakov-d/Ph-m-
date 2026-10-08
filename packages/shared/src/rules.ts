@@ -70,7 +70,6 @@ export const PASSWORD_MAX_LENGTH = 128;
 export const POST_BODY_MAX_LENGTH = 50_000;
 export const SOURCES_MAX_COUNT = 20;
 export const SOURCE_MAX_LENGTH = 500;
-export const REGION_MAX_LENGTH = 100;
 export const REPORT_DETAILS_MAX_LENGTH = 1000;
 
 // docs/DECISIONS.md (interface brief): characters of the article shown on a feed card.

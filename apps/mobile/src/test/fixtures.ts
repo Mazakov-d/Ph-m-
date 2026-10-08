@@ -27,7 +27,7 @@ export const ARTICLE_CARD: PostSummaryPublic = {
   layout: "TEXT_FIRST",
   typefaces: { title: "MERRIWEATHER", summary: "INTER", body: "MERRIWEATHER" },
   zone: "FRANCE",
-  region: null,
+  locality: null,
   theme: "POLITICS",
   editor: {
     id: "2b1e4a3c-6f1d-4d6b-9a52-3c2f0e7d8a11",
@@ -54,7 +54,7 @@ export const OPINION_CARD: PostSummaryPublic = {
 export const ARTICLE_DETAIL: PostPublic = {
   ...ARTICLE_CARD,
   zone: "LOCAL",
-  region: "Bretagne",
+  locality: "BRETAGNE",
   body: "Texte complet de l'article.",
   sources: ["https://www.insee.fr", "Compte rendu de séance"],
   images: [],

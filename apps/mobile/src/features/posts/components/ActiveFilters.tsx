@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, Text } from "react-native";
 import { colors, spacing, textSizes } from "../../../components/ui/theme";
 import type { FeedFilters } from "../api";
-import { THEME_LABELS, ZONE_LABELS } from "../texts";
+import { placeLabel, THEME_LABELS } from "../texts";
 
 const texts = {
   prefix: "Filtres : ",
@@ -15,7 +15,7 @@ export function ActiveFilters({ filters, onEdit }: { filters: FeedFilters; onEdi
   const labels = [
     filters.sort === "WEIGHTED" ? texts.weighted : null,
     filters.today ? texts.today : null,
-    filters.zone ? ZONE_LABELS[filters.zone] : null,
+    filters.place ? placeLabel(filters.place) : null,
     filters.theme ? THEME_LABELS[filters.theme] : null,
   ].filter((label) => label !== null);
   if (labels.length === 0) {

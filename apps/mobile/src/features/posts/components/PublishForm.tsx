@@ -46,7 +46,7 @@ export function PublishForm({ onPublished }: { onPublished: (postId: string) => 
       summary: "",
       body: "",
       sources: [""],
-      region: null,
+      locality: null,
       commentsEnabled: true,
       layout: DEFAULT_POST_LAYOUT,
       typefaces: { ...DEFAULT_TYPEFACES },
@@ -54,7 +54,6 @@ export function PublishForm({ onPublished }: { onPublished: (postId: string) => 
   });
   const { errors } = formState;
   const kind = useWatch({ control, name: "kind" });
-  const zone = useWatch({ control, name: "zone" });
 
   const onSubmit = handleSubmit((post) => {
     const problem = imagesProblem(images);
@@ -112,7 +111,14 @@ export function PublishForm({ onPublished }: { onPublished: (postId: string) => 
           />
         )}
       />
-      <PlacementFields control={control} errors={errors} zone={zone} />
+      <PlacementFields
+        control={control}
+        errors={errors}
+        setPlace={(zone, locality) => {
+          setValue("zone", zone, { shouldValidate: formState.isSubmitted });
+          setValue("locality", locality, { shouldValidate: formState.isSubmitted });
+        }}
+      />
       <InteractionFields control={control} errors={errors} kind={kind} />
       <LayoutField control={control} />
       {createPost.error ? (

@@ -63,14 +63,15 @@ describe("FeedScreen (SPEC §4)", () => {
 
     await fireEvent(screen.getByLabelText(SEARCH_LABEL), "focus");
     expect(screen.getByText("Période")).toBeTruthy();
-    expect(screen.getByText("Zone")).toBeTruthy();
+    expect(screen.getByText("Lieu")).toBeTruthy();
     expect(screen.getByText("Thème")).toBeTruthy();
-    await fireEvent.press(screen.getByText("Local"));
+    await fireEvent.press(screen.getByText("▸ Villes"));
+    await fireEvent.press(screen.getByText("Lyon"));
     await fireEvent.press(screen.getByText("Autre"));
     await fireEvent.press(screen.getByText("Masquer les filtres"));
 
     expect(screen.queryByText("Période")).toBeNull();
-    expect(screen.getByText(/Filtres : Local · Autre/)).toBeTruthy();
+    expect(screen.getByText(/Filtres : Lyon · Autre/)).toBeTruthy();
   });
 
   it("asks for the weighted draw « À la une », with the reader's seed (SPEC §4.2)", async () => {
