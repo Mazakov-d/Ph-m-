@@ -25,7 +25,7 @@ export const REFRESH_COOKIE_NAME = "fama_refresh";
 
 // docs/DECISIONS.md: httpOnly (unreadable by JavaScript), Secure, SameSite=Strict,
 // only sent to the /auth routes.
-const REFRESH_COOKIE_OPTIONS: CookieOptions = {
+export const REFRESH_COOKIE_OPTIONS: CookieOptions = {
   httpOnly: true,
   secure: true,
   sameSite: "strict",

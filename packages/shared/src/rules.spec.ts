@@ -64,6 +64,7 @@ describe("rules (SPEC §11)", () => {
       SEARCH_QUERY_MAX_LENGTH: 100,
       SEARCH_POSTS_MAX: 20,
       SEARCH_EDITORS_MAX: 5,
+      DELETED_ACCOUNT_PSEUDO: "Compte supprimé",
       RETENTION_DAYS: 365,
     });
   });

@@ -11,6 +11,7 @@ import { ModerationModule } from "./moderation/moderation.module.js";
 import { PostsModule } from "./posts/posts.module.js";
 import { PrismaModule } from "./prisma/prisma.module.js";
 import { ReportsModule } from "./reports/reports.module.js";
+import { RetentionModule } from "./retention/retention.module.js";
 import { ReviewsModule } from "./reviews/reviews.module.js";
 import { SanctionsModule } from "./sanctions/sanctions.module.js";
 import { SearchModule } from "./search/search.module.js";
@@ -37,6 +38,7 @@ import { VotesModule } from "./votes/votes.module.js";
     TicketsModule,
     AuditModule,
     SearchModule,
+    RetentionModule,
     // Scheduled jobs (CLAUDE.md §5.3): ticket timeouts, later the retention purge.
     ScheduleModule.forRoot(),
   ],

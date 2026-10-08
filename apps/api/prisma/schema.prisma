@@ -122,8 +122,9 @@ enum TicketStatus {
 model User {
   id                   String    @id @default(uuid()) @db.Uuid
   email                String    @unique
-  // docs/DECISIONS.md: pseudos are unique regardless of case (citext).
-  pseudo               String    @unique @db.Citext
+  // docs/DECISIONS.md: pseudos are unique regardless of case (citext) among the active accounts
+  // (partial unique index in the "account_deletion" migration: deleted ones are all « Compte supprimé »).
+  pseudo               String    @db.Citext
   passwordHash         String
   role                 UserRole  @default(READER)
   // SPEC §2.1: internal report history, used by computeReportWeight.
@@ -135,6 +136,8 @@ model User {
   // SPEC §2.3: editors a moderator declared a conflict of interest with.
   conflictEditorIds    String[]  @db.Uuid
   createdAt            DateTime  @default(now()) @db.Timestamptz(3)
+  // SPEC §10: an account deleted from the app is anonymized, its contents kept.
+  deletedAt            DateTime? @db.Timestamptz(3)
 
   editorProfile    EditorProfile?
   editorIdentity   EditorIdentity?

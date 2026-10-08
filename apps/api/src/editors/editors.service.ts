@@ -122,7 +122,12 @@ export class EditorsService {
   /** SPEC §2.2: only validated editors have a public profile. */
   async getPublicProfile(editorId: string): Promise<EditorPublic> {
     const record = await this.prisma.editorProfile.findFirst({
-      where: { userId: editorId, status: { in: ["INDEPENDENT", "CERTIFIED"] } },
+      // SPEC §10: a deleted account has no public profile any more.
+      where: {
+        userId: editorId,
+        status: { in: ["INDEPENDENT", "CERTIFIED"] },
+        user: { deletedAt: null },
+      },
       include: { user: { select: { pseudo: true, editorIdentity: true } } },
     });
     if (!record) {

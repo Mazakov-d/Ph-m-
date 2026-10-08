@@ -16,6 +16,8 @@ const FIELD_MESSAGES = {
     default: "Mot de passe requis.",
   },
   pseudo: {
+    // docs/DECISIONS.md: « Compte supprimé » is reserved.
+    custom: "Ce pseudo est réservé.",
     too_small: `Au moins ${PSEUDO_MIN_LENGTH} caractères.`,
     too_big: `${PSEUDO_MAX_LENGTH} caractères maximum.`,
     default: "Lettres, chiffres, « _ », « - », « . » et espaces simples uniquement.",
@@ -48,6 +50,8 @@ export function apiErrorMessage(error: unknown): { field?: AuthField; message: s
       return { field: "pseudo", message: "Ce pseudo est déjà pris." };
     case "INVALID_CREDENTIALS":
       return { message: "E-mail ou mot de passe incorrect." };
+    case "RATE_LIMITED":
+      return { message: "Trop de tentatives. Patientez quelques minutes avant de réessayer." };
     case "NETWORK_ERROR":
       return { message: "Impossible de joindre le serveur. Vérifiez votre connexion." };
     default:

@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { EditorStatus, UserRole } from "../enums.js";
 import {
+  DELETED_ACCOUNT_PSEUDO,
   PASSWORD_MAX_LENGTH,
   PASSWORD_MIN_LENGTH,
   PSEUDO_MAX_LENGTH,
@@ -23,7 +24,11 @@ export const passwordSchema = z.string().min(PASSWORD_MIN_LENGTH).max(PASSWORD_M
 export const registerInputSchema = z.object({
   email: z.email().trim().toLowerCase(),
   password: passwordSchema,
-  pseudo: pseudoSchema,
+  // docs/DECISIONS.md: the name of deleted accounts is reserved.
+  pseudo: pseudoSchema.refine(
+    (pseudo) => pseudo.toLocaleLowerCase("fr") !== DELETED_ACCOUNT_PSEUDO.toLocaleLowerCase("fr"),
+    { message: "This pseudo is reserved", params: { reason: "reserved" } },
+  ),
 });
 export type RegisterInput = z.infer<typeof registerInputSchema>;
 
@@ -69,3 +74,9 @@ export const authSessionSchema = z.object({
   tokens: authTokensSchema,
 });
 export type AuthSession = z.infer<typeof authSessionSchema>;
+
+/** SPEC §10: deleting one's account from the app, confirmed with the password. */
+export const deleteAccountInputSchema = z.object({
+  password: z.string().min(1).max(PASSWORD_MAX_LENGTH),
+});
+export type DeleteAccountInput = z.infer<typeof deleteAccountInputSchema>;

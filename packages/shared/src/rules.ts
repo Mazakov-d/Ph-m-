@@ -92,5 +92,8 @@ export const SEARCH_QUERY_MAX_LENGTH = 100;
 export const SEARCH_POSTS_MAX = 20;
 export const SEARCH_EDITORS_MAX = 5;
 
+// SPEC §10 + docs/DECISIONS.md: what a deleted account is called (reserved at sign-up).
+export const DELETED_ACCOUNT_PSEUDO = "Compte supprimé";
+
 // SPEC §6 and §10: purge delay for logically deleted content. To be confirmed with a lawyer.
 export const RETENTION_DAYS = 365;

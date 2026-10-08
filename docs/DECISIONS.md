@@ -307,3 +307,20 @@ qui la remplace.
   - éditeurs : éditeurs validés dont le pseudo ressemble à la recherche (`pg_trgm`), 5 au plus ;
   - la recherche commence à 2 caractères (100 au plus).
 - **Pourquoi** : déduit de la SPEC ; à confirmer par le porteur du projet.
+
+## 2026-10-08 — Suppression de compte et purge (sans validation, à confirmer avec un juriste)
+
+- **Question** : la SPEC (§10, §6) demande l'anonymisation du compte supprimé et une purge selon
+  `RETENTION_DAYS` (à fixer avec un juriste) sans en préciser le détail.
+- **Décision** (prise sans validation, à relire avec un juriste) :
+  - la suppression se fait depuis l'app, **avec le mot de passe** ; elle est immédiate : e-mail
+    remplacé, mot de passe rendu inutilisable, sessions révoquées, `deletedAt` renseigné, pseudo
+    remplacé par « Compte supprimé » (unicité des pseudos limitée aux comptes actifs ; ce pseudo est
+    réservé à l'inscription) ; le profil éditeur public disparaît ;
+  - les contenus (posts, commentaires, messages) restent, signés « Compte supprimé » ;
+  - purge quotidienne : le texte des commentaires supprimés ou retirés depuis plus de `RETENTION_DAYS`
+    est effacé définitivement, avec leurs signalements (la ligne vide reste, pour ne pas casser le fil
+    des réponses) ; l'identité légale et les documents d'un éditeur
+    dont le compte est supprimé depuis plus de `RETENTION_DAYS` sont effacés ;
+  - un compte banni peut aussi supprimer son compte.
+- **Pourquoi** : exigence Apple (§10) et RGPD ; la durée de conservation légale reste à confirmer.

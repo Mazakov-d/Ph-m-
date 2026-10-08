@@ -228,8 +228,8 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 
 ## Phase 11 — Conformité et préparation à la publication
 
-- [ ] Suppression de compte depuis l'app (anonymisation, §10).
-- [ ] Job planifié de purge selon `RETENTION_DAYS`.
+- [x] Suppression de compte depuis l'app (anonymisation, §10).
+- [x] Job planifié de purge selon `RETENTION_DAYS`.
 - [ ] Pages : règles de la communauté, politique de confidentialité, mentions légales (textes fournis par le porteur du projet ; prévoir l'emplacement).
 - [ ] Limitation de débit (rate limiting) sur l'inscription, la connexion, les commentaires et les signalements.
 - [ ] Revue de sécurité : aucune donnée privée dans les réponses publiques (test automatisé qui parcourt les schémas publics).

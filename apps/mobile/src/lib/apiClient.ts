@@ -159,7 +159,8 @@ export const apiClient = {
   put: <T>(path: string, body: unknown, schema: ZodType<T>) => request("PUT", path, body, schema),
   patch: <T>(path: string, body: unknown, schema: ZodType<T>) =>
     request("PATCH", path, body, schema),
-  delete: <T>(path: string, schema: ZodType<T>) => request("DELETE", path, undefined, schema),
+  delete: <T>(path: string, schema: ZodType<T>, body?: unknown) =>
+    request("DELETE", path, body, schema),
   getBlob,
   /** Full address of a resource served by the API (e.g. an image path of a post). */
   url: (path: string) => `${API_URL}${path}`,

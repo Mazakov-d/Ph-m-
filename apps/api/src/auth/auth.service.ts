@@ -105,7 +105,8 @@ export class AuthService {
       where: { id: userId },
       include: WITH_EDITOR_STATUS,
     });
-    return user ? toAuthUser(user) : null;
+    // SPEC §10: a deleted account is no longer anyone.
+    return user && !user.deletedAt ? toAuthUser(user) : null;
   }
 
   private async createSession(user: UserWithEditorProfile): Promise<IssuedSession> {

@@ -41,6 +41,12 @@ describe("registerInputSchema (SPEC §2.1)", () => {
     );
   });
 
+  it("reserves the name of deleted accounts", () => {
+    expect(
+      registerInputSchema.safeParse({ ...validInput, pseudo: "compte SUPPRIMÉ" }).success,
+    ).toBe(false);
+  });
+
   it("rejects an invalid e-mail", () => {
     expect(registerInputSchema.safeParse({ ...validInput, email: "lea" }).success).toBe(false);
   });
