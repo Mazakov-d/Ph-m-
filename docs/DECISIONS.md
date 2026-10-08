@@ -575,3 +575,15 @@ qui la remplace.
     (verdict choisi par le plus de jurés, sans égalité), il l'explique : l'explication est publique ;
   - public : « Avis d'un jury de N lecteurs » et la répartition des votes, dans « Pourquoi ? » ;
     jamais qui a voté quoi.
+
+## 2026-10-08 — Dons aux éditeurs
+
+- **Question** : la ROADMAP prévoit des dons aux éditeurs, sans prestataire ni règles.
+- **Décision** (validée par le porteur du projet) : chaque éditeur validé (indépendant ou
+  certifié) peut indiquer **son propre lien de dons** (Tipeee, HelloAsso, PayPal…, adresse en
+  https) dans son espace éditeur. Les lecteurs voient « Soutenir <éditeur> » sur son profil et sous
+  chacun de ses posts, avec le site de destination affiché avant de quitter l'app. Aucun paiement
+  ne passe par Phémé, aucune commission.
+- **À vérifier avant la publication sur les stores** : Apple et Google acceptent un lien vers des
+  dons à une personne ou un organisme sans leurs achats intégrés tant que l'app ne prend rien
+  dessus ; relire leurs règles au moment de la soumission (paiements externes, lien sortant).

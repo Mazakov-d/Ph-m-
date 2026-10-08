@@ -17,6 +17,7 @@ const profile = {
   ownerName: "Société éditrice du Monde",
   ownerGroup: null,
   reliability: "VERY_RELIABLE",
+  donationUrl: "https://fr.tipeee.com/le-monde",
 };
 
 describe("EditorProfileScreen (SPEC §2.2)", () => {
@@ -36,6 +37,9 @@ describe("EditorProfileScreen (SPEC §2.2)", () => {
     expect(screen.queryByText("Identité")).toBeNull();
     // SPEC §5.7: the tier of the gauge, never a score.
     expect(screen.getByLabelText("Fiabilité de l'éditeur : Très fiable")).toBeTruthy();
+    // docs/DECISIONS.md (donations): the reader sees where the link leads before leaving.
+    expect(screen.getByText("Soutenir Le Monde")).toBeTruthy();
+    expect(screen.getByText("Lien externe : fr.tipeee.com")).toBeTruthy();
   });
 
   it("shows the identity when the editor made it public", async () => {

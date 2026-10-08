@@ -66,6 +66,19 @@ export function useUpdateEditorProfile() {
   });
 }
 
+/** docs/DECISIONS.md (donations): the editor's own donation link, or none (null). */
+export function useUpdateDonationLink() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (donationUrl: string | null) =>
+      apiClient.put("/editors/me/donation-link", { donationUrl }, editorApplicationPublicSchema),
+    onSuccess: (application) => {
+      queryClient.setQueryData(editorKeys.myApplication(), application);
+      return queryClient.invalidateQueries({ queryKey: [...editorKeys.all, "profile"] });
+    },
+  });
+}
+
 export function useEditorProfile(editorId: string) {
   return useQuery({
     queryKey: editorKeys.profile(editorId),

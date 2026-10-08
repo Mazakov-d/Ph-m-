@@ -4,6 +4,7 @@ import { ActivityIndicator, StyleSheet, Text } from "react-native";
 import { Button } from "../components/ui/Button";
 import { useMyEditorApplication } from "../features/editors/api";
 import { ApplicationStatus } from "../features/editors/components/ApplicationStatus";
+import { DonationLinkForm } from "../features/editors/components/DonationLinkForm";
 import { EditorApplicationForm } from "../features/editors/components/EditorApplicationForm";
 import { IdentityVisibilitySwitch } from "../features/editors/components/IdentityVisibilitySwitch";
 import { editorErrorMessage } from "../features/editors/texts";
@@ -58,6 +59,7 @@ export default function EditorSpaceScreen() {
             {texts.publicProfile}
           </Link>
         ) : null}
+        {isValidated ? <DonationLinkForm current={current.donationUrl} /> : null}
       </>
     );
   };

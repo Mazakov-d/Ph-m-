@@ -236,6 +236,8 @@ model EditorProfile {
   ownerName            String
   ownerGroup           String?
   showIdentityPublicly Boolean      @default(false)
+  // docs/DECISIONS.md (donations): the editor's own donation page (https), shown as « Soutenir ».
+  donationUrl          String?
   rejectionReason      String?
   validatedById        String?      @db.Uuid
   validatedAt          DateTime?    @db.Timestamptz(3)

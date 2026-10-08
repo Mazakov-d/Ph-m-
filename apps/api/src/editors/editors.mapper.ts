@@ -19,6 +19,7 @@ export function toEditorApplicationPublic(
     ownerGroup: profile.ownerGroup,
     showIdentityPublicly: profile.showIdentityPublicly,
     documentCount: identity.documentKeys.length,
+    donationUrl: profile.donationUrl,
     createdAt: profile.createdAt.toISOString(),
   };
 }
@@ -65,6 +66,7 @@ export function toEditorPublic(
     ownerName: record.ownerName,
     ownerGroup: record.ownerGroup,
     reliability,
+    donationUrl: record.donationUrl,
   };
   const identity = record.user.editorIdentity;
   if (record.showIdentityPublicly && identity) {

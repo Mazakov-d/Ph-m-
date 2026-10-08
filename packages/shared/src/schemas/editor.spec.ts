@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { editorDecisionInputSchema, editorPublicSchema } from "./editor.js";
+import {
+  editorDecisionInputSchema,
+  editorPublicSchema,
+  updateDonationLinkInputSchema,
+} from "./editor.js";
 
 const profile = {
   id: "0b1e4a3c-6f1d-4d6b-9a52-3c2f0e7d8a11",
@@ -9,6 +13,7 @@ const profile = {
   ownerName: "Groupe Le Monde",
   ownerGroup: null,
   reliability: "INSUFFICIENT_HISTORY",
+  donationUrl: null,
 };
 
 describe("editorPublicSchema (SPEC §2.2)", () => {
@@ -35,5 +40,21 @@ describe("editorDecisionInputSchema (SPEC §2.2)", () => {
 
   it("cannot move an editor back to PENDING", () => {
     expect(editorDecisionInputSchema.safeParse({ status: "PENDING" }).success).toBe(false);
+  });
+});
+
+describe("updateDonationLinkInputSchema (docs/DECISIONS.md: donations)", () => {
+  it("accepts a secure link, or null to remove it", () => {
+    expect(
+      updateDonationLinkInputSchema.safeParse({ donationUrl: "https://fr.tipeee.com/le-media" })
+        .success,
+    ).toBe(true);
+    expect(updateDonationLinkInputSchema.safeParse({ donationUrl: null }).success).toBe(true);
+  });
+
+  it("refuses an insecure link or something else than a link", () => {
+    for (const donationUrl of ["http://fr.tipeee.com/le-media", "javascript:alert(1)", "tipeee"]) {
+      expect(updateDonationLinkInputSchema.safeParse({ donationUrl }).success).toBe(false);
+    }
   });
 });

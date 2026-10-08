@@ -121,6 +121,21 @@ export class EditorsService {
     return this.getMyApplication(userId);
   }
 
+  /** docs/DECISIONS.md (donations): the validated editor's donation link, or none. */
+  async updateDonationLink(
+    userId: string,
+    donationUrl: string | null,
+  ): Promise<EditorApplicationPublic> {
+    const updated = await this.prisma.editorProfile.updateMany({
+      where: { userId, status: { in: ["INDEPENDENT", "CERTIFIED"] } },
+      data: { donationUrl },
+    });
+    if (updated.count !== 1) {
+      throw new ApiException(HttpStatus.NOT_FOUND, "NOT_FOUND", "No validated editor profile");
+    }
+    return this.getMyApplication(userId);
+  }
+
   /** SPEC §2.2: only validated editors have a public profile. */
   async getPublicProfile(editorId: string): Promise<EditorPublic> {
     const record = await this.prisma.editorProfile.findFirst({

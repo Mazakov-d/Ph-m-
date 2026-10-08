@@ -62,7 +62,17 @@ export class PostsService {
         })
       : null;
     const editorReliability = await this.reliability.levelFor(post.authorId);
-    return toPostPublic(post, votes, ownReport !== null, editorReliability);
+    const profile = await this.prisma.editorProfile.findUnique({
+      where: { userId: post.authorId },
+      select: { donationUrl: true },
+    });
+    return toPostPublic(
+      post,
+      votes,
+      ownReport !== null,
+      editorReliability,
+      profile?.donationUrl ?? null,
+    );
   }
 
   /**

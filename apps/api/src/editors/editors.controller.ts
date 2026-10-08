@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Put,
   UploadedFiles,
   UseInterceptors,
 } from "@nestjs/common";
@@ -21,7 +22,9 @@ import {
   type EditorApplicationPublic,
   type EditorPublic,
   idSchema,
+  type UpdateDonationLinkInput,
   type UpdateEditorProfileInput,
+  updateDonationLinkInputSchema,
   updateEditorProfileInputSchema,
 } from "@fama/shared";
 import { CurrentUser } from "../common/decorators/current-user.decorator.js";
@@ -65,6 +68,16 @@ export class EditorsController {
     @CurrentUser() user: AuthUser,
   ): Promise<EditorApplicationPublic> {
     return this.editorsService.updateProfile(user.id, input);
+  }
+
+  // docs/DECISIONS.md (donations): validated editors only (they publish).
+  @Put("me/donation-link")
+  @RequirePermission("post.create")
+  updateDonationLink(
+    @Body(new ZodValidationPipe(updateDonationLinkInputSchema)) input: UpdateDonationLinkInput,
+    @CurrentUser() user: AuthUser,
+  ): Promise<EditorApplicationPublic> {
+    return this.editorsService.updateDonationLink(user.id, input.donationUrl);
   }
 
   // SPEC §2: readable without an account (discovery through shared links).

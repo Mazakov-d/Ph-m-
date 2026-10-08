@@ -171,6 +171,8 @@ export const postPublicSchema = postSummaryPublicSchema.extend({
   viewerHasReported: z.boolean(),
   // SPEC §5.7 + docs/DECISIONS.md: the editor's gauge, on the full post (not on feed cards).
   editorReliability: EditorReliabilityLevel,
+  // docs/DECISIONS.md (donations): the editor's donation link, for « Soutenir » under the post.
+  editorDonationUrl: z.string().nullable(),
 });
 export type PostPublic = z.infer<typeof postPublicSchema>;
 

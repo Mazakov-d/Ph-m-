@@ -69,6 +69,7 @@ export function toPostPublic(
   votes: VoteSummaryPublic | null,
   viewerHasReported: boolean,
   editorReliability: EditorReliabilityLevel,
+  editorDonationUrl: string | null,
 ): PostPublic {
   return {
     ...toPostSummaryPublic(post),
@@ -84,5 +85,6 @@ export function toPostPublic(
     votes,
     viewerHasReported,
     editorReliability,
+    editorDonationUrl,
   };
 }

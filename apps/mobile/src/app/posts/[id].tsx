@@ -3,6 +3,7 @@ import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-nat
 import { colors, radius, spacing, textSizes } from "../../components/ui/theme";
 import { CommentsSection } from "../../features/comments/components/CommentsSection";
 import { EditorBadge } from "../../features/editors/components/EditorBadge";
+import { SupportButton } from "../../features/editors/components/SupportButton";
 import { ReliabilityGauge } from "../../features/editors/components/ReliabilityGauge";
 import { usePost } from "../../features/posts/api";
 import { PostBlocks } from "../../features/posts/components/PostBlocks";
@@ -64,6 +65,7 @@ export default function PostScreen() {
         <PostBlocks post={data} />
         {/* SPEC §7: an opinion is voted on; votes never change any order. */}
         <VoteBar post={data} />
+        <SupportButton pseudo={data.editor.pseudo} url={data.editorDonationUrl} />
         <SimilarPosts postId={data.id} />
         {/* Interface brief: the sources at the bottom left, the status at the bottom right. */}
         <View style={styles.bottomRow}>

@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { EditorReliabilityLevel, EditorStatus } from "../enums.js";
 import {
+  DONATION_URL_MAX_LENGTH,
   EDITORIAL_LINE_MAX_LENGTH,
   NAME_MAX_LENGTH,
   REJECTION_REASON_MAX_LENGTH,
@@ -32,6 +33,8 @@ export const editorApplicationPublicSchema = z.object({
   ownerGroup: z.string().nullable(),
   showIdentityPublicly: z.boolean(),
   documentCount: z.number().int().nonnegative(),
+  // docs/DECISIONS.md (donations): null until the editor gives one.
+  donationUrl: z.string().nullable(),
   createdAt: isoDateTimeSchema,
 });
 export type EditorApplicationPublic = z.infer<typeof editorApplicationPublicSchema>;
@@ -45,6 +48,18 @@ export const updateEditorProfileInputSchema = z.object({
   showIdentityPublicly: z.boolean(),
 });
 export type UpdateEditorProfileInput = z.infer<typeof updateEditorProfileInputSchema>;
+
+/**
+ * docs/DECISIONS.md (donations): a secure (https) link to the editor's own donation page;
+ * Phémé handles no payment and takes no commission. null removes it.
+ */
+export const updateDonationLinkInputSchema = z.object({
+  donationUrl: z
+    .url({ protocol: /^https$/ })
+    .max(DONATION_URL_MAX_LENGTH)
+    .nullable(),
+});
+export type UpdateDonationLinkInput = z.infer<typeof updateDonationLinkInputSchema>;
 
 // SPEC §2.2: INDEPENDENT by a moderator or admin, CERTIFIED by an admin only (checked by the API),
 // REJECTED with a mandatory reason.
@@ -77,6 +92,8 @@ export const editorPublicSchema = editorSummaryPublicSchema.extend({
   legalIdentity: z.object({ firstName: z.string(), lastName: z.string() }).optional(),
   // SPEC §5.7: the tier of the reliability gauge, never the score.
   reliability: EditorReliabilityLevel,
+  // docs/DECISIONS.md (donations): « Soutenir » opens it (null: no button).
+  donationUrl: z.string().nullable(),
 });
 export type EditorPublic = z.infer<typeof editorPublicSchema>;
 

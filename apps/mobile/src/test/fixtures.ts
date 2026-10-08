@@ -63,4 +63,5 @@ export const ARTICLE_DETAIL: PostPublic = {
   votes: null,
   viewerHasReported: false,
   editorReliability: "RELIABLE",
+  editorDonationUrl: null,
 };

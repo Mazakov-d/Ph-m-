@@ -263,6 +263,6 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 - [x] Vidéos dans les posts.
 - [x] Corrections d'articles publiées par l'éditeur (`PostCorrection`) si non faites avant.
 - [ ] Revue communautaire par jury d'editeurs independent/professionnel tiré au sort (§5.8).
-- [ ] Dons aux éditeurs.
+- [x] Dons aux éditeurs.
 - [ ] Moteur de recherche dédié (Meilisearch) si PostgreSQL ne suffit plus.
 - [ ] Messagerie temps réel (WebSocket) à la place du polling.

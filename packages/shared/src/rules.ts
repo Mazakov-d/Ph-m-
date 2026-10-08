@@ -177,3 +177,6 @@ export const JURY_VOTE_HOURS = 48;
 export const JURY_MIN_ACCOUNT_MONTHS = 6;
 export const JURY_SANCTION_FREE_MONTHS = 12;
 export const JURY_NOTE_MAX_LENGTH = 1000;
+
+// docs/DECISIONS.md (donations): the editor's own donation page (Tipeee, HelloAsso, PayPal…).
+export const DONATION_URL_MAX_LENGTH = 500;
