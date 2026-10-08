@@ -223,6 +223,8 @@ model Post {
   reviewStatus    PostReviewStatus @default(NOT_REVIEWED)
   // SPEC §3: unique readers, kept in sync with PostView.
   viewCount       Int              @default(0)
+  // docs/DECISIONS.md: an opinion removed by moderation (SPEC §6.3), kept logically.
+  removedAt       DateTime?        @db.Timestamptz(3)
   createdAt       DateTime         @default(now()) @db.Timestamptz(3)
 
   author      User             @relation(fields: [authorId], references: [id])

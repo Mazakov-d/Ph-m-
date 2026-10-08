@@ -11,7 +11,8 @@ import {
   type Paginated,
 } from "@fama/shared";
 import { CurrentUser } from "../common/decorators/current-user.decorator.js";
-import { Public } from "../common/decorators/public.decorator.js";
+import { OptionalUser } from "../common/decorators/current-user.decorator.js";
+import { OptionalAuth } from "../common/decorators/optional-auth.decorator.js";
 import { RequirePermission } from "../common/decorators/require-permission.decorator.js";
 import { ZodValidationPipe } from "../common/pipes/zod-validation.pipe.js";
 import { CommentsService } from "./comments.service.js";
@@ -30,14 +31,15 @@ export class CommentsController {
     return this.commentsService.create(author, input);
   }
 
-  // SPEC §2: readable without an account.
+  // SPEC §2: readable without an account; a signed-in reader does not see whom they blocked.
   @Get("posts/:postId/comments")
-  @Public()
+  @OptionalAuth()
   listForPost(
     @Param("postId", new ZodValidationPipe(idSchema)) postId: string,
     @Query(new ZodValidationPipe(cursorQuerySchema)) query: CursorQuery,
+    @OptionalUser() viewer: AuthUser | null,
   ): Promise<Paginated<CommentThreadPublic>> {
-    return this.commentsService.listForPost(postId, query);
+    return this.commentsService.listForPost(viewer, postId, query);
   }
 
   // No permission required: a suspended account may delete its own comments (docs/DECISIONS.md).

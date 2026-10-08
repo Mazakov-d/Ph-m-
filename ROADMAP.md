@@ -166,15 +166,16 @@ Feuille de route de développement. Lire `CLAUDE.md` (comment travailler) et `do
 
 ## Phase 8 — Modération des commentaires et sanctions
 
-- [ ] API : signaler un commentaire (§6.2), un signalement par compte, impossible si `VERIFIED`.
-- [ ] API : passage automatique en `UNDER_REVIEW` au seuil pondéré.
-- [ ] API : décision modérateur : `VERIFIED` (badge) ou `REMOVED` + sanction calculée par `nextSanction` (§6.3), case « À signaler sur PHAROS ».
-- [ ] API : application des sanctions (suspensions avec date de fin, bannissement), appel unique.
-- [ ] API : blocage d'un utilisateur (§10) et exclusion de ses contenus pour le bloqueur.
-- [ ] Toutes les décisions écrivent un `AuditLog`.
+- [x] API : signaler un commentaire (§6.2), un signalement par compte, impossible si `VERIFIED`.
+- [x] API : passage automatique en `UNDER_REVIEW` au seuil pondéré.
+- [x] API : décision modérateur : `VERIFIED` (badge) ou `REMOVED` + sanction calculée par `nextSanction` (§6.3), case « À signaler sur PHAROS ».
+- [x] API : application des sanctions (suspensions avec date de fin, bannissement), appel unique.
+- [x] API : blocage d'un utilisateur (§10) et exclusion de ses contenus pour le bloqueur.
+- [x] Toutes les décisions écrivent un `AuditLog`.
 - [ ] App : badge « ✓ Examiné par la modération : conforme aux règles » à la place du bouton Signaler.
 - [ ] App : écran modérateur « Commentaires signalés » ; écran « Mes sanctions » pour l'utilisateur concerné.
 - [ ] App : action « Bloquer cet utilisateur ».
+- [ ] Opinions signalées (§6.3 « les mêmes règles s'appliquent aux posts des éditeurs ») : file modérateur, décision conforme ou retrait (`removedAt`) + sanction de l'éditeur ; une opinion retirée disparaît du fil et son contenu est masqué.
 
 **Critères de validation**
 

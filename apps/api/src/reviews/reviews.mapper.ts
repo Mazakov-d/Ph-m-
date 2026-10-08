@@ -1,5 +1,5 @@
 import type { ReportModeration, ReviewPublic } from "@fama/shared";
-import type { EditorReply, PostReport, Review } from "../generated/prisma/client.js";
+import type { CommentReport, EditorReply, PostReport, Review } from "../generated/prisma/client.js";
 
 export type ReviewRecord = Review & { editorReply: EditorReply | null };
 
@@ -25,7 +25,15 @@ export function toReviewPublic(
   };
 }
 
-export function toReportModeration(report: PostReport): ReportModeration {
+/** A post or comment report, as seen by moderators (the fields both kinds share). */
+type AnyReport = Pick<
+  PostReport,
+  "id" | "reporterId" | "details" | "weight" | "status" | "createdAt"
+> & {
+  reason: PostReport["reason"] | CommentReport["reason"];
+};
+
+export function toReportModeration(report: AnyReport): ReportModeration {
   return {
     id: report.id,
     reporterId: report.reporterId,

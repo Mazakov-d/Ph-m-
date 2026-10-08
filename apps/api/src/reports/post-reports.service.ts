@@ -33,6 +33,10 @@ export class PostReportsService {
         if (!post) {
           throw new ApiException(HttpStatus.NOT_FOUND, "NOT_FOUND", "No such post");
         }
+        // docs/DECISIONS.md: nothing happens any more on a removed opinion.
+        if (post.removedAt) {
+          throw new ApiException(HttpStatus.GONE, "POST_REMOVED", "Removed by moderation");
+        }
         // SPEC §5.1: an editor cannot report their own posts.
         if (post.authorId === reporter.id) {
           throw new ApiException(

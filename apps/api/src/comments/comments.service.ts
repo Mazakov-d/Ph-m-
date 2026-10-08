@@ -45,6 +45,10 @@ export class CommentsService {
       if (!post) {
         throw new ApiException(HttpStatus.NOT_FOUND, "NOT_FOUND", "No such post");
       }
+      // docs/DECISIONS.md: nothing happens any more on a removed opinion.
+      if (post.removedAt) {
+        throw new ApiException(HttpStatus.GONE, "POST_REMOVED", "Removed by moderation");
+      }
       if (!post.commentsEnabled) {
         throw new ApiException(
           HttpStatus.CONFLICT,
@@ -85,16 +89,30 @@ export class CommentsService {
    * root comments, each with all its replies. Hidden or deleted comments keep their place with
    * a null content, so their replies stay readable.
    */
-  async listForPost(postId: string, query: CursorQuery): Promise<Paginated<CommentThreadPublic>> {
+  async listForPost(
+    viewer: AuthUser | null,
+    postId: string,
+    query: CursorQuery,
+  ): Promise<Paginated<CommentThreadPublic>> {
     const post = await this.prisma.post.findUnique({ where: { id: postId }, select: { id: true } });
     if (!post) {
       throw new ApiException(HttpStatus.NOT_FOUND, "NOT_FOUND", "No such post");
     }
+    // SPEC §10 + docs/DECISIONS.md: the threads and replies of blocked accounts are not sent.
+    const blockedIds = viewer
+      ? (
+          await this.prisma.block.findMany({
+            where: { blockerId: viewer.id },
+            select: { blockedId: true },
+          })
+        ).map((block) => block.blockedId)
+      : [];
     const after = query.cursor ? decodeCursor(query.cursor) : null;
     const roots = await this.prisma.comment.findMany({
       where: {
         postId,
         parentId: null,
+        authorId: { notIn: blockedIds },
         ...(after && {
           OR: [
             { createdAt: { gt: after.createdAt } },
@@ -106,7 +124,11 @@ export class CommentsService {
       take: query.limit + 1,
       include: {
         ...WITH_AUTHOR,
-        replies: { orderBy: [{ createdAt: "asc" }, { id: "asc" }], include: WITH_AUTHOR },
+        replies: {
+          where: { authorId: { notIn: blockedIds } },
+          orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+          include: WITH_AUTHOR,
+        },
       },
     });
     const page = toPage(roots, query.limit, (root) => root);

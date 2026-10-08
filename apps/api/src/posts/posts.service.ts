@@ -107,6 +107,8 @@ export class PostsService {
     const rows = await this.prisma.post.findMany({
       where: {
         createdAt: { gte: feedWindowStart(now, query.today) },
+        // docs/DECISIONS.md: an opinion removed by moderation leaves the feed.
+        removedAt: null,
         zone: query.zone,
         theme: query.theme,
         authorId: { notIn: blockedIds },
@@ -144,6 +146,10 @@ export class PostsService {
     if (!post) {
       throw new ApiException(HttpStatus.NOT_FOUND, "NOT_FOUND", "No such post");
     }
+    // docs/DECISIONS.md: a removed opinion is no longer shown, even by direct link.
+    if (post.removedAt) {
+      throw new ApiException(HttpStatus.GONE, "POST_REMOVED", "Removed by moderation");
+    }
     if (viewer?.id !== post.authorId) {
       await this.recordView(
         postId,
@@ -159,6 +165,7 @@ export class PostsService {
     const rows = await this.prisma.post.findMany({
       where: {
         authorId: editorId,
+        removedAt: null,
         ...(after && {
           OR: [
             { createdAt: { lt: after.createdAt } },

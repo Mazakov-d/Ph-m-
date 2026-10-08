@@ -29,6 +29,8 @@ export const ErrorCode = z.enum([
   // SPEC §3: comments cannot be turned off on an opinion.
   "COMMENTS_REQUIRED_FOR_OPINION",
   "COMMENTS_DISABLED",
+  // docs/DECISIONS.md: an opinion removed by moderation.
+  "POST_REMOVED",
   "INVALID_PARENT_COMMENT",
   "COMMENT_UNDER_REVIEW",
   "TOXIC_CONTENT",

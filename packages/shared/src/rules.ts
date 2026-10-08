@@ -35,6 +35,9 @@ export const EDITOR_APPEAL_HOURS = 48;
 export const TICKET_ASSIGN_TIMEOUT_HOURS = 24;
 // SPEC §6.3: sanctions count REMOVED comments over this many months.
 export const SANCTION_RESET_MONTHS = 6;
+// SPEC §6.3: length of the suspensions.
+export const SUSPENSION_24H_HOURS = 24;
+export const SUSPENSION_7D_HOURS = 7 * 24;
 
 // SPEC §11: provisional lengths.
 export const COMMENT_MAX_LENGTH = 2000;

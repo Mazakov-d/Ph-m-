@@ -247,3 +247,32 @@ qui la remplace.
   - la file de revue n'est pas paginée au MVP (elle reste courte) ; elle est triée par priorité.
 - **Pourquoi** : choix du porteur du projet pour les opinions, l'après-revue et le délai d'appel ; le
   reste découle de la SPEC.
+
+## 2026-10-08 — Modération des commentaires, sanctions et blocage (sans validation)
+
+- **Question** : la SPEC (§6.2, §6.3, §10) laisse ouverts plusieurs détails ; le porteur du projet a
+  demandé d'enchaîner les phases sans s'arrêter : **décisions prises sans validation, à relire**.
+- **Décision** :
+  - un commentaire se signale comme un post (poids §5.2, un signalement par compte, jamais le sien) ;
+    impossible s'il est `VERIFIED`, supprimé ou retiré ; possible tant qu'il est `UNDER_REVIEW` ;
+  - file des commentaires signalés : `UNDER_REVIEW`, triée par somme des poids décroissante, sans les
+    dossiers en conflit d'intérêts ; décision par update conditionnel ; un retrait est logique
+    (`REMOVED`, `deletedAt`, `deletedBy = MODERATOR`) ;
+  - sanctions (§6.3) comptées sur les commentaires **et** les opinions retirés des 6 derniers mois
+    (« les mêmes règles s'appliquent aux posts ») ; `SUSPENSION_24H` = 24 h, `SUSPENSION_7D` = 7 jours
+    à partir de la décision (une suspension en cours n'est jamais raccourcie) ; `PERMANENT_BAN` fixe
+    `bannedAt` ; `WARNING` n'a pas d'effet sur le compte ;
+  - « À signaler sur PHAROS » est enregistré sur la sanction (export manuel à prévoir) ;
+  - appel d'une sanction : une fois, sans délai, par le compte sanctionné (même suspendu ou banni),
+    tranché par un autre modérateur ou un dirigeant (jamais l'auteur de la sanction) ; accepté, il
+    lève la sanction (`liftedAt`), retire la restriction qu'elle avait posée et le contenu repasse en
+    `VERIFIED` (examiné et jugé conforme en appel) ;
+  - opinions signalées : file des opinions ayant des signalements en attente (triée par somme des
+    poids) ; décision « conforme » (signalements rejetés) ou « retirer » (`Post.removedAt`,
+    signalements retenus) + sanction de l'éditeur par `nextSanction` ; une opinion retirée disparaît
+    du fil et du profil, son contenu est masqué par lien direct ;
+  - blocage (§10) : un compte bloque un autre compte (jamais lui-même) ; les posts et les fils de
+    commentaires dont la racine est d'un compte bloqué, ainsi que ses réponses, ne sont plus envoyés au
+    bloqueur (le fil, les commentaires) ; un post reste accessible par lien direct ;
+  - toutes les décisions de modération (commentaire, opinion, appel de sanction) écrivent un `AuditLog`.
+- **Pourquoi** : déduit de la SPEC ; à confirmer par le porteur du projet.

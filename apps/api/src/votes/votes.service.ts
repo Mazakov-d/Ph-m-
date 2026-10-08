@@ -104,6 +104,9 @@ export class VotesService {
     if (!post) {
       throw new ApiException(HttpStatus.NOT_FOUND, "NOT_FOUND", "No such post");
     }
+    if (post.removedAt) {
+      throw new ApiException(HttpStatus.GONE, "POST_REMOVED", "Removed by moderation");
+    }
     if (post.kind !== "OPINION") {
       throw new ApiException(HttpStatus.CONFLICT, "NOT_AN_OPINION", "Only opinions are voted on");
     }

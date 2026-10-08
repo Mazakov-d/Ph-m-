@@ -2,6 +2,7 @@ import { z } from "zod";
 import { CommentStatus } from "../enums.js";
 import { COMMENT_MAX_LENGTH } from "../rules.js";
 import { idSchema, isoDateTimeSchema } from "./common.js";
+import { reportModerationSchema } from "./report.js";
 
 // SPEC §6: replies on one level (parentId points to a root comment, checked by the API).
 export const createCommentInputSchema = z.object({
@@ -36,6 +37,7 @@ export const commentModerationSchema = commentPublicSchema.extend({
   content: z.string(),
   reportCount: z.number().int().nonnegative(),
   totalReportWeight: z.number().nonnegative(),
+  reports: z.array(reportModerationSchema),
 });
 export type CommentModeration = z.infer<typeof commentModerationSchema>;
 
