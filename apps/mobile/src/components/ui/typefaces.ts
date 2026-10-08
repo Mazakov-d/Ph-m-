@@ -100,7 +100,7 @@ export function fontFamilyOf(typeface: Typeface, style: TextStyleFlags): string 
  * variants, so that the browser picks the bold or italic file itself.
  */
 export function fontFaceCss(typeface: Typeface): { family: string; css: string } {
-  const name = `Fama ${TYPEFACES[typeface].label}`;
+  const name = `Pheme ${TYPEFACES[typeface].label}`;
   const css = ALL_VARIANTS.map(
     (variant) =>
       `@font-face { font-family: '${name}'; font-weight: ${variant.weight}; ` +

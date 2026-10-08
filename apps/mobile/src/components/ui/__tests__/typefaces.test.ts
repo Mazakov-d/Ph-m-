@@ -22,7 +22,7 @@ describe("typefaces (interface brief: a list of known fonts)", () => {
 
   it("declares the four variants for the text editor", () => {
     const { family, css } = fontFaceCss("PT_SERIF");
-    expect(family).toBe("'Fama PT Serif', serif");
+    expect(family).toBe("'Pheme PT Serif', serif");
     expect(css.match(/@font-face/g)).toHaveLength(4);
     expect(css).toContain("font-weight: 700; font-style: italic;");
   });

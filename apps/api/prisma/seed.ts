@@ -61,7 +61,7 @@ type SeedUser = {
 
 async function createUsers(passwordHash: string) {
   const users: SeedUser[] = [
-    { pseudo: "Direction Fama", email: "admin@fama.test", role: "ADMIN", createdAt: daysAgo(400) },
+    { pseudo: "Direction Phémé", email: "admin@fama.test", role: "ADMIN", createdAt: daysAgo(400) },
     { pseudo: "Modo Alice", email: "alice@fama.test", role: "MODERATOR", createdAt: daysAgo(300) },
     { pseudo: "Modo Bruno", email: "bruno@fama.test", role: "MODERATOR", createdAt: daysAgo(200) },
     { pseudo: "Le Monde", email: "lemonde@fama.test", role: "EDITOR", createdAt: daysAgo(365) },

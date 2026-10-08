@@ -11,11 +11,11 @@
     },
     "preview": {
       "distribution": "internal",
-      "env": { "EXPO_PUBLIC_API_URL": "https://api-staging.fama.example" }
+      "env": { "EXPO_PUBLIC_API_URL": "https://api-staging.pheme.example" }
     },
     "production": {
       "autoIncrement": true,
-      "env": { "EXPO_PUBLIC_API_URL": "https://api.fama.example" }
+      "env": { "EXPO_PUBLIC_API_URL": "https://api.pheme.example" }
     }
   },
   "submit": {

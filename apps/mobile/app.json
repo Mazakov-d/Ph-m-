@@ -1,21 +1,21 @@
 {
   "expo": {
-    "name": "Fama",
-    "slug": "fama",
+    "name": "Phémé",
+    "slug": "pheme",
     "version": "0.1.0",
     "orientation": "portrait",
-    "scheme": "fama",
+    "scheme": "pheme",
     "userInterfaceStyle": "automatic",
     "web": {
       "output": "single"
     },
     "plugins": ["expo-router", "expo-status-bar", "expo-font"],
     "ios": {
-      "bundleIdentifier": "app.fama.mobile",
+      "bundleIdentifier": "app.pheme.mobile",
       "supportsTablet": true
     },
     "android": {
-      "package": "app.fama.mobile"
+      "package": "app.pheme.mobile"
     }
   }
 }

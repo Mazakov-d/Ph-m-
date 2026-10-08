@@ -41,7 +41,7 @@ qui la remplace.
 ## 2026-10-07 — Nom et slogan de l'application
 
 - **Question** : la SPEC ne nomme pas le produit.
-- **Décision** : l'application s'appelle **Fama**, slogan « La rumeur, sourcée. » (`APP_NAME`, `APP_SLOGAN`
+- **Décision** : l'application s'appelle **Fama** (renommée **Phémé** depuis, voir plus bas), slogan « La rumeur, sourcée. » (`APP_NAME`, `APP_SLOGAN`
   dans `packages/shared/src/app.ts`).
 - **Pourquoi** : choix du porteur du projet.
 
@@ -462,3 +462,13 @@ qui la remplace.
     éditeur dont les posts ne tiendraient plus avec l'espacement passe en priorité) ;
   - le fil reste chronologique par défaut ; « À la une » se choisit dans les filtres (groupe
     « Ordre »), combinable avec les autres filtres. La recherche n'est pas concernée.
+
+## 2026-10-08 — Nouveau nom : Phémé
+
+- **Question** : le porteur du projet renomme l'application.
+- **Décision** : l'application s'appelle **Phémé** (`APP_NAME`), le slogan reste « La rumeur,
+  sourcée. ». Remplace le nom « Fama ». Le nom affiché, le lien profond (`pheme://`), les
+  identifiants provisoires des stores (`app.pheme.mobile`) et les adresses d'exemple
+  (`*.pheme.example`) changent. Les identifiants techniques internes restent (`@fama/shared`,
+  base `fama`, cookie `fama_refresh`, clé `fama.refreshToken`, dossier du dépôt) : invisibles
+  pour les utilisateurs, et les changer déconnecterait les sessions en cours.

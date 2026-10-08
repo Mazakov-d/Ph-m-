@@ -33,7 +33,7 @@ describe("AppHeader (interface brief: tabs)", () => {
     await renderWithProviders(<AppHeader canGoBack={false} />);
     expect(screen.getByText("Compte")).toBeTruthy();
     expect(screen.queryByText("Publier")).toBeNull();
-    expect(screen.getByLabelText("Fama, le fil des publications")).toBeSelected();
+    expect(screen.getByLabelText("Phémé, le fil des publications")).toBeSelected();
     expect(screen.getByRole("tab", { name: "Compte" })).not.toBeSelected();
   });
 
@@ -55,7 +55,7 @@ describe("AppHeader (interface brief: tabs)", () => {
     mockPathname = "/posts/1";
     mockRouter.canDismiss.mockReturnValue(true);
     await renderWithProviders(<AppHeader canGoBack />);
-    await fireEvent.press(screen.getByLabelText("Fama, le fil des publications"));
+    await fireEvent.press(screen.getByLabelText("Phémé, le fil des publications"));
     expect(mockRouter.dismissAll).toHaveBeenCalled();
     expect(mockRouter.navigate).toHaveBeenCalledWith("/");
   });

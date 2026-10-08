@@ -18,7 +18,7 @@ const texts = {
 const CENTERED_BRAND = Platform.OS === "web";
 
 /**
- * The header of every page (interface brief): the « Fama » brand (the feed tab), the « Publier »
+ * The header of every page (interface brief): the brand (APP_NAME) (the feed tab), the « Publier »
  * (editors) and « Compte » tabs, the current tab greyed, and a back arrow on the pages opened above them.
  */
 export function AppHeader({ canGoBack }: { canGoBack: boolean }) {
