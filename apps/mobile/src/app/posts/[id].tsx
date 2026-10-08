@@ -1,5 +1,6 @@
 import { Link, Stack, useLocalSearchParams } from "expo-router";
 import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { CommentsSection } from "../../features/comments/components/CommentsSection";
 import { EditorBadge } from "../../features/editors/components/EditorBadge";
 import { usePost } from "../../features/posts/api";
 import { ReliabilityBar } from "../../features/posts/components/ReliabilityBar";
@@ -72,6 +73,7 @@ export default function PostScreen() {
           <Text>{correction.content}</Text>
         </View>
       ))}
+      <CommentsSection post={data} />
     </ScrollView>
   );
 }
