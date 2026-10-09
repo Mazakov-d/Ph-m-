@@ -67,6 +67,8 @@ export const PSEUDO_MIN_LENGTH = 3;
 export const PSEUDO_MAX_LENGTH = 30;
 export const PASSWORD_MIN_LENGTH = 12;
 export const PASSWORD_MAX_LENGTH = 128;
+// The longest e-mail address (RFC 5321); a pseudo is shorter.
+export const LOGIN_IDENTIFIER_MAX_LENGTH = 254;
 export const POST_BODY_MAX_LENGTH = 50_000;
 export const SOURCES_MAX_COUNT = 20;
 export const SOURCE_MAX_LENGTH = 500;

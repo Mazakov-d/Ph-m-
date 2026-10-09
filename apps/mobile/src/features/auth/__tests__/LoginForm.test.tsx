@@ -16,11 +16,27 @@ describe("LoginForm", () => {
       jsonResponse(401, { code: "INVALID_CREDENTIALS", message: "Invalid e-mail or password" }),
     );
     await renderWithProviders(<LoginForm onSuccess={jest.fn()} />);
-    await fireEvent.changeText(screen.getByLabelText("Adresse e-mail"), "lea@test.fr");
+    await fireEvent.changeText(screen.getByLabelText("E-mail ou pseudo"), "lea@test.fr");
     await fireEvent.changeText(screen.getByLabelText("Mot de passe"), "mauvais");
     await fireEvent.press(screen.getByText("Se connecter"));
 
-    expect(await screen.findByText("E-mail ou mot de passe incorrect.")).toBeTruthy();
+    expect(await screen.findByText("Identifiant ou mot de passe incorrect.")).toBeTruthy();
+  });
+
+  it("signs in with the pseudo (docs/DECISIONS.md)", async () => {
+    fetchMock.mockResolvedValueOnce(
+      jsonResponse(401, { code: "INVALID_CREDENTIALS", message: "Invalid identifier or password" }),
+    );
+    await renderWithProviders(<LoginForm onSuccess={jest.fn()} />);
+    await fireEvent.changeText(screen.getByLabelText("E-mail ou pseudo"), "Léa");
+    await fireEvent.changeText(screen.getByLabelText("Mot de passe"), "mot-de-passe");
+    await fireEvent.press(screen.getByText("Se connecter"));
+    expect(await screen.findByText("Identifiant ou mot de passe incorrect.")).toBeTruthy();
+    const body = fetchMock.mock.calls[0]?.[1]?.body;
+    expect(typeof body === "string" ? JSON.parse(body) : null).toEqual({
+      identifier: "Léa",
+      password: "mot-de-passe",
+    });
   });
 
   it("signs in with Enter after the password (docs/DECISIONS.md)", async () => {
@@ -28,11 +44,11 @@ describe("LoginForm", () => {
       jsonResponse(401, { code: "INVALID_CREDENTIALS", message: "Invalid e-mail or password" }),
     );
     await renderWithProviders(<LoginForm onSuccess={jest.fn()} />);
-    await fireEvent.changeText(screen.getByLabelText("Adresse e-mail"), "lea@test.fr");
+    await fireEvent.changeText(screen.getByLabelText("E-mail ou pseudo"), "lea@test.fr");
     await fireEvent.changeText(screen.getByLabelText("Mot de passe"), "mauvais");
     await fireEvent(screen.getByLabelText("Mot de passe"), "submitEditing");
 
-    expect(await screen.findByText("E-mail ou mot de passe incorrect.")).toBeTruthy();
+    expect(await screen.findByText("Identifiant ou mot de passe incorrect.")).toBeTruthy();
   });
 
   it("shows the password being typed on demand (interface brief)", async () => {

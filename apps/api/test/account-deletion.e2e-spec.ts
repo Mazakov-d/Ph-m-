@@ -46,7 +46,7 @@ describe("Account deletion and retention (e2e, SPEC §10)", () => {
 
     await server()
       .post("/auth/login")
-      .send({ email: "lea@test.fr", password: TEST_PASSWORD })
+      .send({ identifier: "lea@test.fr", password: TEST_PASSWORD })
       .expect(401);
     await server().get("/auth/me").set("Authorization", `Bearer ${reader.accessToken}`).expect(401);
     const comments = await server().get(`/posts/${post.id}/comments`).expect(200);

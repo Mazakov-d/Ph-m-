@@ -44,7 +44,7 @@ describe("Rate limits (e2e, ROADMAP phase 11)", () => {
     const attempt = () =>
       request(app.getHttpServer())
         .post("/auth/login")
-        .send({ email: "compte1@test.fr", password: "mauvais" });
+        .send({ identifier: "compte1@test.fr", password: "mauvais" });
     for (let n = 0; n < 10; n++) {
       await attempt().expect(401);
     }

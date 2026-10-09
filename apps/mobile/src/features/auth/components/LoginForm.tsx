@@ -9,7 +9,8 @@ import { apiErrorMessage, fieldErrorMessage } from "../errorMessages";
 import { colors } from "../../../components/ui/theme";
 
 const texts = {
-  email: "Adresse e-mail",
+  // docs/DECISIONS.md (login): the e-mail address or the pseudo.
+  identifier: "E-mail ou pseudo",
   password: "Mot de passe",
   submit: "Se connecter",
 };
@@ -23,7 +24,7 @@ export function LoginForm({ onSuccess }: { onSuccess: () => void }) {
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(loginInputSchema),
-    defaultValues: { email: "", password: "" },
+    defaultValues: { identifier: "", password: "" },
   });
 
   const onSubmit = handleSubmit(async (input) => {
@@ -40,17 +41,17 @@ export function LoginForm({ onSuccess }: { onSuccess: () => void }) {
     <View style={styles.form}>
       <Controller
         control={control}
-        name="email"
+        name="identifier"
         render={({ field }) => (
           <TextField
-            label={texts.email}
+            label={texts.identifier}
             value={field.value}
             onChangeText={field.onChange}
             onBlur={field.onBlur}
             autoCapitalize="none"
-            autoComplete="email"
-            keyboardType="email-address"
-            error={fieldErrorMessage("email", errors.email)}
+            autoCorrect={false}
+            autoComplete="username"
+            error={fieldErrorMessage("identifier", errors.identifier)}
           />
         )}
       />

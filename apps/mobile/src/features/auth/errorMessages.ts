@@ -10,6 +10,7 @@ import { ApiRequestError } from "../../lib/apiClient";
 // French messages of the sign-up and sign-in forms, by field and Zod error type.
 const FIELD_MESSAGES = {
   email: { default: "Adresse e-mail invalide." },
+  identifier: { default: "Indiquez votre e-mail ou votre pseudo." },
   password: {
     too_small: `Au moins ${PASSWORD_MIN_LENGTH} caractères.`,
     too_big: `${PASSWORD_MAX_LENGTH} caractères maximum.`,
@@ -39,7 +40,11 @@ export function fieldErrorMessage(field: AuthField, error: FieldError | undefine
 }
 
 /** An API error explained in French, attached to a field when it concerns one. */
-export function apiErrorMessage(error: unknown): { field?: AuthField; message: string } {
+// Only the sign-up fields are ever blamed by the API (the sign-in error names no field).
+export function apiErrorMessage(error: unknown): {
+  field?: "email" | "pseudo";
+  message: string;
+} {
   if (!(error instanceof ApiRequestError)) {
     return { message: "Une erreur est survenue. Réessayez." };
   }
@@ -49,7 +54,7 @@ export function apiErrorMessage(error: unknown): { field?: AuthField; message: s
     case "PSEUDO_TAKEN":
       return { field: "pseudo", message: "Ce pseudo est déjà pris." };
     case "INVALID_CREDENTIALS":
-      return { message: "E-mail ou mot de passe incorrect." };
+      return { message: "Identifiant ou mot de passe incorrect." };
     case "RATE_LIMITED":
       return { message: "Trop de tentatives. Patientez quelques minutes avant de réessayer." };
     case "NETWORK_ERROR":

@@ -766,3 +766,11 @@ qui la remplace.
   - L'API lit l'IP des visiteurs dans `X-Forwarded-For` (`TRUST_PROXY_HOPS`), sinon les limites
     de débit seraient communes à tous.
   - Pas de données de démonstration en ligne (leurs mots de passe sont publics dans le dépôt).
+
+## 2026-10-09 — Connexion par e-mail ou pseudo
+
+- **Décision** : le formulaire de connexion demande « E-mail ou pseudo ». Un pseudo ne contient
+  jamais « @ » : avec « @ », l'API cherche l'adresse e-mail (en minuscules), sinon le pseudo,
+  sans tenir compte de la casse (comme leur unicité) et parmi les comptes non supprimés. Même
+  erreur pour un compte inconnu et un mauvais mot de passe (« Identifiant ou mot de passe
+  incorrect. »). Le champ de l'API devient `identifier`.

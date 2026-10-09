@@ -2,6 +2,7 @@ import { z } from "zod";
 import { EditorStatus, UserRole } from "../enums.js";
 import {
   DELETED_ACCOUNT_PSEUDO,
+  LOGIN_IDENTIFIER_MAX_LENGTH,
   PASSWORD_MAX_LENGTH,
   PASSWORD_MIN_LENGTH,
   PSEUDO_MAX_LENGTH,
@@ -32,8 +33,9 @@ export const registerInputSchema = z.object({
 });
 export type RegisterInput = z.infer<typeof registerInputSchema>;
 
+// docs/DECISIONS.md: one signs in with one's e-mail or one's pseudo (domain/login-identifier.ts).
 export const loginInputSchema = z.object({
-  email: z.email().trim().toLowerCase(),
+  identifier: z.string().trim().min(1).max(LOGIN_IDENTIFIER_MAX_LENGTH),
   password: z.string().min(1).max(PASSWORD_MAX_LENGTH),
 });
 export type LoginInput = z.infer<typeof loginInputSchema>;

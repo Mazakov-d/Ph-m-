@@ -19,3 +19,4 @@ export * from "./alerts.js";
 export * from "./jury.js";
 export * from "./localities.js";
 export * from "./editor-proofs.js";
+export * from "./login-identifier.js";

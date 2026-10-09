@@ -29,7 +29,7 @@ function Probe() {
     <View>
       <Text>{`status:${status}`}</Text>
       <Text>{`user:${user?.pseudo ?? "none"}`}</Text>
-      <Pressable onPress={() => signIn({ email: "lea@test.fr", password: "x" })}>
+      <Pressable onPress={() => signIn({ identifier: "lea@test.fr", password: "x" })}>
         <Text>sign-in</Text>
       </Pressable>
       <Pressable onPress={() => signOut()}>

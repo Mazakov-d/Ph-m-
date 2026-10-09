@@ -26,7 +26,7 @@ describe("AccountScreen", () => {
   it("opens the sign-in and sign-up forms in the account box (interface brief)", async () => {
     await renderWithProviders(<AccountScreen />);
     await fireEvent.press(await screen.findByText("Se connecter"));
-    expect(screen.getByLabelText("Adresse e-mail")).toBeTruthy();
+    expect(screen.getByLabelText("E-mail ou pseudo")).toBeTruthy();
     expect(screen.getByRole("header", { name: "La rumeur, sourcée." })).toBeTruthy();
 
     await fireEvent.press(screen.getByText("Pas encore de compte ? En créer un"));

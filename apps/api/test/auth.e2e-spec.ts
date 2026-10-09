@@ -77,7 +77,7 @@ describe("Auth routes (e2e)", () => {
     it("signs in with the right password and reaches a protected route", async () => {
       const response = await request(app.getHttpServer())
         .post("/auth/login")
-        .send({ email: LEA.email, password: LEA.password })
+        .send({ identifier: LEA.email, password: LEA.password })
         .expect(200);
       const { tokens } = authSessionSchema.parse(response.body);
 
@@ -91,14 +91,30 @@ describe("Auth routes (e2e)", () => {
     it("accepts the e-mail whatever its case", async () => {
       await request(app.getHttpServer())
         .post("/auth/login")
-        .send({ email: "LEA@Test.fr", password: LEA.password })
+        .send({ identifier: "LEA@Test.fr", password: LEA.password })
         .expect(200);
+    });
+
+    it("signs in with the pseudo, whatever its case (docs/DECISIONS.md)", async () => {
+      const response = await request(app.getHttpServer())
+        .post("/auth/login")
+        .send({ identifier: LEA.pseudo.toUpperCase(), password: LEA.password })
+        .expect(200);
+      expect(authSessionSchema.parse(response.body).user.email).toBe(LEA.email);
+    });
+
+    it("refuses an unknown pseudo like a wrong password", async () => {
+      const response = await request(app.getHttpServer())
+        .post("/auth/login")
+        .send({ identifier: "inconnu", password: LEA.password })
+        .expect(401);
+      expect(response.body).toMatchObject({ code: "INVALID_CREDENTIALS" });
     });
 
     it("refuses a wrong password with INVALID_CREDENTIALS", async () => {
       const response = await request(app.getHttpServer())
         .post("/auth/login")
-        .send({ email: LEA.email, password: "mauvais-mot-de-passe" })
+        .send({ identifier: LEA.email, password: "mauvais-mot-de-passe" })
         .expect(401);
       expect(response.body).toMatchObject({ code: "INVALID_CREDENTIALS" });
     });

@@ -45,7 +45,7 @@ describe("Moderator accounts created by an admin (e2e, docs/DECISIONS.md)", () =
 
     const login = await request(app.getHttpServer())
       .post("/auth/login")
-      .send({ email: NEW_MODERATOR.email, password: NEW_MODERATOR.password })
+      .send({ identifier: NEW_MODERATOR.email, password: NEW_MODERATOR.password })
       .expect(200);
     expect(authSessionSchema.parse(login.body).user.role).toBe("MODERATOR");
 

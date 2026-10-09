@@ -89,21 +89,26 @@ describe("AuthService", () => {
     });
 
     it("opens a session with the right password", async () => {
-      const session = await auth.login({ email: LEA.email, password: PASSWORD });
+      const session = await auth.login({ identifier: LEA.email, password: PASSWORD });
       expect(session.user.pseudo).toBe("Léa");
     });
 
     it("rejects a wrong password", async () => {
       await expectApiError(
-        auth.login({ email: LEA.email, password: "mauvais-mot-de-passe" }),
+        auth.login({ identifier: LEA.email, password: "mauvais-mot-de-passe" }),
         "INVALID_CREDENTIALS",
         401,
       );
     });
 
+    it("opens a session with the pseudo, whatever its case", async () => {
+      const session = await auth.login({ identifier: "LÉA", password: PASSWORD });
+      expect(session.user.email).toBe(LEA.email);
+    });
+
     it("gives the same error for an unknown e-mail", async () => {
       await expectApiError(
-        auth.login({ email: "inconnu@test.fr", password: PASSWORD }),
+        auth.login({ identifier: "inconnu@test.fr", password: PASSWORD }),
         "INVALID_CREDENTIALS",
         401,
       );

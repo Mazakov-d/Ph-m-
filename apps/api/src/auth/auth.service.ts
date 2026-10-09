@@ -7,6 +7,7 @@ import {
   MILLISECONDS_PER_DAY,
   REFRESH_TOKEN_TTL_DAYS,
   type ModeratorModeration,
+  parseLoginIdentifier,
   type RegisterInput,
 } from "@fama/shared";
 import { hash, verify } from "argon2";
@@ -93,16 +94,22 @@ export class AuthService {
   }
 
   async login(input: LoginInput): Promise<IssuedSession> {
-    const user = await this.prisma.user.findUnique({
-      where: { email: input.email },
+    // docs/DECISIONS.md (login): by e-mail, or by pseudo (citext: whatever its case) among the
+    // accounts that are not deleted (deleted ones all share « Compte supprimé »).
+    const identifier = parseLoginIdentifier(input.identifier);
+    const user = await this.prisma.user.findFirst({
+      where:
+        identifier.kind === "email"
+          ? { email: identifier.email }
+          : { pseudo: identifier.pseudo, deletedAt: null },
       include: WITH_EDITOR_STATUS,
     });
-    // Same error for an unknown e-mail and a wrong password: do not reveal which accounts exist.
+    // Same error for an unknown account and a wrong password: do not reveal which accounts exist.
     if (!user || !(await verify(user.passwordHash, input.password))) {
       throw new ApiException(
         HttpStatus.UNAUTHORIZED,
         "INVALID_CREDENTIALS",
-        "Invalid e-mail or password",
+        "Invalid identifier or password",
       );
     }
     return this.createSession(user);
