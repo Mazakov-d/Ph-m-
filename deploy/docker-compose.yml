@@ -1,0 +1,76 @@
+# Production stack on one machine (docs/DECISIONS.md: deployment). See deploy/README.md.
+#   docker compose -f deploy/docker-compose.yml --env-file deploy/.env up -d --build
+name: pheme-prod
+
+services:
+  postgres:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: pheme
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?}
+      POSTGRES_DB: pheme
+    volumes:
+      - postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pheme -d pheme"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Private storage (identity documents, media). Never exposed: only the API reaches it.
+  storage:
+    image: rustfs/rustfs:1.0.1
+    restart: unless-stopped
+    environment:
+      RUSTFS_ACCESS_KEY: pheme
+      RUSTFS_SECRET_KEY: ${S3_SECRET_KEY:?}
+    volumes:
+      - storage-data:/data
+
+  api:
+    build:
+      context: ..
+      dockerfile: apps/api/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      storage:
+        condition: service_started
+    environment:
+      PORT: "3000"
+      DATABASE_URL: postgresql://pheme:${POSTGRES_PASSWORD}@postgres:5432/pheme?schema=public
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:?}
+      CORS_ORIGINS: https://${DOMAIN:?}
+      S3_ENDPOINT: http://storage:9000
+      S3_REGION: us-east-1
+      S3_ACCESS_KEY: pheme
+      S3_SECRET_KEY: ${S3_SECRET_KEY}
+      S3_PRIVATE_BUCKET: pheme-private
+      PUSH_DELIVERY: disabled
+      # Caddy is the only proxy in front of the API.
+      TRUST_PROXY_HOPS: "1"
+
+  # HTTPS (Let's Encrypt certificates, renewed automatically), the web app and the API.
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on: [api]
+    environment:
+      DOMAIN: ${DOMAIN}
+    ports:
+      # Apache already holds 80 on this machine: the box forwards 80 → 8080 and 443 → 8443.
+      - "${HTTP_PORT:-8080}:80"
+      - "${HTTPS_PORT:-8443}:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./web-dist:/srv/web:ro
+      - caddy-data:/data
+      - caddy-config:/config
+
+volumes:
+  postgres-data:
+  storage-data:
+  caddy-data:
+  caddy-config:

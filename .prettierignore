@@ -5,3 +5,4 @@ coverage
 web-build
 pnpm-lock.yaml
 **/generated
+deploy/web-dist

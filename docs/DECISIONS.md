@@ -750,3 +750,18 @@ qui la remplace.
 - **Décision** : dans un chat (tickets, chat éditeur) et sous un post, Entrée envoie le message
   (sur le web, Maj + Entrée passe à la ligne ; sur téléphone, la touche « Envoyer » du clavier).
   Entrée après le mot de passe connecte (et inscrit, ou confirme la suppression du compte).
+
+## 2026-10-09 — Mise en ligne de la version web
+
+- **Question** : mettre la version web en ligne sur la Freebox (82.66.91.67, phebe.duckdns.org).
+- **Décision** (`deploy/`) :
+  - Une pile Docker de production distincte de celle de développement (base vide, secrets
+    aléatoires dans `deploy/.env`, jamais commité), avec **Caddy** devant : HTTPS automatique
+    (Let's Encrypt). Le HTTPS est nécessaire : le cookie de session web est `Secure`, et les mots
+    de passe ne doivent pas circuler en clair.
+  - Site sur `phebe.duckdns.org`, API sur `api.phebe.duckdns.org` (DuckDNS résout les
+    sous-domaines) : les routes de l'API (`/posts/…`) se confondraient avec les pages du site.
+  - Apache occupe le port 80 de la machine : Caddy écoute 8080/8443, la box redirige 80 et 443.
+  - L'API lit l'IP des visiteurs dans `X-Forwarded-For` (`TRUST_PROXY_HOPS`), sinon les limites
+    de débit seraient communes à tous.
+  - Pas de données de démonstration en ligne (leurs mots de passe sont publics dans le dépôt).

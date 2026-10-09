@@ -375,6 +375,7 @@ pnpm check                           # generate + lint + typecheck + tests (tout
 pnpm format                          # formate tout le dépôt avec Prettier
 docker build -f apps/api/Dockerfile -t fama-api .     # image de production de l'API
 cd apps/mobile && npx eas-cli build --profile preview # build iOS / Android (compte Expo requis)
+deploy/deploy.sh                     # met en ligne la version web (voir deploy/README.md)
 ```
 
 Sous Linux, si Expo échoue avec `ENOSPC: System limit for number of file watchers reached`, augmenter

@@ -1,0 +1,14 @@
+# docs/DECISIONS.md (deployment): the web app on the domain, the API on its « api. » subdomain
+# (the API's routes, such as /posts/…, would clash with the app's pages on one host).
+{$DOMAIN} {
+	encode zstd gzip
+	root * /srv/web
+	# A single-page app: every page is index.html, the files are served as they are.
+	try_files {path} /index.html
+	file_server
+}
+
+api.{$DOMAIN} {
+	encode zstd gzip
+	reverse_proxy api:3000
+}

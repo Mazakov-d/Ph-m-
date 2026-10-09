@@ -21,3 +21,7 @@ android/
 # This repo uses pnpm only (a stray npm/yarn run must not add a lockfile).
 package-lock.json
 yarn.lock
+
+# Production deployment: secrets and the built web app.
+deploy/.env
+deploy/web-dist/
