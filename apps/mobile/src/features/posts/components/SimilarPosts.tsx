@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { colors, spacing, textSizes } from "../../../components/ui/theme";
 import { useSimilarPosts } from "../api";
+import { PhemeSynthesisBox } from "./PhemeSynthesisBox";
 import { PostCard } from "./PostCard";
 
 const texts = {
@@ -30,6 +31,7 @@ export function SimilarPosts({ postId }: { postId: string }) {
           <Text style={styles.link}>{open ? texts.hide : texts.show}</Text>
         </Pressable>
       </View>
+      {open ? <PhemeSynthesisBox /> : null}
       {open ? similar.data?.posts.map((post) => <PostCard key={post.id} post={post} />) : null}
     </View>
   );

@@ -790,3 +790,12 @@ qui la remplace.
   sortent plus de la boîte des filtres).
 - Le nom « Phémé » n'est centré dans l'en-tête que sur un écran large (760 px et plus) ; sur un
   téléphone, il est à gauche et les boutons rétrécissent plutôt que de passer à la ligne.
+
+## 2026-10-10 — Synthèse de Phémé (annonce)
+
+- **Décision** : en dépliant « Voir les similaires », un encadré « La synthèse de Phémé ·
+  Bientôt » s'affiche au-dessus des articles. Il accueillera plus tard une IA qui synthétisera
+  ces articles de façon neutre, sans prendre parti. Pour l'instant, il l'annonce seulement :
+  « Jadis, Phémé mêlait le vrai au faux. Bientôt, c'est elle qui les démêlera : une synthèse
+  neutre de tous ces articles, sans prendre parti. » L'IA elle-même n'est pas développée
+  (pas de code anticipé).

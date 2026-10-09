@@ -75,6 +75,8 @@ describe("PostScreen", () => {
     expect(screen.queryByText("Faut-il rouvrir le débat ?")).toBeNull();
     await fireEvent.press(screen.getByText("Voir les similaires"));
     expect(screen.getByText("Faut-il rouvrir le débat ?")).toBeTruthy();
+    // docs/DECISIONS.md: the coming synthesis by Phémé is announced above them.
+    expect(screen.getByText("La synthèse de Phémé")).toBeTruthy();
   });
 
   it("plays the video before the pictures (docs/DECISIONS.md: videos)", async () => {
