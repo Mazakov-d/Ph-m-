@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import { Button } from "../../../components/ui/Button";
+import { submitOnEnter } from "../../../components/ui/submitOnEnter";
 import { colors, radius, spacing } from "../../../components/ui/theme";
 import { useCreateComment } from "../api";
 import { commentErrorMessage } from "../texts";
@@ -50,11 +51,9 @@ export function CommentForm({ postId, parentId, onDone }: Props) {
               placeholder={parentId ? texts.reply : texts.placeholder}
               value={field.value}
               onChangeText={field.onChange}
-              onSubmitEditing={() => void onSubmit()}
               // The text wraps over several lines, but Enter publishes instead of a new line.
               multiline
-              submitBehavior="submit"
-              returnKeyType="send"
+              {...submitOnEnter(() => void onSubmit())}
               maxLength={COMMENT_MAX_LENGTH}
               style={[styles.input, contentError ? styles.inputError : null]}
             />

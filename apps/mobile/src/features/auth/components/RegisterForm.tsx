@@ -81,6 +81,8 @@ export function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
             onBlur={field.onBlur}
             secureTextEntry
             autoComplete="new-password"
+            returnKeyType="go"
+            onSubmitEditing={() => void onSubmit()}
             error={fieldErrorMessage("password", errors.password)}
           />
         )}

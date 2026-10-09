@@ -744,3 +744,9 @@ qui la remplace.
     et les résultats, un post s'ouvre au premier appui et faire défiler la liste range le clavier.
   - Article aux commentaires désactivés : pas de bouton à déplier, seulement le message « Les
     commentaires sont désactivés pour cet article. ».
+
+## 2026-10-09 — Entrée pour envoyer et pour se connecter
+
+- **Décision** : dans un chat (tickets, chat éditeur) et sous un post, Entrée envoie le message
+  (sur le web, Maj + Entrée passe à la ligne ; sur téléphone, la touche « Envoyer » du clavier).
+  Entrée après le mot de passe connecte (et inscrit, ou confirme la suppression du compte).

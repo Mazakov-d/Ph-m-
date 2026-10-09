@@ -37,6 +37,7 @@ export function DeleteAccount({ onCancel }: { onCancel: () => void }) {
         value={password}
         onChangeText={setPassword}
         secureTextEntry
+        onSubmitEditing={() => password && deletion.mutate(password)}
       />
       {deletion.error ? (
         <Text style={styles.error}>{apiErrorMessage(deletion.error).message}</Text>

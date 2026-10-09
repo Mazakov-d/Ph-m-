@@ -113,6 +113,15 @@ describe("support and chat screens (SPEC §8)", () => {
     await waitFor(() => expect(posted(`/tickets/${ID(1)}/messages`)).toBeTruthy());
   });
 
+  it("sends a message with Enter (docs/DECISIONS.md)", async () => {
+    await signIn("READER", (path) => (path.endsWith("/messages") ? messages : messages[0]));
+    await renderWithProviders(<Conversation ticketId={ID(1)} />);
+    await screen.findByText("Je regarde.");
+    await fireEvent.changeText(screen.getByLabelText("Votre message"), "Merci");
+    await fireEvent(screen.getByLabelText("Votre message"), "submitEditing");
+    await waitFor(() => expect(posted(`/tickets/${ID(1)}/messages`)).toBeTruthy());
+  });
+
   it("lets a moderator take a NEW ticket", async () => {
     await signIn("MODERATOR", (path) => (path.includes("scope=unassigned") ? [ticket] : ticket));
     await renderWithProviders(<ModeratorTicketsScreen />);

@@ -2,6 +2,7 @@ import { MESSAGE_MAX_LENGTH } from "@fama/shared";
 import { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TextInput, View } from "react-native";
 import { Button } from "../../../components/ui/Button";
+import { submitOnEnter } from "../../../components/ui/submitOnEnter";
 import { formatPublishedAt } from "../../posts/texts";
 import { useMessages, useSendMessage } from "../api";
 import { messageAuthorLabel, ticketErrorMessage } from "../texts";
@@ -17,6 +18,11 @@ export function Conversation({ ticketId }: { ticketId: string }) {
   const messages = useMessages(ticketId);
   const send = useSendMessage(ticketId);
   const [draft, setDraft] = useState("");
+  const sendDraft = () => {
+    if (draft.trim() && !send.isPending) {
+      send.mutate(draft.trim(), { onSuccess: () => setDraft("") });
+    }
+  };
 
   return (
     <View style={styles.conversation}>
@@ -39,19 +45,13 @@ export function Conversation({ ticketId }: { ticketId: string }) {
         value={draft}
         onChangeText={setDraft}
         multiline
+        // docs/DECISIONS.md: Enter sends the message.
+        {...submitOnEnter(sendDraft)}
         maxLength={MESSAGE_MAX_LENGTH}
         style={styles.input}
       />
       {send.error ? <Text style={styles.error}>{ticketErrorMessage(send.error)}</Text> : null}
-      <Button
-        label={texts.send}
-        loading={send.isPending}
-        onPress={() => {
-          if (draft.trim()) {
-            send.mutate(draft.trim(), { onSuccess: () => setDraft("") });
-          }
-        }}
-      />
+      <Button label={texts.send} loading={send.isPending} onPress={sendDraft} />
     </View>
   );
 }

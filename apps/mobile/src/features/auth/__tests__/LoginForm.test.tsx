@@ -23,6 +23,18 @@ describe("LoginForm", () => {
     expect(await screen.findByText("E-mail ou mot de passe incorrect.")).toBeTruthy();
   });
 
+  it("signs in with Enter after the password (docs/DECISIONS.md)", async () => {
+    fetchMock.mockResolvedValueOnce(
+      jsonResponse(401, { code: "INVALID_CREDENTIALS", message: "Invalid e-mail or password" }),
+    );
+    await renderWithProviders(<LoginForm onSuccess={jest.fn()} />);
+    await fireEvent.changeText(screen.getByLabelText("Adresse e-mail"), "lea@test.fr");
+    await fireEvent.changeText(screen.getByLabelText("Mot de passe"), "mauvais");
+    await fireEvent(screen.getByLabelText("Mot de passe"), "submitEditing");
+
+    expect(await screen.findByText("E-mail ou mot de passe incorrect.")).toBeTruthy();
+  });
+
   it("shows the password being typed on demand (interface brief)", async () => {
     await renderWithProviders(<LoginForm onSuccess={jest.fn()} />);
     const password = screen.getByLabelText("Mot de passe");

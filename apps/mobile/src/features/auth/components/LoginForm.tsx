@@ -65,6 +65,9 @@ export function LoginForm({ onSuccess }: { onSuccess: () => void }) {
             onBlur={field.onBlur}
             secureTextEntry
             autoComplete="current-password"
+            // docs/DECISIONS.md: Enter after the password signs in.
+            returnKeyType="go"
+            onSubmitEditing={() => void onSubmit()}
             error={fieldErrorMessage("password", errors.password)}
           />
         )}
