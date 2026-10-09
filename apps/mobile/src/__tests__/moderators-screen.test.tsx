@@ -77,6 +77,7 @@ describe("the dashboard and the moderators (docs/DECISIONS.md)", () => {
     // Signing out and deleting the account are always there.
     expect(await screen.findByText("Se déconnecter")).toBeTruthy();
     expect(screen.getByText("Supprimer mon compte")).toBeTruthy();
+    expect(screen.getByText("Changer de mot de passe")).toBeTruthy();
     expect(screen.queryByText("Modérateurs")).toBeNull();
 
     await fireEvent.press(screen.getByText("Administration"));
@@ -115,6 +116,8 @@ describe("the dashboard and the moderators (docs/DECISIONS.md)", () => {
     await fireEvent.press(await screen.findByText("Devenir éditeur"));
     expect(mockPush).toHaveBeenCalledWith("/editor");
     expect(screen.getByText("Contacter Phémé")).toBeTruthy();
+    await fireEvent.press(screen.getByText("Changer de mot de passe"));
+    expect(screen.getByLabelText("Mot de passe actuel")).toBeTruthy();
     expect(screen.queryByText("Conversations")).toBeNull();
     await fireEvent.press(screen.getByText("Supprimer mon compte"));
     expect(screen.getByText(/signés « Compte supprimé »/)).toBeTruthy();

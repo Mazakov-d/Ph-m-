@@ -15,8 +15,9 @@ const texts = {
   editorPage: "Ma page",
 };
 
-// Interface brief: the name of the app is centred on the web, on the left on a phone.
-const CENTERED_BRAND = Platform.OS === "web";
+// Interface brief: the name of the app is centred on a wide web page, on the left on a phone
+// (also in a phone's browser, where a centred name would run into the buttons).
+const CENTERED_BRAND_MIN_WIDTH = 760;
 
 // Below this width (a phone), the tabs are smaller so that they all fit on one line.
 const COMPACT_MAX_WIDTH = 480;
@@ -32,7 +33,9 @@ export function AppHeader({ canGoBack }: { canGoBack: boolean }) {
   const goToTab = useGoToTab();
   const { user } = useAuth();
   const insets = useSafeAreaInsets();
-  const compact = useWindowDimensions().width < COMPACT_MAX_WIDTH;
+  const { width } = useWindowDimensions();
+  const compact = width < COMPACT_MAX_WIDTH;
+  const centeredBrand = Platform.OS === "web" && width >= CENTERED_BRAND_MIN_WIDTH;
   const editorPage = user?.role === "EDITOR" ? `/editors/${user.id}` : null;
 
   const tabProps = { current: pathname, onPress: goToTab, compact };
@@ -42,7 +45,7 @@ export function AppHeader({ canGoBack }: { canGoBack: boolean }) {
 
   return (
     <View style={[styles.bar, { paddingTop: insets.top }]}>
-      <View style={styles.row}>
+      <View style={[styles.row, compact && styles.compactRow]}>
         {canGoBack ? (
           <Pressable
             accessibilityRole="button"
@@ -54,7 +57,7 @@ export function AppHeader({ canGoBack }: { canGoBack: boolean }) {
             <BackArrow />
           </Pressable>
         ) : null}
-        {CENTERED_BRAND ? null : brand}
+        {centeredBrand ? null : brand}
         <View style={styles.tabs}>
           {/* SPEC §2.5: only validated editors publish (the API checks again). */}
           {can(user, "post.create") ? (
@@ -70,7 +73,7 @@ export function AppHeader({ canGoBack }: { canGoBack: boolean }) {
           ) : null}
           <Tab label={texts.account} path="/account" {...tabProps} />
         </View>
-        {CENTERED_BRAND ? <View style={styles.centered}>{brand}</View> : null}
+        {centeredBrand ? <View style={styles.centered}>{brand}</View> : null}
       </View>
     </View>
   );
@@ -137,9 +140,16 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
     paddingHorizontal: spacing.md,
   },
+  compactRow: { paddingHorizontal: spacing.sm },
   back: { paddingHorizontal: spacing.sm, paddingVertical: spacing.xs },
-  tabs: { flexDirection: "row", gap: spacing.xs, marginLeft: "auto" },
-  tab: { paddingHorizontal: spacing.md, paddingVertical: 6, borderRadius: radius.sm },
+  // On the narrowest phones, the buttons shrink (their labels end with « … ») rather than wrap.
+  tabs: { flexDirection: "row", flexShrink: 1, gap: spacing.xs, marginLeft: "auto" },
+  tab: {
+    flexShrink: 1,
+    paddingHorizontal: spacing.md,
+    paddingVertical: 6,
+    borderRadius: radius.sm,
+  },
   compactTab: { paddingHorizontal: spacing.sm },
   currentTab: { backgroundColor: colors.subtle },
   compactLabel: { fontSize: 14 },

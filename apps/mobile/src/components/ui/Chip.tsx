@@ -19,6 +19,8 @@ export function Chip({ label, selected, onPress }: ChipProps) {
 
 const styles = StyleSheet.create({
   chip: {
+    // A long label wraps inside the chip instead of leaving its box (narrow phones, web).
+    maxWidth: "100%",
     borderWidth: 1,
     borderColor: colors.brand,
     borderRadius: 16,
@@ -26,6 +28,6 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   selected: { backgroundColor: colors.brand },
-  label: { color: colors.brand },
-  selectedLabel: { color: colors.onBrand, fontWeight: "600" },
+  label: { flexShrink: 1, color: colors.brand },
+  selectedLabel: { flexShrink: 1, color: colors.onBrand, fontWeight: "600" },
 });

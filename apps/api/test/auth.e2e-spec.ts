@@ -69,6 +69,64 @@ describe("Auth routes (e2e)", () => {
     });
   });
 
+  describe("password change (docs/DECISIONS.md)", () => {
+    const NEW_PASSWORD = "nouveau-mot-de-passe";
+
+    it("checks the current password, signs out the other devices and keeps this one", async () => {
+      const register = await request(app.getHttpServer())
+        .post("/auth/register")
+        .send(LEA)
+        .expect(201);
+      const { tokens } = authSessionSchema.parse(register.body);
+      const auth = `Bearer ${tokens.accessToken}`;
+
+      const wrong = await request(app.getHttpServer())
+        .post("/auth/password")
+        .set("Authorization", auth)
+        .send({ currentPassword: "mauvais", newPassword: NEW_PASSWORD })
+        .expect(401);
+      expect(wrong.body).toMatchObject({ code: "INVALID_CREDENTIALS" });
+
+      const changed = await request(app.getHttpServer())
+        .post("/auth/password")
+        .set("Authorization", auth)
+        .send({ currentPassword: LEA.password, newPassword: NEW_PASSWORD })
+        .expect(200);
+      const session = authSessionSchema.parse(changed.body);
+
+      // The other sessions are over; the new one goes on.
+      await request(app.getHttpServer())
+        .post("/auth/refresh")
+        .send({ refreshToken: tokens.refreshToken })
+        .expect(401);
+      await request(app.getHttpServer())
+        .post("/auth/refresh")
+        .send({ refreshToken: session.tokens.refreshToken })
+        .expect(200);
+      await request(app.getHttpServer())
+        .post("/auth/login")
+        .send({ identifier: LEA.email, password: LEA.password })
+        .expect(401);
+      await request(app.getHttpServer())
+        .post("/auth/login")
+        .send({ identifier: LEA.email, password: NEW_PASSWORD })
+        .expect(200);
+    });
+
+    it("refuses a new password that is too short", async () => {
+      const register = await request(app.getHttpServer())
+        .post("/auth/register")
+        .send(LEA)
+        .expect(201);
+      const { tokens } = authSessionSchema.parse(register.body);
+      await request(app.getHttpServer())
+        .post("/auth/password")
+        .set("Authorization", `Bearer ${tokens.accessToken}`)
+        .send({ currentPassword: LEA.password, newPassword: "court" })
+        .expect(400);
+    });
+  });
+
   describe("login", () => {
     beforeEach(async () => {
       await request(app.getHttpServer()).post("/auth/register").send(LEA).expect(201);

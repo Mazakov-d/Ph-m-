@@ -5,6 +5,7 @@ import { Button } from "../../../components/ui/Button";
 import { type DashboardItem, DashboardGrid } from "../../../components/ui/DashboardGrid";
 import { colors } from "../../../components/ui/theme";
 import { useAuth } from "../../../providers/AuthProvider";
+import { ChangePasswordForm } from "../../auth/components/ChangePasswordForm";
 import { DeleteAccount } from "../../auth/components/DeleteAccount";
 import { JurySection } from "../../jury/components/JurySection";
 import { ConversationsSection } from "../../tickets/components/ConversationsSection";
@@ -26,6 +27,7 @@ const texts = {
   sanctions: "Mes sanctions",
   blocks: "Comptes bloqués",
   support: "Contacter Phémé",
+  changePassword: "Changer de mot de passe",
   signOut: "Se déconnecter",
   deleteAccount: "Supprimer mon compte",
 };
@@ -128,6 +130,7 @@ export function Dashboard({ user }: { user: AuthUser }) {
   // docs/DECISIONS.md (contact): readers and editors write to the team.
   if (can(user, "support.open")) items.push({ label: texts.support, onPress: go("/support") });
   items.push(
+    { label: texts.changePassword, content: () => <ChangePasswordForm /> },
     { label: texts.signOut, onPress: () => void signOut() },
     { label: texts.deleteAccount, content: (close) => <DeleteAccount onCancel={close} /> },
   );

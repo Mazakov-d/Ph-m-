@@ -40,6 +40,13 @@ export const loginInputSchema = z.object({
 });
 export type LoginInput = z.infer<typeof loginInputSchema>;
 
+// docs/DECISIONS.md (password change): every account, from its dashboard.
+export const updatePasswordInputSchema = z.object({
+  currentPassword: z.string().min(1).max(PASSWORD_MAX_LENGTH),
+  newPassword: passwordSchema,
+});
+export type UpdatePasswordInput = z.infer<typeof updatePasswordInputSchema>;
+
 // docs/DECISIONS.md: the web client keeps its refresh token in an httpOnly cookie that
 // JavaScript cannot read, so it tells the API which kind of client it is with this header.
 export const CLIENT_KIND_HEADER = "x-fama-client";

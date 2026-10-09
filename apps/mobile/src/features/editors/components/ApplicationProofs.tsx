@@ -36,7 +36,8 @@ export function ApplicationProofs({ application, checked, onToggle }: Props) {
   const proofs = EDITOR_PROOFS[application.applicantType];
   const detail = (label: string, value: string | null, link?: string) =>
     value ? (
-      <Text key={label}>
+      // A link (a URL, the register) is one long word: cut with « … » rather than overflowing.
+      <Text key={label} numberOfLines={link ? 1 : undefined}>
         <Text style={styles.strong}>{`${label} : `}</Text>
         {link ? (
           <Text
@@ -80,6 +81,7 @@ export function ApplicationProofs({ application, checked, onToggle }: Props) {
         <Text
           key={link}
           accessibilityRole="link"
+          numberOfLines={1}
           style={styles.link}
           onPress={() => void Linking.openURL(link)}
         >

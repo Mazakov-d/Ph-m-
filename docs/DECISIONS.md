@@ -774,3 +774,19 @@ qui la remplace.
   sans tenir compte de la casse (comme leur unicité) et parmi les comptes non supprimés. Même
   erreur pour un compte inconnu et un mauvais mot de passe (« Identifiant ou mot de passe
   incorrect. »). Le champ de l'API devient `identifier`.
+
+## 2026-10-10 — Changer de mot de passe
+
+- **Décision** : « Changer de mot de passe » est dans le tableau de bord de tous les comptes
+  (mot de passe actuel, nouveau, confirmation). L'API vérifie le mot de passe actuel, enregistre
+  le nouveau et déconnecte tous les appareils (une session volée s'arrête avec l'ancien mot de
+  passe) ; l'appareil qui l'a changé reçoit une nouvelle session. Limite de débit : celle de la
+  connexion.
+
+## 2026-10-10 — Affichage dans le navigateur d'un téléphone
+
+- Les puces trop longues passent à la ligne dans leur cadre ; les liens trop longs (adresses,
+  annuaire) se terminent par « … » ; le choix du lieu prend toute la largeur (les villes ne
+  sortent plus de la boîte des filtres).
+- Le nom « Phémé » n'est centré dans l'en-tête que sur un écran large (760 px et plus) ; sur un
+  téléphone, il est à gauche et les boutons rétrécissent plutôt que de passer à la ligne.

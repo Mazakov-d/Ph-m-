@@ -9,6 +9,7 @@ import {
   type ModeratorModeration,
   parseLoginIdentifier,
   type RegisterInput,
+  type UpdatePasswordInput,
 } from "@fama/shared";
 import { hash, verify } from "argon2";
 import { ApiException } from "../common/errors/api.exception.js";
@@ -112,6 +113,34 @@ export class AuthService {
         "Invalid identifier or password",
       );
     }
+    return this.createSession(user);
+  }
+
+  /**
+   * docs/DECISIONS.md (password change): checks the current password, then, in one transaction,
+   * stores the new one and signs out every device (a stolen session ends with the old password).
+   * The device that changed it gets a new session.
+   */
+  async updatePassword(userId: string, input: UpdatePasswordInput): Promise<IssuedSession> {
+    const user = await this.prisma.user.findUniqueOrThrow({
+      where: { id: userId },
+      include: WITH_EDITOR_STATUS,
+    });
+    if (!(await verify(user.passwordHash, input.currentPassword))) {
+      throw new ApiException(HttpStatus.UNAUTHORIZED, "INVALID_CREDENTIALS", "Wrong password");
+    }
+    const passwordHash = await hash(input.newPassword);
+    await this.prisma.$transaction([
+      // Conditional update (CLAUDE.md §5.3): only if the password checked above is still the one.
+      this.prisma.user.updateMany({
+        where: { id: userId, passwordHash: user.passwordHash },
+        data: { passwordHash },
+      }),
+      this.prisma.refreshToken.updateMany({
+        where: { userId, revokedAt: null },
+        data: { revokedAt: new Date() },
+      }),
+    ]);
     return this.createSession(user);
   }
 

@@ -6,6 +6,8 @@ import {
   ClientKind,
   type LoginInput,
   loginInputSchema,
+  type UpdatePasswordInput,
+  updatePasswordInputSchema,
   MILLISECONDS_PER_DAY,
   REFRESH_TOKEN_TTL_DAYS,
   type RefreshTokenInput,
@@ -101,6 +103,20 @@ export class AuthController {
       await this.authService.logout(refreshToken);
     }
     response.clearCookie(REFRESH_COOKIE_NAME, REFRESH_COOKIE_OPTIONS);
+  }
+
+  /** docs/DECISIONS.md (password change): any signed-in account. */
+  @RateLimit(RATE_LIMIT_LOGIN)
+  @Post("password")
+  @HttpCode(HttpStatus.OK)
+  async updatePassword(
+    @Body(new ZodValidationPipe(updatePasswordInputSchema)) input: UpdatePasswordInput,
+    @CurrentUser() user: AuthUser,
+    @Headers(CLIENT_KIND_HEADER) clientKind: string | undefined,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<AuthSession> {
+    const session = await this.authService.updatePassword(user.id, input);
+    return this.sendSession(session, isWebClient(clientKind), response);
   }
 
   @Get("me")

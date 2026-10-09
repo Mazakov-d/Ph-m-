@@ -62,7 +62,9 @@ function Group({ title, onToggle }: { title: string; onToggle: () => void }) {
 }
 
 const styles = StyleSheet.create({
-  field: { gap: spacing.sm },
+  // Its own line, even inside a row of chips: otherwise, on the web, it takes the width of its
+  // content and the regions and cities run off the right edge in one line.
+  field: { width: "100%", gap: spacing.sm },
   label: { fontWeight: "600" },
   chips: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm },
   group: { color: colors.brand, fontWeight: "600" },
