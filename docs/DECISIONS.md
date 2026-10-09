@@ -731,3 +731,16 @@ qui la remplace.
     les boutons de l'en-tête sont plus petits pour tenir sur une ligne.
   - Sous un post, les commentaires sont **repliés** : « Afficher les commentaires (N) » les
     charge et les affiche, « Masquer les commentaires » les replie.
+
+## 2026-10-09 — Clavier et commentaires désactivés
+
+- **Question** : le clavier cachait les filtres de recherche et le champ de commentaire.
+- **Décision** :
+  - Sans nouvelle dépendance : l'app suit la hauteur du clavier (`useKeyboard`) et laisse cette
+    place sous le contenu (Android dessine d'un bord à l'autre et iOS ne réduit jamais la
+    fenêtre). `KeyboardAwareScrollView` fait en plus défiler le champ en cours de saisie juste
+    au-dessus du clavier (page d'un post, publier, page d'un éditeur, boîtes du compte).
+  - Les filtres s'arrêtent au bord du clavier et restent cliquables clavier ouvert ; dans le fil
+    et les résultats, un post s'ouvre au premier appui et faire défiler la liste range le clavier.
+  - Article aux commentaires désactivés : pas de bouton à déplier, seulement le message « Les
+    commentaires sont désactivés pour cet article. ».

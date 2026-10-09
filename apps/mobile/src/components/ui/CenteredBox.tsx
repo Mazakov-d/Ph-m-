@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
-import { ScrollView, StyleSheet, useWindowDimensions, View } from "react-native";
+import { StyleSheet, useWindowDimensions, View } from "react-native";
+import { KeyboardAwareScrollView } from "./KeyboardAwareScrollView";
 import { colors, radius, spacing } from "./theme";
 
 /** Widest box for each kind of content: a few buttons, a form or a text, a list to work on. */
@@ -26,10 +27,10 @@ export function CenteredBox({ children, size = "narrow", footer }: Props) {
       ? Math.min(FLUID_BOX.max, Math.max(FLUID_BOX.min, width * FLUID_BOX.share))
       : BOX_WIDTHS[size];
   return (
-    <ScrollView contentContainerStyle={styles.screen} keyboardShouldPersistTaps="handled">
+    <KeyboardAwareScrollView contentContainerStyle={styles.screen}>
       <View style={[styles.box, { maxWidth }]}>{children}</View>
       {footer}
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 }
 

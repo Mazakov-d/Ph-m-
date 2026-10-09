@@ -1,5 +1,6 @@
 import { Link, Stack, useLocalSearchParams } from "expo-router";
-import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { KeyboardAwareScrollView } from "../../components/ui/KeyboardAwareScrollView";
 import { colors, radius, spacing, textSizes } from "../../components/ui/theme";
 import { HiddenComments } from "../../features/comments/components/HiddenComments";
 import { EditorBadge } from "../../features/editors/components/EditorBadge";
@@ -50,7 +51,7 @@ export default function PostScreen() {
   const place = zonePlaceLabel(data.zone, data.locality);
 
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.container}>
+    <KeyboardAwareScrollView style={styles.screen} contentContainerStyle={styles.container}>
       <Stack.Screen options={{ title: texts.title }} />
       <View style={styles.frame}>
         <View style={styles.meta}>
@@ -93,7 +94,7 @@ export default function PostScreen() {
       <View style={styles.comments}>
         <HiddenComments post={data} />
       </View>
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 }
 

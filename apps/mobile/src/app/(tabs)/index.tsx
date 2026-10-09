@@ -50,6 +50,8 @@ export default function FeedScreen() {
           <FlatList
             // A FlatList cannot change its number of columns: a new one is made instead.
             key={columns}
+            keyboardShouldPersistTaps="handled"
+            keyboardDismissMode="on-drag"
             numColumns={columns}
             columnWrapperStyle={columns > 1 ? styles.row : undefined}
             data={toGridCells(posts, columns)}

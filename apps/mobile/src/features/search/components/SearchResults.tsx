@@ -27,6 +27,9 @@ export function SearchResults({ q, filters, header, columns }: Props) {
     <FlatList
       // Interface brief: several columns on a wide screen (a new list when the count changes).
       key={columns}
+      // A result opens on the first press, even with the keyboard open; scrolling hides it.
+      keyboardShouldPersistTaps="handled"
+      keyboardDismissMode="on-drag"
       numColumns={columns}
       columnWrapperStyle={columns > 1 ? styles.row : undefined}
       data={toGridCells(posts, columns)}

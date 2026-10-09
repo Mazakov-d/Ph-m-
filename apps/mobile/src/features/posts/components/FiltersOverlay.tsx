@@ -1,11 +1,5 @@
-import {
-  Keyboard,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-} from "react-native";
+import { Keyboard, Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { useKeyboard } from "../../../hooks/useKeyboard";
 import type { FeedFilters } from "../api";
 import { FeedFiltersPanel } from "./FeedFiltersPanel";
 
@@ -22,15 +16,16 @@ type Props = {
  * closes them; they stay above the keyboard and scroll when the keyboard leaves too little room.
  */
 export function FiltersOverlay({ filters, onChange, onClose }: Props) {
+  const keyboard = useKeyboard();
   const close = () => {
     Keyboard.dismiss();
     onClose();
   };
   return (
-    <KeyboardAvoidingView
-      // Android already resizes the window above the keyboard.
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-      style={StyleSheet.absoluteFill}
+    // The overlay reaches the bottom of the window: it stops at the keyboard's top instead, so
+    // that every filter can be scrolled to and pressed while the keyboard stays open.
+    <View
+      style={[StyleSheet.absoluteFill, { paddingBottom: keyboard.height }]}
       pointerEvents="box-none"
     >
       <Pressable
@@ -46,7 +41,7 @@ export function FiltersOverlay({ filters, onChange, onClose }: Props) {
       >
         <FeedFiltersPanel filters={filters} onChange={onChange} onClose={close} />
       </ScrollView>
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 

@@ -1,6 +1,7 @@
 import { can } from "@fama/shared";
 import { Stack, useRouter } from "expo-router";
-import { ScrollView, StyleSheet, Text } from "react-native";
+import { StyleSheet, Text } from "react-native";
+import { KeyboardAwareScrollView } from "../../components/ui/KeyboardAwareScrollView";
 import { PublishForm } from "../../features/posts/components/PublishForm";
 import { useAuth } from "../../providers/AuthProvider";
 import { colors } from "../../components/ui/theme";
@@ -17,7 +18,7 @@ export default function PublishScreen() {
   const { user } = useAuth();
 
   return (
-    <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+    <KeyboardAwareScrollView contentContainerStyle={styles.container}>
       <Stack.Screen options={{ title: texts.title }} />
       {/* SPEC §2.5: reserved to validated editors (the API checks again). */}
       {can(user, "post.create") ? (
@@ -28,7 +29,7 @@ export default function PublishScreen() {
       ) : (
         <Text>{texts.forbidden}</Text>
       )}
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 }
 

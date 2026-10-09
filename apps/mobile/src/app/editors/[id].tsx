@@ -1,13 +1,7 @@
 import { can, type EditorPublic } from "@fama/shared";
 import { Stack, useLocalSearchParams } from "expo-router";
-import {
-  ActivityIndicator,
-  ScrollView,
-  StyleSheet,
-  Text,
-  useWindowDimensions,
-  View,
-} from "react-native";
+import { ActivityIndicator, StyleSheet, Text, useWindowDimensions, View } from "react-native";
+import { KeyboardAwareScrollView } from "../../components/ui/KeyboardAwareScrollView";
 import { colors, gridBreakpoints, layout, radius, spacing } from "../../components/ui/theme";
 import { useEditorProfile } from "../../features/editors/api";
 import { EditorBadge } from "../../features/editors/components/EditorBadge";
@@ -63,10 +57,10 @@ export default function EditorProfileScreen() {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <KeyboardAwareScrollView contentContainerStyle={styles.container}>
       <Stack.Screen options={{ title: texts.title }} />
       {content()}
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 }
 

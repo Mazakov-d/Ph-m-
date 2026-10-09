@@ -26,4 +26,12 @@ describe("HiddenComments (docs/DECISIONS.md)", () => {
     await fireEvent.press(screen.getByText("Masquer les commentaires"));
     expect(screen.queryByText(/^Commentaires · /)).toBeNull();
   });
+
+  it("only says that the comments are off, with nothing to unfold", async () => {
+    await renderWithProviders(
+      <HiddenComments post={{ ...ARTICLE_DETAIL, commentsEnabled: false }} />,
+    );
+    expect(screen.getByText("Les commentaires sont désactivés pour cet article.")).toBeTruthy();
+    expect(screen.queryByText(/^Afficher les commentaires/)).toBeNull();
+  });
 });

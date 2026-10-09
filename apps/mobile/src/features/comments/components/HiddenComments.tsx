@@ -1,11 +1,14 @@
 import type { PostPublic } from "@fama/shared";
 import { useState } from "react";
+import { StyleSheet, Text } from "react-native";
+import { colors } from "../../../components/ui/theme";
 import { Button } from "../../../components/ui/Button";
 import { CommentsSection } from "./CommentsSection";
 
 const texts = {
   show: (count: number) => `Afficher les commentaires (${count})`,
   hide: "Masquer les commentaires",
+  disabled: "Les commentaires sont désactivés pour cet article.",
 };
 
 /**
@@ -14,6 +17,8 @@ const texts = {
  */
 export function HiddenComments({ post }: { post: PostPublic }) {
   const [shown, setShown] = useState(false);
+  // Nothing to unfold: the reader only learns that the comments are off.
+  if (!post.commentsEnabled) return <Text style={styles.disabled}>{texts.disabled}</Text>;
   return (
     <>
       <Button
@@ -26,3 +31,7 @@ export function HiddenComments({ post }: { post: PostPublic }) {
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  disabled: { color: colors.muted, fontStyle: "italic", textAlign: "center" },
+});
