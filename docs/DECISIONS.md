@@ -761,7 +761,8 @@ qui la remplace.
     de passe ne doivent pas circuler en clair.
   - Site sur `phebe.duckdns.org`, API sur `api.phebe.duckdns.org` (DuckDNS résout les
     sous-domaines) : les routes de l'API (`/posts/…`) se confondraient avec les pages du site.
-  - Apache occupe le port 80 de la machine : Caddy écoute 8080/8443, la box redirige 80 et 443.
+  - Caddy écoute directement 80 et 443 (Apache, qui ne servait que sa page par défaut, a été
+    arrêté par le propriétaire) ; la box redirige 80 et 443 vers la machine.
   - L'API lit l'IP des visiteurs dans `X-Forwarded-For` (`TRUST_PROXY_HOPS`), sinon les limites
     de débit seraient communes à tous.
   - Pas de données de démonstration en ligne (leurs mots de passe sont publics dans le dépôt).

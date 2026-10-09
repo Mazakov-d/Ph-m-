@@ -8,8 +8,9 @@ le stockage privé, dans `docker-compose.yml`. Le site est sur `https://DOMAIN`,
 
 1. `cp deploy/.env.example deploy/.env`, puis remplir les secrets (`openssl rand -hex 32`).
 2. Sur la box (Freebox OS › Paramètres › Gestion des ports), rediriger vers l'IP locale de la
-   machine (bail DHCP fixe conseillé) : TCP **80 → 8080** et TCP **443 → 8443**.
-   Apache occupe déjà le port 80 de la machine, d'où ces ports.
+   machine (bail DHCP fixe conseillé) : TCP **80 → 80** et TCP **443 → 443**. Si ces ports sont
+   pris sur la machine (Apache, par ex.), choisir d'autres ports dans `.env` (`HTTP_PORT`,
+   `HTTPS_PORT`) et rediriger vers eux.
 3. `deploy/deploy.sh`
 
 Les certificats arrivent seuls dès que les ports sont ouverts (Caddy réessaie).
