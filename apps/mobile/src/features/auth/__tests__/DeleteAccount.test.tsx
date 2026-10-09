@@ -15,8 +15,7 @@ describe("DeleteAccount (SPEC §10)", () => {
   it("deletes the account with the password, then forgets the session", async () => {
     await tokenStorage.save({ accessToken: "access", refreshToken: "refresh" });
     fetchMock.mockResolvedValue(jsonResponse(204));
-    await renderWithProviders(<DeleteAccount />);
-    await fireEvent.press(screen.getByText("Supprimer mon compte"));
+    await renderWithProviders(<DeleteAccount onCancel={jest.fn()} />);
     expect(screen.getByText(/signés « Compte supprimé »/)).toBeTruthy();
     await fireEvent.changeText(
       screen.getByLabelText("Votre mot de passe, pour confirmer"),

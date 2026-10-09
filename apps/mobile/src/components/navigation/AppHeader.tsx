@@ -1,6 +1,6 @@
 import { APP_NAME, can } from "@fama/shared";
 import { usePathname, useRouter } from "expo-router";
-import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
+import { Platform, Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuth } from "../../providers/AuthProvider";
 import { colors, radius, spacing } from "../ui/theme";
@@ -11,15 +11,20 @@ const texts = {
   back: "Retour",
   feed: `${APP_NAME}, le fil des publications`,
   publish: "Publier",
-  account: "Compte",
+  account: "Tableau de bord",
+  editorPage: "Ma page",
 };
 
 // Interface brief: the name of the app is centred on the web, on the left on a phone.
 const CENTERED_BRAND = Platform.OS === "web";
 
+// Below this width (a phone), the tabs are smaller so that they all fit on one line.
+const COMPACT_MAX_WIDTH = 480;
+
 /**
  * The header of every page (interface brief): the brand (APP_NAME) (the feed tab), the « Publier »
- * (editors) and « Compte » tabs, the current tab greyed, and a back arrow on the pages opened above them.
+ * (editors) and « Tableau de bord » tabs, the current tab greyed, and a back arrow on the pages
+ * opened above them. docs/DECISIONS.md (dashboard): an editor also has « Ma page », their profile.
  */
 export function AppHeader({ canGoBack }: { canGoBack: boolean }) {
   const router = useRouter();
@@ -27,8 +32,10 @@ export function AppHeader({ canGoBack }: { canGoBack: boolean }) {
   const goToTab = useGoToTab();
   const { user } = useAuth();
   const insets = useSafeAreaInsets();
+  const compact = useWindowDimensions().width < COMPACT_MAX_WIDTH;
+  const editorPage = user?.role === "EDITOR" ? `/editors/${user.id}` : null;
 
-  const tabProps = { current: pathname, onPress: goToTab };
+  const tabProps = { current: pathname, onPress: goToTab, compact };
   const brand = (
     <Tab label={APP_NAME} accessibilityLabel={texts.feed} path="/" brand {...tabProps} />
   );
@@ -53,6 +60,14 @@ export function AppHeader({ canGoBack }: { canGoBack: boolean }) {
           {can(user, "post.create") ? (
             <Tab label={texts.publish} path="/publish" {...tabProps} />
           ) : null}
+          {editorPage ? (
+            <HeaderButton
+              label={texts.editorPage}
+              selected={pathname === editorPage}
+              compact={compact}
+              onPress={() => router.push(editorPage)}
+            />
+          ) : null}
           <Tab label={texts.account} path="/account" {...tabProps} />
         </View>
         {CENTERED_BRAND ? <View style={styles.centered}>{brand}</View> : null}
@@ -67,21 +82,44 @@ type TabProps = {
   path: TabPath;
   current: string;
   onPress: (path: TabPath) => void;
+  compact: boolean;
   brand?: boolean;
 };
 
-/** A tab of the header, greyed when it is the current page. */
-function Tab({ label, accessibilityLabel, path, current, onPress, brand = false }: TabProps) {
-  const selected = current === path;
+/** A tab of the header. */
+function Tab({ path, current, onPress, ...props }: TabProps) {
+  return <HeaderButton {...props} selected={current === path} onPress={() => onPress(path)} />;
+}
+
+type HeaderButtonProps = {
+  label: string;
+  accessibilityLabel?: string;
+  selected: boolean;
+  compact: boolean;
+  onPress: () => void;
+  brand?: boolean;
+};
+
+/** A button of the header, greyed when it is the current page. */
+function HeaderButton(props: HeaderButtonProps) {
+  const { label, accessibilityLabel, selected, compact, onPress, brand = false } = props;
   return (
     <Pressable
       accessibilityRole="tab"
       accessibilityLabel={accessibilityLabel ?? label}
       accessibilityState={{ selected }}
-      onPress={() => onPress(path)}
-      style={[styles.tab, selected && styles.currentTab]}
+      onPress={onPress}
+      style={[styles.tab, compact && styles.compactTab, selected && styles.currentTab]}
     >
-      <Text style={brand ? styles.brand : styles.tabLabel}>{label}</Text>
+      <Text
+        numberOfLines={1}
+        style={[
+          brand ? styles.brand : styles.tabLabel,
+          compact && (brand ? styles.compactBrand : styles.compactLabel),
+        ]}
+      >
+        {label}
+      </Text>
     </Pressable>
   );
 }
@@ -102,7 +140,10 @@ const styles = StyleSheet.create({
   back: { paddingHorizontal: spacing.sm, paddingVertical: spacing.xs },
   tabs: { flexDirection: "row", gap: spacing.xs, marginLeft: "auto" },
   tab: { paddingHorizontal: spacing.md, paddingVertical: 6, borderRadius: radius.sm },
+  compactTab: { paddingHorizontal: spacing.sm },
   currentTab: { backgroundColor: colors.subtle },
+  compactLabel: { fontSize: 14 },
+  compactBrand: { fontSize: 19 },
   tabLabel: { fontSize: 16, fontWeight: "600", color: colors.brand },
   brand: { fontSize: 22, fontWeight: "bold", color: colors.brand },
   // Centred on the whole width, whatever the buttons on each side.

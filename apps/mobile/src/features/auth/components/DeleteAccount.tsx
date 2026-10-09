@@ -9,7 +9,6 @@ import { apiErrorMessage } from "../errorMessages";
 import { colors } from "../../../components/ui/theme";
 
 const texts = {
-  open: "Supprimer mon compte",
   warning:
     "Votre compte sera supprimé définitivement : vous ne pourrez plus vous connecter. Vos publications et commentaires resteront visibles, signés « Compte supprimé ».",
   password: "Votre mot de passe, pour confirmer",
@@ -17,9 +16,11 @@ const texts = {
   cancel: "Annuler",
 };
 
-/** SPEC §10: deleting one's account from the app (Apple requirement). */
-export function DeleteAccount() {
-  const [open, setOpen] = useState(false);
+/**
+ * SPEC §10: deleting one's account from the app (Apple requirement). Unfolded by the
+ * « Supprimer mon compte » button of the dashboard.
+ */
+export function DeleteAccount({ onCancel }: { onCancel: () => void }) {
   const [password, setPassword] = useState("");
   const deletion = useMutation({
     mutationFn: (value: string) =>
@@ -28,9 +29,6 @@ export function DeleteAccount() {
     onSuccess: () => apiClient.endSession(),
   });
 
-  if (!open) {
-    return <Button label={texts.open} variant="secondary" onPress={() => setOpen(true)} />;
-  }
   return (
     <View style={styles.panel}>
       <Text>{texts.warning}</Text>
@@ -48,7 +46,7 @@ export function DeleteAccount() {
         loading={deletion.isPending}
         onPress={() => password && deletion.mutate(password)}
       />
-      <Button label={texts.cancel} variant="secondary" onPress={() => setOpen(false)} />
+      <Button label={texts.cancel} variant="secondary" onPress={onCancel} />
     </View>
   );
 }

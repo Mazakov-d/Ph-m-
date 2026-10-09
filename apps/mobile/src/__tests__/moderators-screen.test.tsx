@@ -26,7 +26,7 @@ const moderator = {
   createdAt: now,
 };
 
-describe("the team's account (docs/DECISIONS.md)", () => {
+describe("the dashboard and the moderators (docs/DECISIONS.md)", () => {
   const fetchMock = jest.spyOn(globalThis, "fetch");
 
   beforeEach(async () => {
@@ -67,31 +67,58 @@ describe("the team's account (docs/DECISIONS.md)", () => {
     await waitFor(() => expect(screen.queryByText("Créer le compte modérateur")).toBeNull());
   });
 
-  it("splits an admin's account in tabs, the tools in cards", async () => {
+  it("unfolds the team's tools under the dashboard's buttons", async () => {
     fetchMock.mockImplementation(async (url) =>
       String(url).endsWith("/auth/refresh")
         ? jsonResponse(200, sessionFor("ADMIN"))
         : jsonResponse(200, []),
     );
     await renderWithProviders(<AccountScreen />);
-    expect(await screen.findByText("Toutes les conversations")).toBeTruthy();
-    await fireEvent.press(screen.getByRole("tab", { name: "Administration" }));
+    // Signing out and deleting the account are always there.
+    expect(await screen.findByText("Se déconnecter")).toBeTruthy();
+    expect(screen.getByText("Supprimer mon compte")).toBeTruthy();
+    expect(screen.queryByText("Modérateurs")).toBeNull();
+
+    await fireEvent.press(screen.getByText("Administration"));
     await fireEvent.press(screen.getByText("Modérateurs"));
     expect(mockPush).toHaveBeenCalledWith("/admin/moderators");
-    await fireEvent.press(screen.getByRole("tab", { name: "Modération" }));
+    // One section at a time: opening « Modération » folds « Administration ».
+    await fireEvent.press(screen.getByText("Modération"));
     expect(screen.getByText("Articles signalés")).toBeTruthy();
-    await fireEvent.press(screen.getByRole("tab", { name: "Mon compte" }));
-    expect(screen.getByText("Se déconnecter")).toBeTruthy();
+    expect(screen.queryByText("Modérateurs")).toBeNull();
+    await fireEvent.press(screen.getByText("Modération"));
+    expect(screen.queryByText("Articles signalés")).toBeNull();
+
+    await fireEvent.press(screen.getByText("Conversations"));
+    expect(await screen.findByText("Toutes les conversations")).toBeTruthy();
   });
 
-  it("gives no Administration tab to a moderator", async () => {
+  it("gives no Administration to a moderator, nor « Devenir éditeur »", async () => {
     fetchMock.mockImplementation(async (url) =>
       String(url).endsWith("/auth/refresh")
         ? jsonResponse(200, sessionFor("MODERATOR"))
         : jsonResponse(200, []),
     );
     await renderWithProviders(<AccountScreen />);
-    expect(await screen.findByText("À prendre en charge")).toBeTruthy();
-    expect(screen.queryByRole("tab", { name: "Administration" })).toBeNull();
+    expect(await screen.findByText("Conversations")).toBeTruthy();
+    expect(screen.queryByText("Administration")).toBeNull();
+    expect(screen.queryByText("Devenir éditeur")).toBeNull();
+  });
+
+  it("gives a reader the same buttons, and unfolds the account's deletion", async () => {
+    fetchMock.mockImplementation(async (url) =>
+      String(url).endsWith("/auth/refresh")
+        ? jsonResponse(200, sessionFor("READER"))
+        : jsonResponse(200, { volunteer: false }),
+    );
+    await renderWithProviders(<AccountScreen />);
+    await fireEvent.press(await screen.findByText("Devenir éditeur"));
+    expect(mockPush).toHaveBeenCalledWith("/editor");
+    expect(screen.getByText("Contacter Phémé")).toBeTruthy();
+    expect(screen.queryByText("Conversations")).toBeNull();
+    await fireEvent.press(screen.getByText("Supprimer mon compte"));
+    expect(screen.getByText(/signés « Compte supprimé »/)).toBeTruthy();
+    await fireEvent.press(screen.getByText("Annuler"));
+    expect(screen.queryByText(/signés « Compte supprimé »/)).toBeNull();
   });
 });

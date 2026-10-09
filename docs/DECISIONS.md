@@ -712,9 +712,22 @@ qui la remplace.
     Réservé à la permission `moderator.manage` (ADMIN), écrit dans le journal d'audit
     (`moderator.create`) dans la même transaction. L'admin transmet lui-même les identifiants ;
     le modérateur peut ensuite changer son mot de passe comme tout compte.
-  - Le Compte d'un modérateur ou d'un admin est découpé en onglets : **Conversations** (ouvert
-    par défaut : à prendre en charge et les siennes ; tout pour l'admin), **Modération**
-    (demandes éditeurs, commentaires et articles signalés), **Administration** (admin seulement :
-    modérateurs, journal d'audit), **Mon compte** (alertes, blocages, sanctions, déconnexion,
-    suppression). Les outils sont des cartes en grille (2 colonnes dès 600 px de large).
-  - Le Compte d'un lecteur ou d'un éditeur reste une colonne de boutons, avec « Contacter Phémé ».
+  - Le rangement du Compte de l'équipe est remplacé par le tableau de bord (entrée suivante).
+
+## 2026-10-09 — Tableau de bord et commentaires repliés
+
+- **Question** : retours du propriétaire sur le Compte et la page d'un post.
+- **Décision** :
+  - L'onglet « Compte » devient **« Tableau de bord »**. Sa boîte grandit avec la fenêtre
+    (70 % de la largeur, entre 420 et 1200 px) ; les formulaires de connexion restent étroits.
+  - Tous les comptes ont les **mêmes boutons** (blancs, bordés de bleu), en deux colonnes dès
+    760 px. Les outils de l'équipe se **déplient sous leur bouton**, un à la fois :
+    « Conversations », « Modération » (demandes éditeurs, signalements), « Administration »
+    (admin : modérateurs, journal d'audit). « Jury citoyen » se déplie aussi pour les lecteurs.
+  - « Se déconnecter » et « Supprimer mon compte » sont toujours visibles ; la suppression se
+    déplie sous son bouton pour demander le mot de passe.
+  - Interprétation : « le bouton compte uniquement pour les éditeurs, vers leur page » → dans
+    l'en-tête, un éditeur a en plus **« Ma page »**, qui ouvre son profil public. Sur téléphone,
+    les boutons de l'en-tête sont plus petits pour tenir sur une ligne.
+  - Sous un post, les commentaires sont **repliés** : « Afficher les commentaires (N) » les
+    charge et les affiche, « Masquer les commentaires » les replie.

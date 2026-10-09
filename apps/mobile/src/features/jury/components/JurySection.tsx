@@ -38,7 +38,11 @@ export function JurySection() {
       </View>
       <Text style={styles.muted}>{texts.explanation}</Text>
       {seats.length > 0 ? (
-        <Button label={texts.assignments(pending)} onPress={() => router.push("/jury")} />
+        <Button
+          label={texts.assignments(pending)}
+          variant="secondary"
+          onPress={() => router.push("/jury")}
+        />
       ) : null}
     </View>
   );

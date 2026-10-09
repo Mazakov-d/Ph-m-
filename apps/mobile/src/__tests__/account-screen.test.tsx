@@ -79,6 +79,8 @@ describe("AccountScreen", () => {
       return jsonResponse(200, []);
     });
     await renderWithProviders(<AccountScreen />);
+    // docs/DECISIONS.md (dashboard): the conversations unfold under their button.
+    await fireEvent.press(await screen.findByText("Conversations"));
     expect(await screen.findByText("Mon compte a été suspendu à tort.")).toBeTruthy();
     await fireEvent.press(screen.getByText("Prendre en charge"));
     await waitFor(() =>

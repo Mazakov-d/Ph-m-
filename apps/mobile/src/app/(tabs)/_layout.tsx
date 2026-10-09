@@ -18,7 +18,7 @@ export default function TabsLayout() {
     >
       <Tabs.Screen name="index" options={{ title: APP_NAME }} />
       <Tabs.Screen name="publish" options={{ title: "Publier" }} />
-      <Tabs.Screen name="account" options={{ title: "Compte" }} />
+      <Tabs.Screen name="account" options={{ title: "Tableau de bord" }} />
     </Tabs>
   );
 }

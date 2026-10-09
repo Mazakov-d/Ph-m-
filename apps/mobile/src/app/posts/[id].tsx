@@ -1,7 +1,7 @@
 import { Link, Stack, useLocalSearchParams } from "expo-router";
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
 import { colors, radius, spacing, textSizes } from "../../components/ui/theme";
-import { CommentsSection } from "../../features/comments/components/CommentsSection";
+import { HiddenComments } from "../../features/comments/components/HiddenComments";
 import { EditorBadge } from "../../features/editors/components/EditorBadge";
 import { SupportButton } from "../../features/editors/components/SupportButton";
 import { ReliabilityGauge } from "../../features/editors/components/ReliabilityGauge";
@@ -91,7 +91,7 @@ export default function PostScreen() {
         ))}
       </View>
       <View style={styles.comments}>
-        <CommentsSection post={data} />
+        <HiddenComments post={data} />
       </View>
     </ScrollView>
   );
@@ -121,6 +121,7 @@ const styles = StyleSheet.create({
   },
   // …and the comments come out from under it, a little narrower, as its continuation.
   comments: {
+    gap: spacing.md,
     marginHorizontal: spacing.md,
     marginTop: -1,
     padding: spacing.lg,
