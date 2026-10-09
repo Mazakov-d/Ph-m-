@@ -15,4 +15,6 @@ rm -rf web-dist
 grep -rq "api.${DOMAIN}" web-dist/_expo || { echo "web-dist: API URL missing" >&2; exit 1; }
 
 docker compose --env-file .env up -d --build
+# Caddy still holds the web-dist folder deleted above: it reopens the new one on restart.
+docker compose --env-file .env restart caddy
 docker compose --env-file .env ps
