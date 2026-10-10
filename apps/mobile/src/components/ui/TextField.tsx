@@ -57,7 +57,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
   },
   boxError: { borderColor: colors.danger },
-  input: { flex: 1, padding: 10, fontSize: 16 },
+  // minWidth 0: in a browser, a text input keeps the width of about 20 characters and would
+  // push the « Afficher » button out of a narrow box (a phone).
+  input: { flex: 1, minWidth: 0, padding: 10, fontSize: 16 },
   reveal: { paddingHorizontal: spacing.md, paddingVertical: spacing.sm },
   revealLabel: { color: colors.brand, fontWeight: "600" },
   error: { color: colors.danger },
