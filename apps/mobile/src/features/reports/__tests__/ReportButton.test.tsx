@@ -4,7 +4,8 @@ import { apiClient } from "../../../lib/apiClient";
 import { tokenStorage } from "../../../lib/tokenStorage";
 import { ARTICLE_DETAIL, sessionFor } from "../../../test/fixtures";
 import { jsonResponse, renderWithProviders } from "../../../test/renderWithProviders";
-import { ReportButton } from "../components/ReportButton";
+// The button lives in the post's footer, which opens the form (interface brief).
+import { PostFooter } from "../../posts/components/PostFooter";
 
 describe("ReportButton (SPEC §5.1)", () => {
   const fetchMock = jest.spyOn(globalThis, "fetch");
@@ -18,7 +19,7 @@ describe("ReportButton (SPEC §5.1)", () => {
         ? jsonResponse(200, session)
         : jsonResponse(201, { id: post.id, reason: "OTHER", createdAt: post.createdAt }),
     );
-    await renderWithProviders(<ReportButton post={post} />);
+    await renderWithProviders(<PostFooter post={post} />);
     // Let the session be restored.
     await waitFor(() => expect(fetchMock).toHaveBeenCalled());
   }
@@ -68,7 +69,7 @@ describe("ReportButton (SPEC §5.1)", () => {
   });
 
   it("is hidden for an anonymous visitor", async () => {
-    await renderWithProviders(<ReportButton post={ARTICLE_DETAIL} />);
+    await renderWithProviders(<PostFooter post={ARTICLE_DETAIL} />);
     expect(screen.queryByText("Signaler")).toBeNull();
   });
 });

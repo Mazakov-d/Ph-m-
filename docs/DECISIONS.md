@@ -799,3 +799,10 @@ qui la remplace.
   « Jadis, Phémé mêlait le vrai au faux. Bientôt, c'est elle qui les démêlera : une synthèse
   neutre de tous ces articles, sans prendre parti. » L'IA elle-même n'est pas développée
   (pas de code anticipé).
+
+## 2026-10-10 — Bas d'un post
+
+- **Décision** : à gauche, « Sources » puis « Soutenir » en dessous ; à droite, le statut
+  (« Non examiné », signalements…) puis « Signaler » en dessous. Le formulaire de signalement
+  s'ouvre sous les deux colonnes, sur toute la largeur. « Sources » et « Soutenir » ont les
+  angles des boîtes (moins arrondis).

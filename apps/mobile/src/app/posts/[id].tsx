@@ -4,20 +4,17 @@ import { KeyboardAwareScrollView } from "../../components/ui/KeyboardAwareScroll
 import { colors, radius, spacing, textSizes } from "../../components/ui/theme";
 import { HiddenComments } from "../../features/comments/components/HiddenComments";
 import { EditorBadge } from "../../features/editors/components/EditorBadge";
-import { SupportButton } from "../../features/editors/components/SupportButton";
 import { ReliabilityGauge } from "../../features/editors/components/ReliabilityGauge";
 import { usePost } from "../../features/posts/api";
 import { PostBlocks } from "../../features/posts/components/PostBlocks";
-import { ReliabilityBar } from "../../features/posts/components/ReliabilityBar";
+import { PostFooter } from "../../features/posts/components/PostFooter";
 import { SimilarPosts } from "../../features/posts/components/SimilarPosts";
-import { SourcesButton } from "../../features/posts/components/SourcesButton";
 import {
   formatPublishedAt,
   postErrorMessage,
   THEME_LABELS,
   zonePlaceLabel,
 } from "../../features/posts/texts";
-import { ReportButton } from "../../features/reports/components/ReportButton";
 import { CorrectionForm } from "../../features/reviews/components/CorrectionForm";
 import { ReviewPanel } from "../../features/reviews/components/ReviewPanel";
 import { useAuth } from "../../providers/AuthProvider";
@@ -66,17 +63,9 @@ export default function PostScreen() {
         <PostBlocks post={data} />
         {/* SPEC §7: an opinion is voted on; votes never change any order. */}
         <VoteBar post={data} />
-        <SupportButton pseudo={data.editor.pseudo} url={data.editorDonationUrl} />
         <SimilarPosts postId={data.id} />
-        {/* Interface brief: the sources at the bottom left, the status at the bottom right. */}
-        <View style={styles.bottomRow}>
-          <SourcesButton sources={data.sources} />
-          <View style={styles.status}>
-            <ReliabilityBar post={data} />
-          </View>
-        </View>
+        <PostFooter post={data} />
         <ReviewPanel post={data} />
-        <ReportButton post={data} />
         {data.corrections.length > 0 ? (
           <Text style={styles.heading}>{texts.corrections}</Text>
         ) : null}
@@ -136,9 +125,6 @@ const styles = StyleSheet.create({
   meta: { flexDirection: "row", alignItems: "center", flexWrap: "wrap", gap: spacing.sm },
   editor: { fontWeight: "600", color: colors.brand },
   muted: { color: colors.muted, fontSize: textSizes.meta },
-  bottomRow: { flexDirection: "row", alignItems: "center", gap: spacing.md },
-  // Pushed to the right even when there is no « Sources » button (an opinion without sources).
-  status: { marginLeft: "auto" },
   heading: { fontSize: textSizes.cardTitle, fontWeight: "bold", marginTop: spacing.sm },
   correction: {
     gap: 4,

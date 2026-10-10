@@ -1,8 +1,6 @@
 import { can, type PostPublic } from "@fama/shared";
-import { useState } from "react";
 import { Pressable, StyleSheet, Text } from "react-native";
 import { useAuth } from "../../../providers/AuthProvider";
-import { ReportPanel } from "./ReportPanel";
 import { colors } from "../../../components/ui/theme";
 
 const texts = {
@@ -12,11 +10,11 @@ const texts = {
 
 /**
  * SPEC §5.1: shown to signed-in readers who may report, never on one's own post, nor on an
- * article already reviewed (docs/DECISIONS.md: « Pourquoi ? » takes its place).
+ * article already reviewed (docs/DECISIONS.md: « Pourquoi ? » takes its place). The page opens
+ * the report form (`onOpen`) across its whole width.
  */
-export function ReportButton({ post }: { post: PostPublic }) {
+export function ReportButton({ post, onOpen }: { post: PostPublic; onOpen: () => void }) {
   const { user } = useAuth();
-  const [open, setOpen] = useState(false);
   const isOwnPost = user?.id === post.editor.id;
   if (!can(user, "report.create") || isOwnPost || post.reviewStatus === "REVIEWED") {
     return null;
@@ -24,11 +22,8 @@ export function ReportButton({ post }: { post: PostPublic }) {
   if (post.viewerHasReported) {
     return <Text style={styles.reported}>{texts.reported}</Text>;
   }
-  if (open) {
-    return <ReportPanel postId={post.id} onClose={() => setOpen(false)} />;
-  }
   return (
-    <Pressable accessibilityRole="button" onPress={() => setOpen(true)}>
+    <Pressable accessibilityRole="button" onPress={onOpen}>
       <Text style={styles.link}>{texts.report}</Text>
     </Pressable>
   );

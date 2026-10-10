@@ -43,7 +43,8 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     borderWidth: 1,
     borderColor: colors.brand,
-    borderRadius: radius.pill,
+    // Interface brief: the corners of the boxes (radius.md), like « Soutenir ».
+    borderRadius: radius.md,
     paddingHorizontal: spacing.md,
     paddingVertical: 6,
   },

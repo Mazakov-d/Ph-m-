@@ -35,7 +35,8 @@ const styles = StyleSheet.create({
   button: {
     paddingHorizontal: spacing.md,
     paddingVertical: 6,
-    borderRadius: radius.pill,
+    // Interface brief: the corners of the boxes (radius.md), like the « Sources » button.
+    borderRadius: radius.md,
     backgroundColor: colors.success,
   },
   label: { color: colors.onBrand, fontWeight: "600" },
