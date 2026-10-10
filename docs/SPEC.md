@@ -39,12 +39,17 @@ mais pas commenter, voter ni signaler.
 ### 2.1 Lecteur
 
 - S'inscrit avec e-mail, mot de passe et **pseudo** unique (affiché sur ses commentaires, non cliquable).
+- Se connecte avec son e-mail **ou** son pseudo ; change son mot de passe depuis son tableau de bord
+  (les autres appareils sont alors déconnectés). Voir `DECISIONS.md`.
 - Données internes (jamais renvoyées au public) : date de création, historique de signalements
   (`upheldReportCount`, `dismissedReportCount`), sanctions.
 
 ### 2.2 Éditeur (`EditorStatus`)
 
-N'importe quel compte peut demander le statut éditeur.
+N'importe quel compte lecteur peut demander le statut éditeur, en choisissant son profil : groupe
+média, journaliste, indépendant ou média des réseaux sociaux. Chaque profil a ses justificatifs
+obligatoires et facultatifs (`packages/shared/src/domain/editor-proofs.ts`) ; le modérateur coche
+ceux qu'il a vérifiés et ne peut valider tant qu'il en manque un obligatoire. Voir `DECISIONS.md`.
 
 | Enum          | Signification                                                                             | Peut publier               |
 | ------------- | ----------------------------------------------------------------------------------------- | -------------------------- |
@@ -70,7 +75,7 @@ N'importe quel compte peut demander le statut éditeur.
 ### 2.4 Dirigeant (`ADMIN`)
 
 - Lit tous les chats et toutes les décisions.
-- Nomme/retire les modérateurs, valide les éditeurs `CERTIFIED`.
+- Nomme/retire les modérateurs (« + Modérateur » crée le compte depuis le tableau de bord), valide les éditeurs `CERTIFIED`.
 - **Chaque** consultation de chat et chaque décision d'un `ADMIN` crée une entrée `AuditLog`.
 
 ### 2.5 Matrice de permissions (source : `packages/shared/src/permissions.ts`)
@@ -81,6 +86,8 @@ N'importe quel compte peut demander le statut éditeur.
 | `comment.create` / `vote.cast` / `report.create`           | ✓      | ✓      | ✓         | ✓     |
 | `support.open`                                             | ✓      | ✓      | —         | —     |
 | `user.block`                                               | ✓      | ✓      | ✓         | ✓     |
+| `editor.apply` (demander le statut éditeur)                | ✓      | —      | —         | —     |
+| `jury.serve` (se porter volontaire comme juré, §5.8)       | ✓      | —      | —         | —     |
 | `post.create` (si `EditorStatus` ∈ INDEPENDENT, CERTIFIED) | —      | ✓      | —         | —     |
 | `post.toggleComments` (ses articles)                       | —      | ✓      | —         | —     |
 | `moderation.queue.read` / `moderation.decide`              | —      | —      | ✓         | ✓     |
@@ -100,7 +107,8 @@ Deux types (`PostKind`) : `ARTICLE` et `OPINION` (case « Opinion » au moment d
 **Champs obligatoires** : `title`, `summary`, `body`, `sources` (≥ 1 URL ou référence texte ; facultatives pour une `OPINION`),
 `zone`, `theme`, `kind`. Images optionnelles (toujours rattachées au post). Une vidéo optionnelle (voir `DECISIONS.md`).
 
-- `Zone` : `FRANCE`, `EUROPE`, `INTERNATIONAL`, `LOCAL` (+ champ `region` texte si `LOCAL`).
+- `Zone` : `FRANCE`, `EUROPE`, `INTERNATIONAL`, `LOCAL` (+ `locality` si `LOCAL` : une des 18 régions
+  ou des 20 plus grandes villes de France, enum `Locality` ; voir `DECISIONS.md`).
 - `Theme` : `POLITICS`, `ECONOMY`, `SOCIAL_MOVEMENTS`, `ENVIRONMENT`, `SCIENCE_HEALTH`, `TECH`, `CULTURE`, `SPORT`, `OTHER` (« Autre », voir `DECISIONS.md`).
 - Présentation (voir `DECISIONS.md`, refonte de l'interface) : ordre des blocs (`TEXT_FIRST` ou `MEDIA_FIRST`), police de chaque bloc, gras et italique ; les tailles sont fixées par l'app.
 
@@ -136,8 +144,9 @@ Deux types (`PostKind`) : `ARTICLE` et `OPINION` (case « Opinion » au moment d
 ### 4.3 Filtres (combinables entre eux)
 
 - `today` : publiés dans les **24 dernières heures** (fenêtre glissante, pas « depuis minuit »).
-- `zone` : une valeur de `Zone`.
+- lieu : une valeur de `Zone`, ou une région ou une ville (`locality`) ; une région inclut ses villes.
 - `theme` : une valeur de `Theme`.
+- tri : récent (par défaut) ou « À la une » (§4.2).
 
 ### 4.4 Recherche
 
@@ -208,7 +217,7 @@ Pondération, seuils et affichage : voir `DECISIONS.md`.
 
 ### 5.8 Revue communautaire (post-MVP)
 
-Jury de 7 contributeurs tirés au sort (comptes anciens, sans sanction, sans lien avec un média),
+Jury de 7 lecteurs volontaires tirés au sort (comptes anciens, sans sanction, sans lien avec un média),
 source obligatoire par vote, validation finale par un modérateur. Détails : voir `DECISIONS.md`.
 
 ---
@@ -275,8 +284,12 @@ Comptées sur les commentaires `REMOVED` des 6 derniers mois (`SANCTION_RESET_MO
 
 ## 8. Support et chats
 
-- Page « Parler à l'équipe », accessible à tout compte connecté → crée un `Ticket` (`kind = SUPPORT`).
+- « Contacter Phémé », accessible à tout lecteur ou éditeur connecté → crée un `Ticket` (`kind = SUPPORT`)
+  avec un motif (`TicketTopic` : problème, idée, compte éditeur, compte ou sanction, autre).
 - Un modérateur peut ouvrir un `Ticket` (`kind = EDITOR_CHAT`) avec un éditeur (par exemple au sujet d'un signalement).
+  Un chat éditeur appartient à un modérateur au plus, et au `ADMIN`.
+- L'équipe retrouve ses conversations dans son tableau de bord : à prendre en charge, les siennes
+  (toutes pour l'`ADMIN`), tickets d'éditeurs et de lecteurs séparés, et qui s'occupe de quoi.
 - États (`TicketStatus`) : `NEW` → `ASSIGNED` → `CLOSED`.
   - Un ticket `ASSIGNED` n'est visible que de son modérateur (et des `ADMIN`).
   - L'attribution est **atomique** : deux modérateurs qui cliquent en même temps → un seul gagne (update conditionnel `WHERE status = 'NEW'`).
@@ -292,6 +305,15 @@ Comptées sur les commentaires `REMOVED` des 6 derniers mois (`SANCTION_RESET_MO
 - Pas d'étiquette politique, pas de vote des lecteurs sur l'orientation.
 - Profil éditeur : ligne éditoriale déclarée, propriétaire (`ownerName`, `ownerGroup`).
 - « Voir les similaires » (post-MVP) : posts partageant zone + thème + mots-clés, diversifiés par `ownerGroup` et taille d'éditeur. Détails : voir `DECISIONS.md`.
+- Au-dessus des similaires, un encadré annonce **la synthèse de Phémé** : une IA, à venir, qui
+  résumera ces articles de façon neutre, sans prendre parti. Pour l'instant, seulement l'annonce.
+
+---
+
+## 9 bis. Autres fonctions post-MVP
+
+Détaillées dans `DECISIONS.md` : notifications push et alertes par thème et/ou lieu, une vidéo par
+post, dons aux éditeurs (lien externe, sans commission), messages en temps réel (WebSocket).
 
 ---
 
@@ -305,6 +327,8 @@ Comptées sur les commentaires `REMOVED` des 6 derniers mois (`SANCTION_RESET_MO
 ---
 
 ## 11. Constantes (source : `packages/shared/src/rules.ts`)
+
+Les principales ; la liste complète, commentée, est dans `rules.ts`.
 
 | Constante                      | Valeur    | Remarque                        |
 | ------------------------------ | --------- | ------------------------------- |

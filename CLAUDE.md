@@ -3,7 +3,7 @@
 Instructions permanentes pour Claude Code sur ce projet. À lire au début de chaque session.
 
 - **Quoi construire** : `docs/SPEC.md` (règles métier, fait foi).
-- **Dans quel ordre** : `ROADMAP.md` (phases et tâches cochables).
+- **Pourquoi c'est ainsi** : `docs/DECISIONS.md` (chaque choix fait en route).
 - **Comment l'écrire** : ce fichier.
 
 Langue : code, identifiants, commits en **anglais** ; interface utilisateur et docs en **français**.
@@ -12,19 +12,23 @@ Langue : code, identifiants, commits en **anglais** ; interface utilisateur et d
 
 ## 1. Façon de travailler
 
-1. Prendre la **première tâche non cochée** de `ROADMAP.md`. Une tâche à la fois.
+Le MVP et les fonctions post-MVP prévues sont livrés (la ROADMAP qui les suivait est dans
+l'historique git). Chaque nouvelle demande du porteur du projet se traite ainsi :
+
+1. Une demande à la fois.
 2. Relire la section de `docs/SPEC.md` concernée avant de coder.
 3. Implémenter **avec ses tests**.
 4. Lancer `pnpm check` (lint + typecheck + tests). Il doit être vert.
-5. Cocher la tâche dans `ROADMAP.md`, puis commit (format Conventional Commits : `feat(comments): ...`).
-6. **À la fin de chaque phase : s'arrêter** et résumer ce qui a été fait pour validation humaine.
+5. Consigner le choix dans `docs/DECISIONS.md` et, si une règle métier change, mettre à jour
+   `docs/SPEC.md` ; puis commit (format Conventional Commits : `feat(comments): ...`).
+6. Résumer ce qui a été fait pour validation humaine.
 
 Règles :
 
 - Ne jamais inventer une règle métier. Si la SPEC est muette ou ambiguë : poser la question, puis
   consigner la réponse dans `docs/DECISIONS.md` (date, question, décision).
 - Ne pas ajouter de dépendance sans dire pourquoi dans le message de commit.
-- Ne pas anticiper les phases suivantes (pas de code « pour plus tard »).
+- Ne pas anticiper les demandes suivantes (pas de code « pour plus tard »).
 - Préférer du code simple et explicite à du code astucieux. Un lecteur débutant doit pouvoir suivre.
 
 ---
@@ -89,7 +93,6 @@ Utiliser les **dernières versions stables** au moment de l'initialisation et su
 ├── docs/
 ├── docker-compose.yml
 ├── CLAUDE.md
-└── ROADMAP.md
 ```
 
 ---
@@ -356,7 +359,7 @@ const form = useForm<CreateCommentInput>({
 - Tests obligatoires :
   - chaque fonction de `shared/src/domain/` (cas nominaux + limites : seuil exact, compte de 29 et 30 jours…) ;
   - la matrice de permissions (chaque rôle × chaque permission) ;
-  - un test e2e (supertest, base de test) par parcours critique de la ROADMAP.
+  - un test e2e (supertest, base de test) par parcours critique (inscription, publication, signalement et revue, modération…).
 - `pnpm check` vert avant chaque commit.
 
 ---

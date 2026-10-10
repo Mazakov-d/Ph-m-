@@ -806,3 +806,12 @@ qui la remplace.
   (« Non examiné », signalements…) puis « Signaler » en dessous. Le formulaire de signalement
   s'ouvre sous les deux colonnes, sur toute la largeur. « Sources » et « Soutenir » ont les
   angles des boîtes (moins arrondis).
+
+## 2026-10-10 — Fin de la ROADMAP
+
+- **Décision** : toutes les phases sont livrées ; la ROADMAP est supprimée (elle reste dans
+  l'historique git). Points restés ouverts : la limitation de débit et le jury étaient faits (le
+  jury avec des lecteurs volontaires, validé par le porteur du projet, et non des éditeurs) ;
+  la direction visuelle et l'ergonomie ont été validées au fil des retours du porteur du projet ;
+  Meilisearch reste reporté (voir plus haut). Les nouvelles demandes suivent `CLAUDE.md` §1, et la
+  SPEC est tenue à jour à chaque règle métier modifiée.

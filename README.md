@@ -245,5 +245,5 @@ pnpm check                              # lint + types + tous les tests
 ```
 
 Pour aller plus loin : [`docs/SPEC.md`](docs/SPEC.md) (les règles),
-[`docs/DECISIONS.md`](docs/DECISIONS.md) (les choix), [`ROADMAP.md`](ROADMAP.md) (l'avancement),
+[`docs/DECISIONS.md`](docs/DECISIONS.md) (les choix),
 [`deploy/README.md`](deploy/README.md) (la mise en ligne).
