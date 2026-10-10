@@ -26,6 +26,10 @@ export function SearchBar({ value, onChange, onFocus }: Props) {
         onFocus={onFocus}
         maxLength={SEARCH_QUERY_MAX_LENGTH}
         returnKeyType="search"
+        // A search field (type="search" on the web), never filled in: otherwise the browser takes
+        // it for the user name of the sign-in form mounted in the dashboard tab.
+        inputMode="search"
+        autoComplete="off"
         style={styles.input}
       />
       {value ? (
