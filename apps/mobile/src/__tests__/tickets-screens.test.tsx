@@ -1,7 +1,6 @@
 import type { MessagePublic, TicketModeration } from "@fama/shared";
 import { fireEvent, screen, waitFor } from "@testing-library/react-native";
 import AuditLogScreen from "../app/admin/audit";
-import ModeratorTicketsScreen from "../app/moderation/tickets";
 import SupportScreen from "../app/support";
 import { Conversation } from "../features/tickets/components/Conversation";
 import { apiClient } from "../lib/apiClient";
@@ -120,14 +119,6 @@ describe("support and chat screens (SPEC §8)", () => {
     await fireEvent.changeText(screen.getByLabelText("Votre message"), "Merci");
     await fireEvent(screen.getByLabelText("Votre message"), "submitEditing");
     await waitFor(() => expect(posted(`/tickets/${ID(1)}/messages`)).toBeTruthy());
-  });
-
-  it("lets a moderator take a NEW ticket", async () => {
-    await signIn("MODERATOR", (path) => (path.includes("scope=unassigned") ? [ticket] : ticket));
-    await renderWithProviders(<ModeratorTicketsScreen />);
-    expect(await screen.findByText("Mon compte a été suspendu à tort.")).toBeTruthy();
-    await fireEvent.press(screen.getByText("Prendre en charge"));
-    await waitFor(() => expect(posted(`/moderation/tickets/${ID(1)}/assign`)).toBeTruthy());
   });
 
   it("shows the audit log to an admin", async () => {

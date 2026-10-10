@@ -753,7 +753,7 @@ qui la remplace.
 
 ## 2026-10-09 — Mise en ligne de la version web
 
-- **Question** : mettre la version web en ligne sur la Freebox (82.66.91.67, phebe.duckdns.org).
+- **Question** : mettre la version web en ligne sur la box du propriétaire (phebe.duckdns.org).
 - **Décision** (`deploy/`) :
   - Une pile Docker de production distincte de celle de développement (base vide, secrets
     aléatoires dans `deploy/.env`, jamais commité), avec **Caddy** devant : HTTPS automatique
@@ -796,8 +796,8 @@ qui la remplace.
 - **Décision** : en dépliant « Voir les similaires », un encadré « La synthèse de Phémé ·
   Bientôt » s'affiche au-dessus des articles. Il accueillera plus tard une IA qui synthétisera
   ces articles de façon neutre, sans prendre parti. Pour l'instant, il l'annonce seulement :
-  « Jadis, Phémé mêlait le vrai au faux. Bientôt, c'est elle qui les démêlera : une synthèse
-  neutre de tous ces articles, sans prendre parti. » L'IA elle-même n'est pas développée
+  « Mille voix rapportent cette histoire. Bientôt, Phémé les écoutera toutes pour vous en dire
+  l'essentiel, sans prendre parti. » (phrase choisie par le propriétaire) L'IA elle-même n'est pas développée
   (pas de code anticipé).
 
 ## 2026-10-10 — Bas d'un post

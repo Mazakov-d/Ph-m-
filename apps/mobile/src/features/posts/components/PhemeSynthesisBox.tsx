@@ -4,7 +4,7 @@ import { colors, radius, spacing, textSizes } from "../../../components/ui/theme
 const texts = {
   title: "La synthèse de Phémé",
   soon: "Bientôt",
-  body: "Jadis, Phémé mêlait le vrai au faux. Bientôt, c'est elle qui les démêlera : une synthèse neutre de tous ces articles, sans prendre parti.",
+  body: "Mille voix rapportent cette histoire. Bientôt, Phémé les écoutera toutes pour vous en dire l'essentiel, sans prendre parti.",
 };
 
 /**
